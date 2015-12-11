@@ -12,21 +12,21 @@ static void Delay(__IO uint32_t nTime);
 
 int main(void){
 	SystemInit();
-
-	/* SysTick end of count event each 1ms */
-	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1680);
-  
-	/* Insert 50 ms delay */
-//	Delay(5);
+	SysTick_Config(SystemCoreClock / 1000);
 
 	Led::init();
+	Switch::init();
 	Led::on(LedNumbers::FRONT);
-	
-	/* Infinite loop */
-	while (1){
-		
+	Delay(500);
+	Led::off(LedNumbers::FRONT);
+
+	while(true){
+		// if(Switch::isPushing(SwitchNumbers::LEFT))
+		// 	Led::on(LedNumbers::FRONT);
+		// else
+		// 	Led::off(LedNumbers::FRONT);
 	}
+
 }
 
 

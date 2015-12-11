@@ -7,6 +7,7 @@
 #include "stm32f4xx.h"
 
 #include "Led.h"
+#include "Switch.h"
 
 
 void TimingDelay_Decrement(void);

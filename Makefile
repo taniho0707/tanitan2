@@ -12,7 +12,7 @@ MPU_OPTS = -DSTM32F40_41xxx
 BOARD_DIR = -DHSE_VALUE=\(\(uint32_t\)8000000\) $(MPU_OPTS)
 #-DSTM32F4XX
 FIRMWARE_OPTS = -DUSE_STDPERIPH_DRIVER
-COMPILE_OPTS = -Os -g3 -ffunction-sections -fpermissive -fdata-sections -fsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS)
+COMPILE_OPTS = -O0 -g3 -ffunction-sections -fpermissive -fdata-sections -fsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS)
 
 TOOLDIR = /usr/bin/
 CC = $(TOOLDIR)arm-none-eabi-g++
@@ -27,9 +27,9 @@ ASFLAGS = -x assembler-with-cpp -c $(TARGET_ARCH) $(COMPILE_OPTS)
 LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nosys.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -Wl,--end-group
 
 .PHONY: all
-all: libstm32f401xx startup bin/main.bin
+all: libstm32f4xx startup bin/main.bin
 
-bin/main.bin: $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(STARTUP_DIR)/startup_stm32f401xx.o ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f401xx.a
+bin/main.bin: $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(STARTUP_DIR)/startup_stm32f40xx.o ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f4xx.a
 	$(LD) $(LDFLAGS) $(TARGET_ARCH) $^ -o bin/main.elf
 	$(OBJCOPY) -O ihex --change-addresses 0x08000000 bin/main.elf bin/main.hex
 	etags *.[ch]*
@@ -37,11 +37,11 @@ bin/main.bin: $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.cpp,%.o,$(wildcar
 LIB_OBJS = $(sort \
  $(patsubst %.c,%.o,$(wildcard ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/STM32F4xx_StdPeriph_Driver/src/*.c)))
 
-libstm32f401xx: $(LIB_OBJS)
-	$(AR) cr ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f401xx.a $(LIB_OBJS)
+libstm32f4xx: $(LIB_OBJS)
+	$(AR) cr ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f4xx.a $(LIB_OBJS)
 
 startup:
-	$(AS) -o $(STARTUP_DIR)/startup_stm32f401xx.o $(ASFLAGS) $(STARTUP_DIR)/startup_stm32f401xx.s
+	$(AS) -o $(STARTUP_DIR)/startup_stm32f40xx.o $(ASFLAGS) $(STARTUP_DIR)/startup_stm32f40xx.s
 
 $(LIB_OBJS): \
  $(wildcard ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc/*.h) \
