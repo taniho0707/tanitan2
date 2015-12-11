@@ -139,9 +139,8 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
-{
-  TimingDelay_Decrement();
+void SysTick_Handler(void){
+	Timer::interrupt();
 }
 
 /******************************************************************************/

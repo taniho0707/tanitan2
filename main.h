@@ -8,8 +8,12 @@
 
 #include "Led.h"
 #include "Switch.h"
+#include "Speaker.h"
+#include "Timer.h"
+
+#include "Gyro.h"
 
 
-void TimingDelay_Decrement(void);
+int main();
 
 #endif

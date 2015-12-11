@@ -21,8 +21,6 @@ private:
 	Gyro();
 	~Gyro();
 
-	static void setType(GyroNumbers num);
-
 public:
 
 	static void init();

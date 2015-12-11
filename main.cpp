@@ -4,21 +4,28 @@
 #include "main.h"
 
 
-static __IO uint32_t uwTimingDelay;
-RCC_ClocksTypeDef RCC_Clocks;
-
-static void Delay(__IO uint32_t nTime);
-
-
 int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
 
 	Led::init();
 	Switch::init();
+	Speaker::init();
+
+	Speaker::playSound(880, 100, true);
+	Speaker::playSound(1175, 300, true);
+
 	Led::on(LedNumbers::FRONT);
-	Delay(500);
-	Led::off(LedNumbers::FRONT);
+	Led::on(LedNumbers::RIGHT);
+	Led::on(LedNumbers::LEFT1);
+	Led::on(LedNumbers::LEFT2);
+	Led::on(LedNumbers::LEFT3);
+	Timer::wait_ms(500);
+	Led::off(LedNumbers::RIGHT);
+	Led::off(LedNumbers::LEFT1);
+	Led::off(LedNumbers::LEFT2);
+	Led::off(LedNumbers::LEFT3);
+
 
 	while(true){
 		// if(Switch::isPushing(SwitchNumbers::LEFT))
@@ -29,34 +36,3 @@ int main(void){
 
 }
 
-
-void Delay(__IO uint32_t nTime){ 
-	uwTimingDelay = nTime;
-	while(uwTimingDelay != 0);
-}
-
-void TimingDelay_Decrement(void){
-	if (uwTimingDelay != 0x00){ 
-		uwTimingDelay--;
-	}
-}
-
-
-
-
-#ifdef  USE_FULL_ASSERT
-/**
- * @brief  Reports the name of the source file and the source line number
- *         where the assert_param error has occurred.
- * @param  file: pointer to the source file name
- * @param  line: assert_param error line source number
- * @retval None
- */
-void assert_failed(uint8_t* file, uint32_t line){ 
-	/* User can add his own implementation to report the file name and line number,
-	   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-	/* Infinite loop */
-	while (1){
-	}
-}
-#endif
