@@ -59,4 +59,5 @@ debug:
 flash:
 #	st-flash write bin/main.bin 0x08000000
 	stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
+	gtkterm
 

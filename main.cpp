@@ -12,6 +12,10 @@ int main(void){
 	Switch::init();
 	Speaker::init();
 
+	ComPc::init();
+	Gyro::init();
+	Timer::wait_ms(500);
+
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
 
@@ -26,9 +30,6 @@ int main(void){
 	Led::off(LedNumbers::LEFT2);
 	Led::off(LedNumbers::LEFT3);
 
-	Gyro::init();
-
-	Timer::wait_ms(500);
 
 	uint16_t ret = 0xFF;
 	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
@@ -42,14 +43,21 @@ int main(void){
 	ret = SPI_I2S_ReceiveData(SPI3);
 	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
 	GPIO_SetBits(GPIOA, GPIO_Pin_15);
-	if(ret == 0x69) Led::on(LedNumbers::RIGHT);
+	if(ret == 0x69) Led::on(LedNumbers::LEFT2);
 	else Led::off(LedNumbers::FRONT);
 
+	ComPc::printf("Hello STM32F405!\n");
+
 	while(true){
-		// if(Switch::isPushing(SwitchNumbers::LEFT))
-		// 	Led::on(LedNumbers::FRONT);
-		// else
-		// 	Led::off(LedNumbers::FRONT);
+		if(Switch::isPushing(SwitchNumbers::RIGHT))
+			Led::on(LedNumbers::RIGHT);
+		else
+			Led::off(LedNumbers::RIGHT);
+		if(Switch::isPushing(SwitchNumbers::LEFT))
+			Led::on(LedNumbers::LEFT3);
+		else
+			Led::off(LedNumbers::LEFT3);
+		Timer::wait_ms(100);
 	}
 
 }

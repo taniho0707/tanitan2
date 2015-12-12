@@ -38,7 +38,7 @@ bool Switch::hasPushed(SwitchNumbers num){
 
 bool Switch::isPushing(SwitchNumbers num){
 	setType(num);
-	if(GPIO_ReadInputDataBit(gpio_port, gpio_channel) > 0)
+	if(GPIO_ReadInputDataBit(gpio_port, gpio_channel) == 0)
 		return true;
 	else
 		return false;

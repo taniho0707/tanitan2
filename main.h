@@ -11,6 +11,8 @@
 #include "Speaker.h"
 #include "Timer.h"
 
+#include "ComPc.h"
+
 #include "Gyro.h"
 
 
