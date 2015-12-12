@@ -31,20 +31,13 @@ int main(void){
 	Led::off(LedNumbers::LEFT3);
 
 
-	uint16_t ret = 0xFF;
-	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, 0x8F);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, 0x00);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	ret = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	ret = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOA, GPIO_Pin_15);
+	uint8_t ret = 0x00;
+	Gyro::readSingleWord(GyroCommands::WHO_AM_I, ret);
 	if(ret == 0x69) Led::on(LedNumbers::LEFT2);
 	else Led::off(LedNumbers::FRONT);
+
+	ret = 0xF8;
+	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
 
 	ComPc::printf("Hello STM32F405!\n");
 
@@ -57,6 +50,10 @@ int main(void){
 			Led::on(LedNumbers::LEFT3);
 		else
 			Led::off(LedNumbers::LEFT3);
+		Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
+		ComPc::printf("Data: %2X", ret);
+		Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
+		ComPc::printf(" %2X\n", ret);
 		Timer::wait_ms(100);
 	}
 

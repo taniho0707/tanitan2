@@ -54,5 +54,43 @@ void Gyro::init(){
 }
 
 
+int Gyro::readSingleWord(GyroCommands command, uint8_t& data){
+	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI3, static_cast<uint8_t>(command) + 0x80);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI3, 0x00);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
+	data = SPI_I2S_ReceiveData(SPI3);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
+	data = SPI_I2S_ReceiveData(SPI3);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	GPIO_SetBits(GPIOA, GPIO_Pin_15);
+	return 0;
+}
+
+int Gyro::readDoubleWord(GyroCommands command, uint16_t& data){
+	
+}
+
+int Gyro::writeSingleWord(GyroCommands command, const uint8_t& data){
+	uint16_t trash;
+	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI3, static_cast<uint8_t>(command));
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	SPI_I2S_SendData(SPI3, data);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
+	trash = SPI_I2S_ReceiveData(SPI3);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
+	trash = SPI_I2S_ReceiveData(SPI3);
+	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
+	GPIO_SetBits(GPIOA, GPIO_Pin_15);
+	return 0;
+}
+
+int Gyro::writeSingleWord(GyroCommands command, const uint16_t& data){
+	
+}
 
 
