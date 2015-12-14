@@ -14,6 +14,7 @@
 #include "ComPc.h"
 
 #include "Gyro.h"
+#include "Mram.h"
 
 
 int main();

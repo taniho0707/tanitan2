@@ -104,8 +104,6 @@ enum class GyroCommands : char {
 
 class Gyro{
 private:
-	static GPIO_TypeDef * gpio_port;
-	static uint16_t gpio_channel;
 
 	Gyro();
 	~Gyro();
@@ -118,7 +116,7 @@ public:
 	static int readDoubleWord(GyroCommands command, uint16_t& data);
 
 	static int writeSingleWord(GyroCommands command, const uint8_t& data);
-	static int writeSingleWord(GyroCommands command, const uint16_t& data);
+	static int writeDoubleWord(GyroCommands command, const uint16_t& data);
 
 };
 

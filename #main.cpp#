@@ -40,16 +40,23 @@ int main(void){
 	ComPc::printf("Hello STM32F405!\n");
 	Timer::wait_ms(1000);
 
-	ret = 0xF8;
-	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
-	ComPc::printf("Gyro setting was completed\n");
+	// ret = 0xF8;
+	// Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
+	// ComPc::printf("Gyro setting was completed\n");
 
+	ret = 0x02;
+	Mram::writeStatusResister(ret);
+	ComPc::printf("writeStatusResister\n");
+	ret = 0xE;
+	Mram::readStatusResister(ret);
+	ComPc::printf("readStatusResister: %X\n", ret);
 	Mram::writeEnable();
-	ret = 0x10;
-	Mram::writeSingleWord(0x0000, ret);
+	ComPc::printf("writeEnable\n");
+	ret = 0x7E;
+	Mram::writeSingleWord(0x7000, ret);
 	ret = 0xFF;
 	ComPc::printf("Wrote\n");
-	Mram::readSingleWord(0x0000, ret);
+	Mram::readSingleWord(0x7000, ret);
 
 	ComPc::printf("\tMRAM: %2X\n", ret);
 

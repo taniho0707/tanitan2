@@ -89,7 +89,7 @@ int Gyro::writeSingleWord(GyroCommands command, const uint8_t& data){
 	return 0;
 }
 
-int Gyro::writeSingleWord(GyroCommands command, const uint16_t& data){
+int Gyro::writeDoubleWord(GyroCommands command, const uint16_t& data){
 	
 }
 
