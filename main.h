@@ -12,6 +12,7 @@
 #include "Timer.h"
 
 #include "ComPc.h"
+#include "Nfc.h"
 
 #include "Gyro.h"
 #include "Mram.h"
