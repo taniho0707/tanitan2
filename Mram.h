@@ -7,8 +7,6 @@
 
 #include "stm32f4xx.h"
 
-#include "ComPc.h"
-
 enum class MramCommands : unsigned char {
 	WRSR = 0x01,
 	WRITE,

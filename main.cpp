@@ -25,10 +25,10 @@ int main(void){
 	Led::on(LedNumbers::LEFT2);
 	Led::on(LedNumbers::LEFT3);
 	Timer::wait_ms(500);
-	Led::off(LedNumbers::RIGHT);
-	Led::off(LedNumbers::LEFT1);
-	Led::off(LedNumbers::LEFT2);
-	Led::off(LedNumbers::LEFT3);
+	// Led::off(LedNumbers::RIGHT);
+	// Led::off(LedNumbers::LEFT1);
+	// Led::off(LedNumbers::LEFT2);
+	// Led::off(LedNumbers::LEFT3);
 
 	ComPc *compc = ComPc::getInstance();
 
@@ -55,18 +55,18 @@ int main(void){
 	compc->printf("\tMRAM: %2X\n", ret);
 
 	while(true){
-		if(Switch::isPushing(SwitchNumbers::RIGHT))
-			Led::on(LedNumbers::RIGHT);
-		else
-			Led::off(LedNumbers::RIGHT);
-		if(Switch::isPushing(SwitchNumbers::LEFT))
-			Led::on(LedNumbers::LEFT3);
-		else
-			Led::off(LedNumbers::LEFT3);
+		// if(Switch::isPushing(SwitchNumbers::RIGHT))
+		// 	Led::on(LedNumbers::RIGHT);
+		// else
+		// 	Led::off(LedNumbers::RIGHT);
+		// if(Switch::isPushing(SwitchNumbers::LEFT))
+		// 	Led::on(LedNumbers::LEFT3);
+		// else
+		// 	Led::off(LedNumbers::LEFT3);
 		Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
-		ComPc->printf("Data: %2X", ret);
+		compc->printf("Data: %2X", ret);
 		Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
-		ComPc->printf(" %2X\n", ret);
+		compc->printf(" %2X\n", ret);
 		Timer::wait_ms(100);
 	}
 

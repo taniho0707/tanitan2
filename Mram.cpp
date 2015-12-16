@@ -137,6 +137,3 @@ int Mram::writeSingleWord(const uint16_t addr, const uint8_t& data){
 
 
 
-
-
-
