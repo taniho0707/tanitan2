@@ -3,7 +3,6 @@
  */
 #include "main.h"
 
-
 int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
@@ -13,7 +12,6 @@ int main(void){
 	Speaker::init();
 
 	Gyro::init();
-	Mram::init();
 	Timer::wait_ms(500);
 
 	Speaker::playSound(880, 100, true);
@@ -25,12 +23,13 @@ int main(void){
 	Led::on(LedNumbers::LEFT2);
 	Led::on(LedNumbers::LEFT3);
 	Timer::wait_ms(500);
-	// Led::off(LedNumbers::RIGHT);
-	// Led::off(LedNumbers::LEFT1);
-	// Led::off(LedNumbers::LEFT2);
-	// Led::off(LedNumbers::LEFT3);
+	Led::off(LedNumbers::RIGHT);
+	Led::off(LedNumbers::LEFT1);
+	Led::off(LedNumbers::LEFT2);
+	Led::off(LedNumbers::LEFT3);
 
 	ComPc *compc = ComPc::getInstance();
+	Mram *mram = Mram::getInstance();
 
 
 	uint8_t ret = 0x00;
@@ -45,24 +44,25 @@ int main(void){
 	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
 	compc->printf("Gyro setting was completed\n");
 
-	Mram::writeEnable();
-	ret = 0x10;
-	Mram::writeSingleWord(0x0000, ret);
-	ret = 0xFF;
+	mram->writeEnable();
+	std::vector<uint8_t> mram_ret(1);
+	mram_ret[0] = 0xAB;
+	mram->writeData(mram_ret, 0x0000, 1);
+	mram_ret[0] = 0xFF;
 	compc->printf("Wrote\n");
-	Mram::readSingleWord(0x0000, ret);
+	mram->readData(mram_ret, 0x0000, 1);
 
-	compc->printf("\tMRAM: %2X\n", ret);
+	compc->printf("\tMRAM: %2X\n", mram_ret[0]);
 
 	while(true){
-		// if(Switch::isPushing(SwitchNumbers::RIGHT))
-		// 	Led::on(LedNumbers::RIGHT);
-		// else
-		// 	Led::off(LedNumbers::RIGHT);
-		// if(Switch::isPushing(SwitchNumbers::LEFT))
-		// 	Led::on(LedNumbers::LEFT3);
-		// else
-		// 	Led::off(LedNumbers::LEFT3);
+		if(Switch::isPushing(SwitchNumbers::RIGHT))
+			Led::on(LedNumbers::RIGHT);
+		else
+			Led::off(LedNumbers::RIGHT);
+		if(Switch::isPushing(SwitchNumbers::LEFT))
+			Led::on(LedNumbers::LEFT3);
+		else
+			Led::off(LedNumbers::LEFT3);
 		Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
 		compc->printf("Data: %2X", ret);
 		Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);

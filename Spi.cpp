@@ -5,9 +5,9 @@
 #include "Spi.h"
 
 
-Spi::Spi(const SPI_TypeDef *spi, const GPIO_TypeDef *gpio, const uint16_t gpiopin){
-	*spi_port = *spi;
-	*cs_port = *gpio;
+Spi::Spi(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin){
+	spi_port = spi;
+	cs_port = gpio;
 	cs_pin = gpiopin;
 	for (int i=0; i<8; i++) buffer[i] = 0x00;
 }
@@ -21,23 +21,19 @@ void Spi::resetChipSelect(){
 }
 
 int Spi::readSingleByte(uint8_t &data){
-	setChipSelect();
 	while (SPI_I2S_GetFlagStatus(spi_port, SPI_I2S_FLAG_TXE) == RESET);
 	SPI_I2S_SendData(spi_port, 0x00);
 	while (SPI_I2S_GetFlagStatus(spi_port, SPI_I2S_FLAG_RXNE) == RESET);
 	data = SPI_I2S_ReceiveData(spi_port);
-	resetChipSelect();
 	return 0;
 }
 
 int Spi::writeSingleByte(const uint8_t data){
-	uint8_t trash;
-	setChipSelect();
 	while (SPI_I2S_GetFlagStatus(spi_port, SPI_I2S_FLAG_TXE) == RESET);
 	SPI_I2S_SendData(spi_port, static_cast<uint8_t>(data));
 	while (SPI_I2S_GetFlagStatus(spi_port, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(spi_port);
-	resetChipSelect();
+	SPI_I2S_ReceiveData(spi_port);
+	return 0;
 }
 
 int Spi::readMultiByte(std::vector<uint8_t> &data, const uint8_t num){
@@ -50,7 +46,7 @@ int Spi::readMultiByte(std::vector<uint8_t> &data, const uint8_t num){
 	return 0;
 }
 
-int Spi::writeMultiByte(std::vector<uint8_t> &data, const uint8_t num){
+int Spi::writeMultiByte(const std::vector<uint8_t> &data, const uint8_t num){
 	if(data.capacity() < num) return -1;
 	for (int i=0; i<num; i++) {
 		writeSingleByte(data[i]);
@@ -59,11 +55,14 @@ int Spi::writeMultiByte(std::vector<uint8_t> &data, const uint8_t num){
 }
 
 int Spi::rwMultiByte(
-	std::vector<uint8_t> &data_read, std::vector<uint8_t> &data_write,
-	const uint8_t num_read, const uint8_t num_write){
+	std::vector<uint8_t> &data_read, const std::vector<uint8_t> &data_write,
+	const uint8_t num_read, const uint8_t num_write)
+{
+	setChipSelect();
 	int retval = 0;
-	retval += writeMultiByte(data_write, num_write);
-	retval += readMultiByte(data_read, num_read);
+	if(num_write > 0) retval += writeMultiByte(data_write, num_write);
+	if(num_read > 0) retval += readMultiByte(data_read, num_read);
+	resetChipSelect();
 	return retval;
 }
 

@@ -3,7 +3,9 @@
  */
 #include "Mram.h"
 
-void Mram::init(){
+Mram::Mram(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
+	Spi(spi, gpio, gpiopin)
+{
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
 
@@ -38,102 +40,51 @@ void Mram::init(){
 	SPI_Cmd(SPI2, ENABLE);
 }
 
-
 int Mram::writeStatusResister(const uint8_t data){
-	uint8_t trash;
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(MramCommands::WRSR));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, data);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOB, GPIO_Pin_12);
-	return 0;
+	std::vector<uint8_t> writedata(2);
+	writedata[0] = static_cast<uint8_t>(MramCommands::WRSR);
+	writedata[1] = data;
+	return rwMultiByte(writedata, writedata, 0, 2);
 }
 
 int Mram::readStatusResister(uint8_t& data){
-	uint8_t trash;
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(MramCommands::RDSR));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, 0x00);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	data = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOB, GPIO_Pin_12);
-	return 0;
+	std::vector<uint8_t> writedata(1);
+	std::vector<uint8_t> readdata(1);
+	writedata[0] = static_cast<uint8_t>(MramCommands::RDSR);
+	readdata[0] = 0x00;
+	int retval = rwMultiByte(readdata, writedata, 1, 1);
+	data = readdata[0];
+	return retval;
 }
 
 int Mram::writeEnable(){
-	uint8_t trash;
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(MramCommands::WREN));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOB, GPIO_Pin_12);
-	return 0;
+	setChipSelect();
+	int retval = writeSingleByte(static_cast<uint8_t>(MramCommands::WREN));
+	resetChipSelect();
+	return retval;
+}
+
+int Mram::writeData(const std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num){
+	std::vector<uint8_t> writedata(num+3);
+	writedata[0] = static_cast<uint8_t>(MramCommands::WRITE);
+	writedata[1] = static_cast<uint8_t>((addr >> 8)&0x00FF);
+	writedata[2] = static_cast<uint8_t>(addr&0x00FF);
+	for (int i=0; i<num; i++)
+		writedata[i+3] = data[i];
+	return rwMultiByte(writedata, writedata, 0, num+3);
+}
+
+int Mram::readData(std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num){
+	std::vector<uint8_t> writedata(3);
+	writedata[0] = static_cast<uint8_t>(MramCommands::READ);
+	writedata[1] = static_cast<uint8_t>((addr >> 8)&0x00FF);
+	writedata[2] = static_cast<uint8_t>(addr&0x00FF);
+	return rwMultiByte(data, writedata, num, 3);
 }
 
 
-int Mram::readSingleWord(const uint16_t addr, uint8_t& data){
-	uint8_t trash;
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(MramCommands::READ));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>((addr>>8)&0xFF));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(addr&0xFF));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, 0x00);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	data = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOB, GPIO_Pin_12);
-	return 0;
+Mram *Mram::getInstance(){
+	static Mram instance(SPI2, GPIOB, GPIO_Pin_12);
+	return &instance;
 }
-
-int Mram::writeSingleWord(const uint16_t addr, const uint8_t& data){
-	uint8_t trash;
-	GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(MramCommands::WRITE));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>((addr>>8)&0xFF));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, static_cast<uint8_t>(addr&0xFF));
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI2, data);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI2);
-	while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOB, GPIO_Pin_12);
-	return 0;
-}
-
-
 

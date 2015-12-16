@@ -7,6 +7,10 @@
 
 #include "stm32f4xx.h"
 
+#include <vector>
+#include "Spi.h"
+
+
 enum class MramCommands : unsigned char {
 	WRSR = 0x01,
 	WRITE,
@@ -21,30 +25,21 @@ enum class MramCommands : unsigned char {
 
 // 256Kbit = 32KByte Max 0x7CFF
 
-class Mram{
+class Mram : protected Spi{
 private:
 
-	Mram();
-	~Mram();
+	explicit Mram(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 
 public:
+	static Mram *getInstance();
 
-	static void init();
+	int writeStatusResister(const uint8_t data);
+	int readStatusResister(uint8_t& data);
 
-	static int writeStatusResister(const uint8_t data);
-	static int readStatusResister(uint8_t& data);
+	int writeEnable();
 
-	static int writeEnable();
-
-	static int readSingleWord(const uint16_t addr, uint8_t& data);
-	static int writeSingleWord(const uint16_t addr, const uint8_t& data);
+	int writeData(const std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num);
+	int readData(std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num);
 };
 
 #endif
-
-
-
-
-
-
-

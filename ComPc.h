@@ -13,19 +13,6 @@
 
 class ComPc : protected Usart{
 private:
-	
-	/**
-	 * @brief 1バイト文字をシリアル送信します。常用できません。
-	 * @param c 送信する文字
-	 */
-	void send1byte(USART_TypeDef *USARTx, char data);
-
-	/**
-	 * @brief 複数バイトの文字をシリアル送信します。常用できません。
-	 * @param c 送信する文字列
-	 * @param n 送信する文字数
-	 */
-	void sendnbyte(USART_TypeDef *USARTx, char *c, int n);
 
 	explicit ComPc(USART_TypeDef *port);
 

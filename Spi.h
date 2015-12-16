@@ -27,14 +27,14 @@ protected:
 	int writeSingleByte(const uint8_t data);
 
 	int readMultiByte(std::vector<uint8_t> &data, const uint8_t num);
-	int writeMultiByte(std::vector<uint8_t> &data, const uint8_t num);
+	int writeMultiByte(const std::vector<uint8_t> &data, const uint8_t num);
 
 	int rwMultiByte(
-		std::vector<uint8_t> &data_read, std::vector<uint8_t> &data_write,
+		std::vector<uint8_t> &data_read, const std::vector<uint8_t> &data_write,
 		const uint8_t num_read, const uint8_t num_write);
 
 public:
-	Spi(const SPI_TypeDef *spi, const GPIO_TypeDef *gpio, const uint16_t gpiopin);
+	Spi(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 };
 
 #endif

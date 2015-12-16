@@ -4,7 +4,6 @@
 
 #include "ComPc.h"
 
-
 ComPc::ComPc(USART_TypeDef *port) : Usart(port){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
@@ -29,24 +28,14 @@ ComPc::ComPc(USART_TypeDef *port) : Usart(port){
 	USART_Cmd(USART1, ENABLE);
 }
 
-void ComPc::send1byte(USART_TypeDef *USARTx, char Data){
-	USART_SendData(USARTx, (uint16_t)Data);
-	while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
-}
-
-void ComPc::sendnbyte(USART_TypeDef *USARTx, char *Data, int len){
-	int i;
-	for(i=0; i<len; ++i) send1byte(USARTx, Data[i]);
-}
 
 void ComPc::printf(const char *fmt, ...){
-	USART_TypeDef *USARTx = USART1;
 	static char buffer[100];
 	int len = 0;
 	va_list ap;
 	va_start(ap, fmt);
 	len = vsprintf(buffer, fmt, ap);
-	sendnbyte(USARTx, buffer, len);
+	sendnbyte(buffer, len);
 	va_end(ap);
 }
 

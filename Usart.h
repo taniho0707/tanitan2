@@ -24,14 +24,14 @@ protected:
 	 * @brief 1バイト文字をシリアル送信します。
 	 * @param c 送信する文字
 	 */
-	void send1byte(uint8_t data);
+	void send1byte(const char data);
 
 	/**
 	 * @brief 複数バイトの文字をシリアル送信します。
 	 * @param c 送信する文字列
 	 * @param n 送信する文字数
 	 */
-	void sendnbyte(uint8_t *c, int n);
+	void sendnbyte(const char *c, const int n);
 
 public:
 	Usart(USART_TypeDef *usart);
