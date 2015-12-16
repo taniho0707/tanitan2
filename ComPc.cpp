@@ -28,16 +28,10 @@ ComPc::ComPc(USART_TypeDef *port) : Usart(port){
 	USART_Cmd(USART1, ENABLE);
 }
 
-
-void ComPc::printf(const char *fmt, ...){
-	static char buffer[100];
-	int len = 0;
-	va_list ap;
-	va_start(ap, fmt);
-	len = vsprintf(buffer, fmt, ap);
-	sendnbyte(buffer, len);
-	va_end(ap);
+void ComPc::serialOut(VariadicStream vst){
+	sendnbyte(vst.str().c_str(), vst.str().length());
 }
+
 
 ComPc *ComPc::getInstance(){
 	static ComPc instance(USART1);

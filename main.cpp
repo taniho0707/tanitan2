@@ -37,22 +37,22 @@ int main(void){
 	if(ret == 0x69) Led::on(LedNumbers::LEFT2);
 	else Led::off(LedNumbers::FRONT);
 
-	compc->printf("Hello STM32F405!\n");
+	compc->serialOut({"Hello STM32F", 405, "!\n\n"});
 	Timer::wait_ms(1000);
 
 	ret = 0xF8;
 	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
-	compc->printf("Gyro setting was completed\n");
+	compc->serialOut({"Gyro setting was completed\n"});
 
 	mram->writeEnable();
 	std::vector<uint8_t> mram_ret(1);
 	mram_ret[0] = 0xAB;
 	mram->writeData(mram_ret, 0x0000, 1);
 	mram_ret[0] = 0xFF;
-	compc->printf("Wrote\n");
+	compc->serialOut({"Wrote\n"});
 	mram->readData(mram_ret, 0x0000, 1);
 
-	compc->printf("\tMRAM: %2X\n", mram_ret[0]);
+	compc->serialOut({"\tMRAM: ", mram_ret[0], "\n"});
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT))
@@ -64,9 +64,9 @@ int main(void){
 		else
 			Led::off(LedNumbers::LEFT3);
 		Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
-		compc->printf("Data: %2X", ret);
+//		compc->serialOut("Data: ", static_cast<char>(ret));
 		Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
-		compc->printf(" %2X\n", ret);
+//		compc->serialOut(" ", static_cast<char>(ret), "\n");
 		Timer::wait_ms(100);
 	}
 
