@@ -5,11 +5,12 @@
 #include "Nfc.h"
 
 
-void Nfc::init(){
+Nfc::Nfc(USART_TypeDef *usart) :
+	Usart(usart)
+{
 	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART1);
@@ -22,7 +23,8 @@ void Nfc::init(){
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	USART_InitStructure.USART_BaudRate = 38400;
+	USART_InitStructure.USART_BaudRate = 9600;
+//	USART_InitStructure.USART_BaudRate = 38400;
 	USART_InitStructure.USART_WordLength = USART_WordLength_8b;
 	USART_InitStructure.USART_StopBits = USART_StopBits_1;
 	USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -34,46 +36,52 @@ void Nfc::init(){
 }
 
 
-uint8_t Nfc::getChecksum(uint8_t *data, uint8_t num){
-	uint8_t cs = 0x00;
-	for (int i=0; i<num; i++) {
-		cs += data[i];
+Nfc* Nfc::getInstance(){
+	static Nfc instance(USART3);
+	return &instance;
+}
+
+
+bool Nfc::serialWrite(const uint16_t addr, const uint8_t num, const std::vector<uint8_t>& data){
+	std::vector<uint8_t> senddata(5+num);
+	auto ite = senddata.begin();
+	*ite++ = SYNC_CODE;
+	*ite++ = SERIAL_READ;
+	*ite++ = static_cast<uint8_t>((addr>>8)&0x00FF);
+	*ite++ = static_cast<uint8_t>(addr&0x00FF);
+	for (auto v : data){
+		*ite++ = v;
 	}
-	cs = ~cs;
-	++cs;
-	return cs;
+	*ite = getChecksum(data, 4+num);
+	sendnbyte(senddata, 5+num);
+
+	std::vector<uint8_t> tmpdata(3);
+	uint8_t tmp1data;
+	if(!recvnbyte(tmpdata, 2)) return false;
+	if(!recv1byte(tmp1data)) return false;
+	if(tmpdata[1] != RESPONCE_ACK) return false;
+	return true;
 }
 
-void Nfc::send1byte(USART_TypeDef *USARTx, uint8_t Data){
-	USART_SendData(USARTx, (uint16_t)Data);
-	while( USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET );
-}
+bool Nfc::serialRead(const uint16_t addr, const uint8_t num, std::vector<uint8_t>& data){
+	std::vector<uint8_t> senddata(6);
+	auto ite = senddata.begin();
+	*ite++ = SYNC_CODE;
+	*ite++ = SERIAL_READ;
+	*ite++ = static_cast<uint8_t>((addr>>8)&0x00FF);
+	*ite++ = static_cast<uint8_t>(addr&0x00FF);
+	*ite = getChecksum(data, 4+num);
+	sendnbyte(senddata, 5+num);
 
-void Nfc::sendnbyte(USART_TypeDef *USARTx, uint8_t *Data, int len){
-	int i;
-	for(i=0; i<len; ++i) send1byte(USARTx, Data[i]);
-}
-
-void Nfc::printf(const uint8_t *fmt, ...){
-	USART_TypeDef *USARTx = USART3;
-	static uint8_t buffer[100];
-	int len = 0;
-	va_list ap;
-	va_start(ap, fmt);
-	len = vsprintf(buffer, fmt, ap);
-	sendnbyte(USARTx, buffer, len);
-	va_end(ap);
-}
-
-uint8_t *Nfc::serialRead(const uint16_t addr, const uint8_t num){
-	USART_TypeDef *USARTx = USART3;
-	uint8_t data[6] = {0};
-	data[0] = SYNC_CODE;
-	data[1] = SERIAL_READ;
-	data[2] = static_cast<uint8_t>((addr>>8)&0x00FF);
-	data[3] = static_cast<uint8_t>(addr&0x00FF);
-	data[4] = num;
-	data[5] = getChecksum(data, 5);
-	sendnbyte(USARTx, data, 6);
+	std::vector<uint8_t> tmpdata(3);
+	uint8_t tmp1data;
+	if(!recvnbyte(tmpdata, 2)) return false;
+	if(tmpdata[1] != RESPONCE_ACK){
+		recv1byte(tmp1data);
+		return false;
+	}
+	if(!recvnbyte(data, num)) return false;
+	if(!recv1byte(tmp1data)) return false;
+	return true;
 }
 

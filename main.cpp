@@ -29,6 +29,7 @@ int main(void){
 	Led::off(LedNumbers::LEFT3);
 
 	ComPc *compc = ComPc::getInstance();
+	Nfc *nfc = Nfc::getInstance();
 	Mram *mram = Mram::getInstance();
 
 
@@ -51,8 +52,7 @@ int main(void){
 	mram_ret[0] = 0xFF;
 	*compc << "Wrote\n";
 	mram->readData(mram_ret, 0x0000, 1);
-
-	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n";
+	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT))
@@ -69,6 +69,4 @@ int main(void){
 		*compc << "Data: " << ret << '\n';
 		Timer::wait_ms(100);
 	}
-
 }
-
