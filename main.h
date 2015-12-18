@@ -17,6 +17,9 @@
 #include "Gyro.h"
 #include "Mram.h"
 
+#include "Walldata.h"
+#include "Footmap.h"
+
 
 int main();
 

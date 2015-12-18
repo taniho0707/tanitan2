@@ -5,18 +5,20 @@
 #ifndef INCLUDED_FOOT_H
 #define INCLUDED_FOOT_H
 
+#include <array>
+
 class Footmap{
 private:
 
 public:
-	uint32_t map[32][32];
+	std::array<std::array<uint16_t, 32>, 32> map;
 
 	Footmap();
 	
 	/**
 	 * @brief 歩数マップをクリアします
 	 */
-	void resetFootmap();
+	bool resetFootmap();
 
 	/**
 	 * @brief 歩数マップを取得します
@@ -25,7 +27,7 @@ public:
 	 * @param out 座標外の返り値
 	 * @return 設定した座標の歩数
 	 */
-	uint16_t getFootmap(int x, int y, int out);
+	uint16_t getFootmap(const uint8_t x, const uint8_t y, const uint16_t out);
 
 	/**
 	 * @brief 歩数マップを設定します
@@ -33,9 +35,9 @@ public:
 	 * @param y 設定するy座標
 	 * @param data 設定する歩数
 	 */
-	bool setFootmap(int x, int y, int data);
+	bool setFootmap(const uint8_t x, const uint8_t y, const uint16_t data);
 
-	bool isOutside(int x, int  y);
+	bool isOutside(const uint8_t x, const uint8_t y);
 
 	~Footmap();
 	
