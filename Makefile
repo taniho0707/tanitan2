@@ -25,7 +25,6 @@ CFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 CXXFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 ASFLAGS = -x assembler-with-cpp -c $(TARGET_ARCH) $(COMPILE_OPTS)
 LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -Wl,--end-group
-# LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nosys.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -lnosys -Wl,--end-group
 
 .PHONY: all
 all: libstm32f4xx startup bin/main.bin
@@ -56,6 +55,6 @@ debug:
 
 .PHONY: flash
 flash:
-	stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
+	stm32flash -b 230400 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
 	gtkterm
 
