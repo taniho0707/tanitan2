@@ -12,7 +12,7 @@
  */
 class Walldata{
 private:
-	char data;
+	uint8_t data;
 
 public:
 	/**

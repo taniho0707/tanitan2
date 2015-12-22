@@ -11,6 +11,8 @@
 #include "Speaker.h"
 #include "Timer.h"
 
+#include "WallSensor.h"
+
 #include "ComPc.h"
 #include "Nfc.h"
 

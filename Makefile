@@ -55,6 +55,6 @@ debug:
 
 .PHONY: flash
 flash:
-	stm32flash -b 230400 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
+	stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
 	gtkterm
 

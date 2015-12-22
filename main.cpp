@@ -54,6 +54,11 @@ int main(void){
 	mram->readData(mram_ret, 0x0000, 1);
 	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
 
+	WallSensor* wall = WallSensor::getInstance();
+	wall->start();
+	Timer::wait_ms(1000);
+	wall->onLed();
+
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT))
 			Led::on(LedNumbers::RIGHT);
@@ -63,10 +68,12 @@ int main(void){
 			Led::on(LedNumbers::LEFT3);
 		else
 			Led::off(LedNumbers::LEFT3);
-		Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
-		*compc << "Data: " << ret << '\n';
-		Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
-		*compc << "Data: " << ret << '\n';
-		Timer::wait_ms(100);
+		// Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
+		// *compc << "Data: " << ret << '\n';
+		// Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
+		// *compc << "Data: " << ret << '\n';
+		wall->interrupt();
+		*compc << "\t" << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
+		Timer::wait_ms(200);
 	}
 }
