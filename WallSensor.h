@@ -4,6 +4,7 @@
 
 #include "stm32f4xx.h"
 
+#include "RingBufferHistory.h"
 #include <array>
 
 #include "Walldata.h"
@@ -20,6 +21,8 @@ enum class SensorPosition : uint8_t{
 
 class WallSensor{
 private:
+	RingBufferHistory< array<float, 4>, 10 > buf;
+
 	array<float, 4> current_value;
 	bool is_working;
 	array<uint16_t, 4> ref_straight_value;
@@ -35,6 +38,8 @@ public:
 
 	void onLed();
 	void offLed();
+
+	
 
 	uint16_t getValue(SensorPosition);
 	bool isExistWall(SensorPosition);
