@@ -4,6 +4,8 @@
 #ifndef INCLUDED_WALLDATA_H
 #define INCLUDED_WALLDATA_H
 
+#include <bitset>
+
 #include "const.h"
 
 /**

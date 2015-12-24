@@ -13,10 +13,17 @@ private:
 	std::array<T, N> buf;
 	std::size_t ite;
 public:
-	RingBufferHistory();
+	explicit RingBufferHistory(){ }
 
-	inline void push(const T& data);
-	inline T read();
+	void push(const T& data){
+		buf[ite] = data;
+		if(++ite >= N) ite -= N;
+		return;
+	}
+
+	T read(){
+		return buf[ite];
+	}
 };
 
 #endif

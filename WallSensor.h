@@ -4,8 +4,8 @@
 
 #include "stm32f4xx.h"
 
-#include "RingBufferHistory.h"
 #include <array>
+#include "RingBufferHistory.h"
 
 #include "Walldata.h"
 
@@ -36,10 +36,12 @@ public:
 
 	void interrupt();
 
-	void onLed();
-	void offLed();
+	inline void onLed();
+	inline void offLed();
 
-	
+	void setBrightValue(SensorPosition);
+	void setDarkValue(SensorPosition);
+	void calcValue();
 
 	uint16_t getValue(SensorPosition);
 	bool isExistWall(SensorPosition);

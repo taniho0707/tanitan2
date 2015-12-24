@@ -1,6 +1,8 @@
 
 #include "WallSensor.h"
 
+using namespace std;
+
 WallSensor::WallSensor(){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -44,6 +46,8 @@ WallSensor::WallSensor(){
 
 	ADC_Cmd(ADC1, ENABLE);
 	ADC_DMACmd(ADC1,DISABLE);
+
+	
 }
 
 void WallSensor::onLed(){
@@ -67,6 +71,55 @@ void WallSensor::start(){
 void WallSensor::stop(){
 	is_working = false;
 }
+
+
+void WallSensor::setBrightValue(SensorPosition pos){
+	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+	switch(pos){
+	case SensorPosition::FLeft:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::Left:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::Right:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::FRight:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_3Cycles);
+		break;
+	}
+	ADC_SoftwareStartConv(ADC1);
+	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+	current_value[static_cast<uint8_t>(pos)] = ADC_GetConversionValue(ADC1);
+}
+
+void WallSensor::setDarkValue(SensorPosition pos){
+	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
+	switch(pos){
+	case SensorPosition::FLeft:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::Left:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::Right:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_3Cycles);
+		break;
+	case SensorPosition::FRight:
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_3Cycles);
+		break;
+	}
+	ADC_SoftwareStartConv(ADC1);
+	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
+	current_value[static_cast<uint8_t>(pos)] -= ADC_GetConversionValue(ADC1);
+}
+
+void WallSensor::calcValue(){
+	buf.push(current_value);
+	return;
+}
+
 
 void WallSensor::interrupt(){
 	if(is_working == false) return;
