@@ -26,11 +26,11 @@ enum EMouseAngle{
 /**
  * @brief アルゴリズムや迷路データ操作中に，今自分が向いている相対的な方向を指定するときに使用します
  */
-enum EMouseDirection{
-	E_DirFront,	//0
-	E_DirLeft,	//1
-	E_DirRight,	//2
-	E_DirBack	//3
+enum class EMouseDirection : uint8_t{
+	Front,
+	Left,
+	Right,
+	Back,
 };
 
 /**

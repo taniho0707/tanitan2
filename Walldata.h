@@ -14,7 +14,7 @@
  */
 class Walldata{
 private:
-	uint8_t data;
+	std::bitset<4> data;
 
 public:
 	/**
@@ -26,26 +26,24 @@ public:
 	 * @brief =演算子のオーバーロード<br>char型の代入ができます。
 	 * @param input 代入したい変数
 	 */
-	void operator= (char input);
-
 	void operator= (Walldata input);
 
-	void operator+= (char input);
+	void operator+= (Walldata input);
 
-	void operator|= (char input);
+	void operator|= (Walldata input);
 
 	/**
 	 * @brief クラスが保持している内部データを返します。
 	 * @return クラスが保持している内部データ
 	 */
-	char getRawData();
+	std::bitset<4> getRawData();
 
 	/**
 	 * @brief 指定した方向に壁があるか返します。
 	 * @param dir 壁を調べたい方向
-	 * @return 壁があれば1，なければ0をintで返します
+	 * @return 壁があればtrue，なければfalse
 	 */
-	int existWall(EMouseDirection dir);
+	bool existWall(EMouseDirection dir);
 
 	/**
 	 * @brief 指定した方向に壁を追加します。
@@ -55,9 +53,9 @@ public:
 
 	/**
 	 * @brief 指定した方向の壁を除去します。
-	 * @param angle 壁を除去したい方向
+	 * @param dir 壁を除去したい方向
 	 */
-	void removeWall(EMouseDirection angle);
+	void removeWall(EMouseDirection dir);
 
 	~Walldata();
 };
