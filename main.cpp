@@ -57,7 +57,7 @@ int main(void){
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
 	Timer::wait_ms(1000);
-	wall->onLed();
+	// wall->onLed();
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT))
@@ -72,7 +72,7 @@ int main(void){
 		// *compc << "Data: " << ret << '\n';
 		// Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
 		// *compc << "Data: " << ret << '\n';
-		wall->interrupt();
+		// wall->interrupt();
 		*compc << "\t" << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
 		Timer::wait_ms(200);
 	}

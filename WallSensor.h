@@ -3,6 +3,7 @@
 #define INCLUDED_WALLSENSOR_HPP
 
 #include "stm32f4xx.h"
+#include "stm32f4xx_it.h"
 
 #include <array>
 #include "RingBufferHistory.h"
@@ -23,7 +24,6 @@ class WallSensor{
 private:
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
-	array<float, 4> current_value;
 	bool is_working;
 	array<uint16_t, 4> ref_straight_value;
 	array<uint16_t, 4> thr_straight_value;
@@ -31,6 +31,8 @@ private:
 	WallSensor();
 
 public:
+	array<float, 4> current_value;
+
 	void start();
 	void stop();
 

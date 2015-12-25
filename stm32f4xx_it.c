@@ -143,6 +143,32 @@ void SysTick_Handler(void){
 	Timer::interrupt();
 }
 
+
+/* void TIM1_BRK_TIM9_IRQHandler(void){ */
+/* 	/\* static WallSensor* s = WallSensor::getInstance(); *\/ */
+/* 	/\* static uint8_t c = 0; *\/ */
+/* 	/\* switch(c){ *\/ */
+/* 	/\* case 0: *\/ */
+/* 	/\* 	s->onLed(); *\/ */
+/* 	/\* 	break; *\/ */
+/* 	/\* case 1: *\/ */
+/* 	/\* 	s->setBrightValue(SensorPosition::FLeft); *\/ */
+/* 	/\* 	s->setBrightValue(SensorPosition::Left); *\/ */
+/* 	/\* 	s->setBrightValue(SensorPosition::Right); *\/ */
+/* 	/\* 	s->setBrightValue(SensorPosition::FRight); *\/ */
+/* 	/\* 	break; *\/ */
+/* 	/\* case 2: *\/ */
+/* 	/\* 	s->offLed(); *\/ */
+/* 	/\* 	break; *\/ */
+/* 	/\* default: *\/ */
+/* 	/\* 	s->setDarkValue(SensorPosition::FLeft); *\/ */
+/* 	/\* 	s->setDarkValue(SensorPosition::Left); *\/ */
+/* 	/\* 	s->setDarkValue(SensorPosition::Right); *\/ */
+/* 	/\* 	s->setDarkValue(SensorPosition::FRight); *\/ */
+/* 	/\* } *\/ */
+/* 	/\* if(++c > 3) c = 0; *\/ */
+/* } */
+
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

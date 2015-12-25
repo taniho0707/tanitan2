@@ -33,7 +33,7 @@ WallSensor::WallSensor(){
 	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
 	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
 	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
-	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
+	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_20Cycles;
 	ADC_CommonInit(&ADC_CommonInitStructure);
 
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
@@ -47,7 +47,25 @@ WallSensor::WallSensor(){
 	ADC_Cmd(ADC1, ENABLE);
 	ADC_DMACmd(ADC1,DISABLE);
 
-	
+	NVIC_InitTypeDef NVIC_InitStructure;
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_BRK_TIM9_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x03;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+
+	// 40kHz 250us -> 10000 times conversion/second
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE);
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_TimeBaseStructure.TIM_Period = 420 - 1;
+	TIM_TimeBaseStructure.TIM_Prescaler = 10 - 1;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInit(TIM9, &TIM_TimeBaseStructure);
+
+	TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
+	TIM_ITConfig(TIM9, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM9, ENABLE);
 }
 
 void WallSensor::onLed(){
@@ -77,16 +95,16 @@ void WallSensor::setBrightValue(SensorPosition pos){
 	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
 	switch(pos){
 	case SensorPosition::FLeft:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::Left:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::Right:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::FRight:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_144Cycles);
 		break;
 	}
 	ADC_SoftwareStartConv(ADC1);
@@ -98,16 +116,16 @@ void WallSensor::setDarkValue(SensorPosition pos){
 	ADC_ClearFlag(ADC1, ADC_FLAG_EOC);
 	switch(pos){
 	case SensorPosition::FLeft:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::Left:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::Right:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_144Cycles);
 		break;
 	case SensorPosition::FRight:
-		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 1, ADC_SampleTime_144Cycles);
 		break;
 	}
 	ADC_SoftwareStartConv(ADC1);
@@ -207,4 +225,40 @@ uint16_t WallSensor::getCorrection(uint16_t max){}
 WallSensor *WallSensor::getInstance(){
 	static WallSensor instance;
 	return &instance;
+}
+
+
+
+
+void TIM1_BRK_TIM9_IRQHandler(void){
+	static WallSensor* s = WallSensor::getInstance();
+	static uint8_t c = 0;
+
+	if(TIM_GetITStatus(TIM9, TIM_IT_Update) != RESET){
+		TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
+		
+		/// @todo check enable
+		switch(c){
+		case 0:
+			s->onLed();
+			break;
+		case 1:
+			s->setBrightValue(SensorPosition::FLeft);
+			s->setBrightValue(SensorPosition::Left);
+			s->setBrightValue(SensorPosition::Right);
+			s->setBrightValue(SensorPosition::FRight);
+			break;
+		case 2:
+			s->offLed();
+			break;
+		case 3:
+			s->setDarkValue(SensorPosition::FLeft);
+			s->setDarkValue(SensorPosition::Left);
+			s->setDarkValue(SensorPosition::Right);
+			s->setDarkValue(SensorPosition::FRight);
+			s->calcValue();
+			break;
+		}
+		if(++c > 3) c = 0;
+	}
 }
