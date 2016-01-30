@@ -3,6 +3,7 @@
 
 using namespace std;
 
+/// @todo add wait REDEN flag
 WallSensor::WallSensor(){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);

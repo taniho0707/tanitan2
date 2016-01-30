@@ -7,13 +7,16 @@
 
 #include "stm32f4xx.h"
 
+#include <vector>
+#include "Spi.h"
+
 enum class GyroAxises : char {
 	YAW,
 	ROLL,
 	PITCH,
 };
 
-enum class GyroCommands : char {
+enum class GyroCommands : unsigned char {
 	FUNC_CFG_ACCESS = 0x01,
 	SENSOR_SYNC_TIME_FRAME = 0x04,
 	FIFO_CTRL1,
@@ -100,23 +103,17 @@ enum class GyroCommands : char {
 	OUT_MAG_RAW_Y_H,
 	OUT_MAG_RAW_Z_L,
 	OUT_MAG_RAW_Z_H,
-};	
+};
 
-class Gyro{
+class Gyro : protected Spi{
 private:
 
-	Gyro();
-	~Gyro();
+	explicit Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 
 public:
+	static Gyro *getInstance();
 
-	static void init();
-
-	static int readSingleWord(GyroCommands command, uint8_t& data);
-	static int readDoubleWord(GyroCommands command, uint16_t& data);
-
-	static int writeSingleWord(GyroCommands command, const uint8_t& data);
-	static int writeDoubleWord(GyroCommands command, const uint16_t& data);
+	bool whoami();
 
 };
 

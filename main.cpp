@@ -11,8 +11,12 @@ int main(void){
 	Switch::init();
 	Speaker::init();
 
-	Gyro::init();
 	Timer::wait_ms(500);
+
+	Speaker::playSound(880, 100, true);
+	Speaker::playSound(1175, 300, true);
+
+	Timer::wait_ms(1000);
 
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
@@ -31,21 +35,27 @@ int main(void){
 	ComPc *compc = ComPc::getInstance();
 	Nfc *nfc = Nfc::getInstance();
 	Mram *mram = Mram::getInstance();
-
+	Gyro *gyro = Gyro::getInstance();
 
 	uint8_t ret = 0x00;
-	Gyro::readSingleWord(GyroCommands::WHO_AM_I, ret);
-	if(ret == 0x69) Led::on(LedNumbers::LEFT2);
-	else Led::off(LedNumbers::FRONT);
+	bool ret_bool = gyro->whoami();
+	if(ret_bool){
+		Led::on(LedNumbers::LEFT2);
+		*compc << "Success WHO_AM_I from gyro\n";
+	} else{
+		Led::off(LedNumbers::FRONT);
+		*compc << "Failure WHO_AM_I from gyro\n";
+	}
 
 	*compc <<"Hello STM32F405!\n";
 	Timer::wait_ms(1000);
 
-	ret = 0xF8;
-	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
-	*compc << "Gyro setting was completed\n";
+//	ret = 0xF8;
+//	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
+//	*compc << "Gyro setting was completed\n";
 
 	mram->writeEnable();
+	*compc <<"Hello STM32F405!\n";
 	std::vector<uint8_t> mram_ret(1);
 	mram_ret[0] = 0xAB;
 	mram->writeData(mram_ret, 0x0000, 1);
@@ -57,23 +67,28 @@ int main(void){
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
 	Timer::wait_ms(1000);
-	// wall->onLed();
+
+	bool flag = false;
 
 	while(true){
-		if(Switch::isPushing(SwitchNumbers::RIGHT))
+		if(Switch::isPushing(SwitchNumbers::RIGHT)){
 			Led::on(LedNumbers::RIGHT);
-		else
-			Led::off(LedNumbers::RIGHT);
-		if(Switch::isPushing(SwitchNumbers::LEFT))
+			flag = true;
+		} else Led::off(LedNumbers::RIGHT);
+		if(Switch::isPushing(SwitchNumbers::LEFT)){
 			Led::on(LedNumbers::LEFT3);
-		else
-			Led::off(LedNumbers::LEFT3);
-		// Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
-		// *compc << "Data: " << ret << '\n';
-		// Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
-		// *compc << "Data: " << ret << '\n';
-		// wall->interrupt();
-		*compc << "\t" << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
+			flag = false;
+		} else Led::off(LedNumbers::LEFT3);
+		
+		// if(flag){
+		// 	ret = 0xFF;
+		// 	Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
+		// 	*compc << "Gyro: " << compc->hex(ret) << ", ";
+		// 	Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
+		// 	*compc << "Acel: " << compc->hex(ret) << "\n";
+		// } else {
+		// 	*compc << "Wall: " << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
+		// }
 		Timer::wait_ms(200);
 	}
 }

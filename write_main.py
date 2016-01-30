@@ -6,7 +6,7 @@ import sys, os, platform, subprocess
 try:
 ################################################################################
 # ボーレート (ST保証のボーレート: 1200 - 115200 bps)
-	baudrate = "115200"
+	baudrate = "230400"
 
 # シリアルポート
 	if platform.system() == "Windows":
@@ -42,7 +42,7 @@ try:
 	command += " --port=%s" % port
 	command += " --baudrate=%s" % baudrate
 	command += " --show-erase-page"
-	command += " --compare"
+	# command += " --compare"
 	command += " --go"
 	command += " --time"
         command += " --binary"

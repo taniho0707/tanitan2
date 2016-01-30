@@ -15,10 +15,10 @@ Spi::Spi(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin){
 void Spi::setChipSelect(){
 	GPIO_ResetBits(cs_port, cs_pin);
 }
-
 void Spi::resetChipSelect(){
 	GPIO_SetBits(cs_port, cs_pin);
 }
+
 
 int Spi::readSingleByte(uint8_t &data){
 	while (SPI_I2S_GetFlagStatus(spi_port, SPI_I2S_FLAG_TXE) == RESET);

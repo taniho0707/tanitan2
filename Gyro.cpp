@@ -3,7 +3,9 @@
  */
 #include "Gyro.h"
 
-void Gyro::init(){
+Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
+	Spi(spi, gpio, gpiopin)
+{
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
@@ -32,7 +34,6 @@ void Gyro::init(){
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-//	GPIO_PinAFConfig(GPIOA, GPIO_PinSource15, GPIO_AF_SPI3);
 	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_SPI3);
 	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_SPI3);
 	GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_SPI3);
@@ -44,7 +45,6 @@ void Gyro::init(){
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-//	SPI_InitStructure.SPI_NSS = SPI_NSS_Hard | SPI_NSSInternalSoft_Set;
 	SPI_InitStructure.SPI_NSS = SPI_NSSInternalSoft_Set | SPI_NSS_Soft;
 	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
@@ -54,43 +54,19 @@ void Gyro::init(){
 }
 
 
-int Gyro::readSingleWord(GyroCommands command, uint8_t& data){
-	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, static_cast<uint8_t>(command) + 0x80);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, 0x00);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	data = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	data = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOA, GPIO_Pin_15);
-	return 0;
-}
-
-int Gyro::readDoubleWord(GyroCommands command, uint16_t& data){
-	
-}
-
-int Gyro::writeSingleWord(GyroCommands command, const uint8_t& data){
-	uint16_t trash;
-	GPIO_ResetBits(GPIOA, GPIO_Pin_15);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, static_cast<uint8_t>(command));
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	SPI_I2S_SendData(SPI3, data);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_RXNE) == RESET);
-	trash = SPI_I2S_ReceiveData(SPI3);
-	while (SPI_I2S_GetFlagStatus(SPI3, SPI_I2S_FLAG_TXE) == RESET);
-	GPIO_SetBits(GPIOA, GPIO_Pin_15);
-	return 0;
-}
-
-int Gyro::writeDoubleWord(GyroCommands command, const uint16_t& data){
-	
+bool Gyro::whoami(){
+	std::vector<uint8_t> writedata(1);
+	std::vector<uint8_t> readdata(1);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::WHO_AM_I) | 0x80;
+	readdata[0] = 0x00;
+	int retval = rwMultiByte(readdata, writedata, 1, 1);
+	if(retval) return false;
+	if(readdata[0] == 0x69) return true;
+	else return false;
 }
 
 
+Gyro *Gyro::getInstance(){
+	static Gyro instance(SPI3, GPIOA, GPIO_Pin_15);
+	return &instance;
+}

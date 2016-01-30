@@ -40,6 +40,7 @@ Mram::Mram(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	SPI_Cmd(SPI2, ENABLE);
 }
 
+
 int Mram::writeStatusResister(const uint8_t data){
 	std::vector<uint8_t> writedata(2);
 	writedata[0] = static_cast<uint8_t>(MramCommands::WRSR);

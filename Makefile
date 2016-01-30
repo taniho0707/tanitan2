@@ -32,6 +32,7 @@ all: libstm32f4xx startup bin/main.bin
 bin/main.bin: $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(STARTUP_DIR)/startup_stm32f40xx.o ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f4xx.a
 	$(LD) $(LDFLAGS) $(TARGET_ARCH) $^ -o bin/main.elf
 	$(OBJCOPY) -O ihex --change-addresses 0x08000000 bin/main.elf bin/main.hex
+	$(OBJCOPY) -O binary --change-addresses 0x08000000 bin/main.elf bin/main.bin
 	etags *.[ch]*
 
 LIB_OBJS = $(sort \
@@ -55,6 +56,7 @@ debug:
 
 .PHONY: flash
 flash:
-	stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
-	gtkterm
+	python write_main.py
+# stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
+# gtkterm
 
