@@ -10,6 +10,7 @@
 #include "Switch.h"
 #include "Speaker.h"
 #include "Timer.h"
+#include "Encoder.h"
 
 #include "WallSensor.h"
 

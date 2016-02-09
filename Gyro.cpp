@@ -66,7 +66,7 @@ bool Gyro::whoami(){
 }
 
 
-Gyro *Gyro::getInstance(){
+Gyro* Gyro::getInstance(){
 	static Gyro instance(SPI3, GPIOA, GPIO_Pin_15);
 	return &instance;
 }

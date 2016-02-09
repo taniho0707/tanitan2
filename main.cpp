@@ -36,6 +36,7 @@ int main(void){
 	Nfc *nfc = Nfc::getInstance();
 	Mram *mram = Mram::getInstance();
 	Gyro *gyro = Gyro::getInstance();
+	Encoder *encoder = Encoder::getInstance();
 
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
@@ -54,15 +55,15 @@ int main(void){
 //	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
 //	*compc << "Gyro setting was completed\n";
 
-	mram->writeEnable();
-	*compc <<"Hello STM32F405!\n";
-	std::vector<uint8_t> mram_ret(1);
-	mram_ret[0] = 0xAB;
-	mram->writeData(mram_ret, 0x0000, 1);
-	mram_ret[0] = 0xFF;
-	*compc << "Wrote\n";
-	mram->readData(mram_ret, 0x0000, 1);
-	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
+	// mram->writeEnable();
+	// *compc <<"Hello STM32F405!\n";
+	// std::vector<uint8_t> mram_ret(1);
+	// mram_ret[0] = 0xAB;
+	// mram->writeData(mram_ret, 0x0000, 1);
+	// mram_ret[0] = 0xFF;
+	// *compc << "Wrote\n";
+	// mram->readData(mram_ret, 0x0000, 1);
+	// *compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
 
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
@@ -74,11 +75,18 @@ int main(void){
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
 			Led::on(LedNumbers::RIGHT);
 			flag = true;
-		} else Led::off(LedNumbers::RIGHT);
+		} else {
+			Led::off(LedNumbers::RIGHT);
+		}
 		if(Switch::isPushing(SwitchNumbers::LEFT)){
 			Led::on(LedNumbers::LEFT3);
 			flag = false;
-		} else Led::off(LedNumbers::LEFT3);
+		} else {
+			Led::off(LedNumbers::LEFT3);
+		}
+
+		*compc << "\tLEFT: " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << "\t";
+		*compc << "\tRIGHT: " << compc->hex(static_cast<uint16_t>(encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
 		
 		// if(flag){
 		// 	ret = 0xFF;

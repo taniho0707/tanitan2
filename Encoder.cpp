@@ -1,0 +1,73 @@
+/**
+ * @file Encoder.cpp
+ */
+
+#include "Encoder.h"
+
+
+const unsigned int Encoder::MEDIAN = 30000;
+const float Encoder::PULSE_L = 0.021475781;
+const float Encoder::PULSE_R = 0.021475781;
+
+Encoder::Encoder(){
+	velocity_l = 0.0;
+	velocity_r = 0.0;
+	last_l = MEDIAN;
+	last_r = MEDIAN;
+
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM3);
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_TIM3);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_TIM4);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_TIM4);
+
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_StructInit(&GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_TimeBaseStructure.TIM_Period = 65534;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+
+	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI2,
+							   TIM_ICPolarity_Rising,
+							   TIM_ICPolarity_Rising);
+	TIM_Cmd(TIM3, ENABLE);
+	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI2,
+							   TIM_ICPolarity_Rising,
+							   TIM_ICPolarity_Rising);
+	TIM_Cmd(TIM4, ENABLE);
+}
+
+float Encoder::getVelocity(EncoderSide s){
+	if(s == EncoderSide::LEFT) return velocity_l;
+	else return velocity_r;
+}
+
+void Encoder::interrupt(){
+	velocity_l = PULSE_L * static_cast<float>(TIM3->CNT - last_l);
+	velocity_r = PULSE_R * static_cast<float>(TIM4->CNT - last_r);
+	last_l = TIM3->CNT;
+	last_r = TIM4->CNT;
+}
+
+Encoder* Encoder::getInstance(){
+	static Encoder instance;
+	return &instance;
+}
+

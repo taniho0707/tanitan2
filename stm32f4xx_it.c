@@ -140,7 +140,9 @@ void PendSV_Handler(void)
   * @retval None
   */
 void SysTick_Handler(void){
+	static Encoder *encoder = Encoder::getInstance();
 	Timer::interrupt();
+	encoder->interrupt();
 }
 
 
