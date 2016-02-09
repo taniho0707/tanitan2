@@ -73,6 +73,24 @@ std::string ComPc::hex(const uint32_t val){
 	return tmp;
 }
 
+std::string ComPc::dec(const float val){
+	std::string tmp;
+	unsigned long div = 10000000;
+	for (int i=0; i<8; i++) {
+		tmp += bit2hex(static_cast<uint8_t>(val/div)%10);
+		div /= 10;
+	}
+	tmp += ".";
+	div = 10;
+	for (int i=0; i<8; i++) {
+		tmp += bit2hex(static_cast<uint8_t>(val*div)%10);
+		div *= 10;
+	}
+	return tmp;
+}
+
+
+
 void ComPc::sendDecimal(const uint32_t val, const bool isPlus){
 	char tmp[11 + 1];
 	uint16_t pos = 12;

@@ -60,8 +60,10 @@ float Encoder::getVelocity(EncoderSide s){
 }
 
 void Encoder::interrupt(){
-	velocity_l = PULSE_L * static_cast<float>(TIM3->CNT - last_l);
+	velocity_l = PULSE_L * static_cast<float>(last_l - TIM3->CNT);
 	velocity_r = PULSE_R * static_cast<float>(TIM4->CNT - last_r);
+	TIM3->CNT = MEDIAN;
+	TIM4->CNT = MEDIAN;
 	last_l = TIM3->CNT;
 	last_r = TIM4->CNT;
 }

@@ -24,6 +24,8 @@ public:
 	std::string hex(const uint8_t val);
 	std::string hex(const uint16_t val);
 	std::string hex(const uint32_t val);
+	std::string dec(const float val);
+
 	void sendDecimal(const uint32_t val, const bool isPlus);
 	void sendDecimal(const int32_t val);
 

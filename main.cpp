@@ -85,8 +85,8 @@ int main(void){
 			Led::off(LedNumbers::LEFT3);
 		}
 
-		*compc << "\tLEFT: " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << "\t";
-		*compc << "\tRIGHT: " << compc->hex(static_cast<uint16_t>(encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
+		*compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "\t";
+		*compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 		
 		// if(flag){
 		// 	ret = 0xFF;
@@ -97,6 +97,6 @@ int main(void){
 		// } else {
 		// 	*compc << "Wall: " << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
 		// }
-		Timer::wait_ms(200);
+		Timer::wait_ms(50);
 	}
 }
