@@ -85,6 +85,7 @@ int main(void){
 			Led::off(LedNumbers::LEFT3);
 		}
 
+		if(encoder->getVelocity(EncoderSide::LEFT) < 0) *compc << "Minus!\n";
 		*compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "\t";
 		*compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 		

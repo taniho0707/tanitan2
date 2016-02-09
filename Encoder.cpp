@@ -35,20 +35,20 @@ Encoder::Encoder(){
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_TimeBaseStructure.TIM_Period = 65534;
-	TIM_TimeBaseStructure.TIM_Prescaler = 0;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+	// TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	// TIM_TimeBaseStructure.TIM_Period = 65534;
+	// TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	// TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	// TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	// TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+	// TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	// TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
-	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI2,
+	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12,
 							   TIM_ICPolarity_Rising,
 							   TIM_ICPolarity_Rising);
 	TIM_Cmd(TIM3, ENABLE);
-	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI2,
+	TIM_EncoderInterfaceConfig(TIM4, TIM_EncoderMode_TI12,
 							   TIM_ICPolarity_Rising,
 							   TIM_ICPolarity_Rising);
 	TIM_Cmd(TIM4, ENABLE);

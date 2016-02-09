@@ -75,15 +75,20 @@ std::string ComPc::hex(const uint32_t val){
 
 std::string ComPc::dec(const float val){
 	std::string tmp;
+	float c = val;
 	unsigned long div = 10000000;
+	if(val < 0){
+		tmp += "-";
+		c = -1 * val;
+	}
 	for (int i=0; i<8; i++) {
-		tmp += bit2hex(static_cast<uint8_t>(val/div)%10);
+		tmp += bit2hex(static_cast<uint8_t>(c/div)%10);
 		div /= 10;
 	}
 	tmp += ".";
 	div = 10;
 	for (int i=0; i<8; i++) {
-		tmp += bit2hex(static_cast<uint8_t>(val*div)%10);
+		tmp += bit2hex(static_cast<uint8_t>(c*div)%10);
 		div *= 10;
 	}
 	return tmp;
