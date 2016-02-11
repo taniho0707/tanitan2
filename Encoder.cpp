@@ -35,14 +35,14 @@ Encoder::Encoder(){
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-	// TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	// TIM_TimeBaseStructure.TIM_Period = 65534;
-	// TIM_TimeBaseStructure.TIM_Prescaler = 0;
-	// TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	// TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	// TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-	// TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-	// TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_TimeBaseStructure.TIM_Period = 65534;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
+	TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
 	TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12,
 							   TIM_ICPolarity_Rising,
@@ -60,8 +60,8 @@ float Encoder::getVelocity(EncoderSide s){
 }
 
 void Encoder::interrupt(){
-	velocity_l = PULSE_L * static_cast<float>(last_l - TIM3->CNT);
-	velocity_r = PULSE_R * static_cast<float>(TIM4->CNT - last_r);
+	velocity_l = PULSE_L * static_cast<int16_t>(last_l - TIM3->CNT);
+	velocity_r = PULSE_R * static_cast<int16_t>(TIM4->CNT - last_r);
 	TIM3->CNT = MEDIAN;
 	TIM4->CNT = MEDIAN;
 	last_l = TIM3->CNT;

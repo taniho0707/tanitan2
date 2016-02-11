@@ -16,11 +16,6 @@ int main(void){
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
 
-	Timer::wait_ms(1000);
-
-	Speaker::playSound(880, 100, true);
-	Speaker::playSound(1175, 300, true);
-
 	Led::on(LedNumbers::FRONT);
 	Led::on(LedNumbers::RIGHT);
 	Led::on(LedNumbers::LEFT1);
@@ -37,6 +32,8 @@ int main(void){
 	Mram *mram = Mram::getInstance();
 	Gyro *gyro = Gyro::getInstance();
 	Encoder *encoder = Encoder::getInstance();
+	Motor *motor = Motor::getInstance();
+	MotorControl *motorcontrol = MotorControl::getInstance();
 
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
@@ -49,27 +46,33 @@ int main(void){
 	}
 
 	*compc <<"Hello STM32F405!\n";
+	// for (int i=0; i<10; i++) {
+	// 	*compc << compc->dec(11111.11111*i) << " " << compc->dec(-11111.11111*i) << "\n";
+	// }
+
 	Timer::wait_ms(1000);
 
 //	ret = 0xF8;
 //	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
 //	*compc << "Gyro setting was completed\n";
 
-	// mram->writeEnable();
-	// *compc <<"Hello STM32F405!\n";
-	// std::vector<uint8_t> mram_ret(1);
-	// mram_ret[0] = 0xAB;
-	// mram->writeData(mram_ret, 0x0000, 1);
-	// mram_ret[0] = 0xFF;
-	// *compc << "Wrote\n";
-	// mram->readData(mram_ret, 0x0000, 1);
-	// *compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
+	mram->writeEnable();
+	*compc <<"Hello STM32F405!\n";
+	std::vector<uint8_t> mram_ret(1);
+	mram_ret[0] = 0xAB;
+	mram->writeData(mram_ret, 0x0000, 1);
+	mram_ret[0] = 0xFF;
+	*compc << "Wrote\n";
+	mram->readData(mram_ret, 0x0000, 1);
+	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
 
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
 	Timer::wait_ms(1000);
 
 	bool flag = false;
+	motorcontrol->stay();
+	motorcontrol->setVelocity(0.1);
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
@@ -85,7 +88,6 @@ int main(void){
 			Led::off(LedNumbers::LEFT3);
 		}
 
-		if(encoder->getVelocity(EncoderSide::LEFT) < 0) *compc << "Minus!\n";
 		*compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "\t";
 		*compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 		

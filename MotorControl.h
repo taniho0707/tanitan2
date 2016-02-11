@@ -1,0 +1,46 @@
+/**
+ * @file MotorControl.h
+ */
+
+#ifndef INCLUDED_MOTORCONTROL_H
+#define INCLUDED_MOTORCONTROL_H
+
+#include "stm32f4xx.h"
+
+#include <vector>
+#include "WallSensor.h"
+#include "Motor.h"
+
+class MotorControl{
+private:
+	explicit MotorControl();
+
+	Motor* motor = Motor::getInstance();
+	Encoder* encoder = Encoder::getInstance();
+	WallSensor* wall = WallSensor::getInstance();
+
+	const float GAIN_LIN_P;
+	const float GAIN_LIN_I;
+	const float GAIN_LIN_D;
+
+	float cur_lin_x;
+	float cur_lin_vel;
+	float cur_lin_acc;
+
+	float tar_lin_vel;
+
+	void culcIntegral();
+	void controlX();
+	void controlVel();
+
+public:
+	void setVelocity(float);
+
+	void stay();
+
+	void interrupt();
+	
+	static MotorControl *getInstance();
+};
+
+#endif

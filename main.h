@@ -11,6 +11,8 @@
 #include "Speaker.h"
 #include "Timer.h"
 #include "Encoder.h"
+#include "Motor.h"
+#include "MotorControl.h"
 
 #include "WallSensor.h"
 

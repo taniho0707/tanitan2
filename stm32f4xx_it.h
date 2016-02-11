@@ -38,6 +38,7 @@
 
 #include "Timer.h"
 #include "Encoder.h"
+#include "MotorControl.h"
 /* #include "WallSensor.h" */
 
 /* Exported types ------------------------------------------------------------*/
