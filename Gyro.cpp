@@ -53,6 +53,19 @@ Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	SPI_Cmd(SPI3, ENABLE);
 }
 
+bool Gyro::configAutomatic(){
+	uint8_t ret = 0;
+	std::vector<uint8_t> writedata(2);
+	std::vector<uint8_t> readdata(1);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::CTRL2_G);
+	writedata[1] = 0x8C;
+	ret = rwMultiByte(readdata, writedata, 0, 2);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::CTRL1_XL);
+	writedata[1] = 0x70;
+	ret = rwMultiByte(readdata, writedata, 0, 2);
+	return ret;
+}
+
 
 bool Gyro::whoami(){
 	std::vector<uint8_t> writedata(1);
@@ -61,8 +74,36 @@ bool Gyro::whoami(){
 	readdata[0] = 0x00;
 	int retval = rwMultiByte(readdata, writedata, 1, 1);
 	if(retval) return false;
+	retval = configAutomatic();
+	if(retval) return false;
 	if(readdata[0] == 0x69) return true;
 	else return false;
+}
+
+uint16_t Gyro::readGyroZ(){
+	uint16_t ret = 0x0000;
+	std::vector<uint8_t> writedata(1);
+	std::vector<uint8_t> readdata(1);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::OUTZ_H_G) | 0x80;
+	rwMultiByte(readdata, writedata, 1, 1);
+	ret += (static_cast<uint16_t>(readdata[0]) << 8);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::OUTZ_L_G) | 0x80;
+	rwMultiByte(readdata, writedata, 1, 1);
+	ret += readdata[0];
+	return ret;
+}
+
+uint16_t Gyro::readAccelY(){
+	uint16_t ret = 0x0000;
+	std::vector<uint8_t> writedata(1);
+	std::vector<uint8_t> readdata(1);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::OUTY_H_XL) | 0x80;
+	rwMultiByte(readdata, writedata, 1, 1);
+	ret += (static_cast<uint16_t>(readdata[0]) << 8);
+	writedata[0] = static_cast<uint8_t>(GyroCommands::OUTY_L_XL) | 0x80;
+	rwMultiByte(readdata, writedata, 1, 1);
+	ret += readdata[0];
+	return ret;
 }
 
 

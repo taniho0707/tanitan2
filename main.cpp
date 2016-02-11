@@ -44,17 +44,14 @@ int main(void){
 		Led::off(LedNumbers::FRONT);
 		*compc << "Failure WHO_AM_I from gyro\n";
 	}
+	*compc << "Gyro setting was completed\n";
 
-	*compc <<"Hello STM32F405!\n";
 	// for (int i=0; i<10; i++) {
 	// 	*compc << compc->dec(11111.11111*i) << " " << compc->dec(-11111.11111*i) << "\n";
 	// }
 
 	Timer::wait_ms(1000);
 
-//	ret = 0xF8;
-//	Gyro::writeSingleWord(GyroCommands::CTRL2_G, ret);
-//	*compc << "Gyro setting was completed\n";
 
 	mram->writeEnable();
 	*compc <<"Hello STM32F405!\n";
@@ -71,8 +68,16 @@ int main(void){
 	Timer::wait_ms(1000);
 
 	bool flag = false;
-	motorcontrol->stay();
-	motorcontrol->setVelocity(0.1);
+	// motorcontrol->stay();
+	// motorcontrol->setVelocity(0.1);
+
+	uint32_t tmp = 0.0;
+	for (int i=0; i<1000; i++) {
+		tmp += gyro->readGyroZ();
+		Timer::wait_ms(1);
+	}
+	tmp /= 1000;
+	*compc << compc->hex(tmp) << "\n";
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
@@ -88,8 +93,10 @@ int main(void){
 			Led::off(LedNumbers::LEFT3);
 		}
 
-		*compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "\t";
-		*compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
+		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
+		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
+
+		*compc << "\t" << compc->hex(gyro->readAccelY()) << "\n";
 		
 		// if(flag){
 		// 	ret = 0xFF;

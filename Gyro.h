@@ -110,10 +110,15 @@ private:
 
 	explicit Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 
+	bool configAutomatic();
+
 public:
 	static Gyro *getInstance();
 
 	bool whoami();
+
+	uint16_t readGyroZ();
+	uint16_t readAccelY();
 
 };
 
