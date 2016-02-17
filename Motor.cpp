@@ -111,7 +111,7 @@ void Motor::setDuty(MotorSide side, int duty){
 		}
 		duty_t = duty;
 	}
-	if(duty > MAX_PERIOD) duty = MAX_PERIOD;
+	if(duty_t > MAX_PERIOD) duty_t = MAX_PERIOD;
 	static TIM_OCInitTypeDef TIM_OC_InitStructure;
 	TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;

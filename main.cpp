@@ -68,8 +68,9 @@ int main(void){
 	Timer::wait_ms(1000);
 
 	bool flag = false;
-	// motorcontrol->stay();
-	// motorcontrol->setVelocity(0.1);
+	motorcontrol->stay();
+	motorcontrol->setVelocity(0.1);
+	motorcontrol->setRadVelocity(0.0);
 
 	uint32_t tmp = 0.0;
 	for (int i=0; i<1000; i++) {
@@ -96,7 +97,7 @@ int main(void){
 		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
 		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 
-		*compc << "\t" << compc->hex(gyro->readAccelY()) << "\n";
+		*compc << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << " : " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
 		
 		// if(flag){
 		// 	ret = 0xFF;

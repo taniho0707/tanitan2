@@ -9,6 +9,7 @@
 
 #include <vector>
 #include "WallSensor.h"
+#include "Encoder.h"
 #include "Motor.h"
 
 class MotorControl{
@@ -22,12 +23,16 @@ private:
 	const float GAIN_LIN_P;
 	const float GAIN_LIN_I;
 	const float GAIN_LIN_D;
+	const float GAIN_RAD_P;
+	const float GAIN_RAD_I;
+	const float GAIN_RAD_D;
 
 	float cur_lin_x;
 	float cur_lin_vel;
 	float cur_lin_acc;
 
 	float tar_lin_vel;
+	float tar_rad_vel;
 
 	void culcIntegral();
 	void controlX();
@@ -35,6 +40,7 @@ private:
 
 public:
 	void setVelocity(float);
+	void setRadVelocity(float);
 
 	void stay();
 
