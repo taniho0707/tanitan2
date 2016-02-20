@@ -6,6 +6,7 @@
 #define INCLUDED_TIMER_H
 
 #include "stm32f4xx.h"
+#include "Encoder.h"
 
 /**
  * 正確に秒数を計ることを担ったクラス

@@ -37,8 +37,8 @@
 #include "stm32f4xx.h"
 
 #include "Timer.h"
-#include "Encoder.h"
-#include "MotorControl.h"
+/* #include "Encoder.h" */
+/* #include "MotorControl.h" */
 /* #include "WallSensor.h" */
 
 /* Exported types ------------------------------------------------------------*/

@@ -3,6 +3,7 @@
  */
 
 #include "Timer.h"
+#include "MotorControl.h"
 
 __IO int32_t Timer::total = 0;
 __IO int32_t Timer::waitnum = 0;
@@ -20,4 +21,8 @@ void Timer::wait_ms_decrement(){
 
 void Timer::interrupt(){
 	wait_ms_decrement();
+	static Encoder *encoder = Encoder::getInstance();
+	static MotorControl *motor = MotorControl::getInstance();
+	encoder->interrupt();
+	motor->interrupt();
 }

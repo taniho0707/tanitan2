@@ -69,7 +69,7 @@ int main(void){
 
 	bool flag = false;
 	motorcontrol->stay();
-	motorcontrol->setVelocity(0.1);
+	motorcontrol->setVelocity(0.2);
 	motorcontrol->setRadVelocity(0.0);
 
 	uint32_t tmp = 0.0;

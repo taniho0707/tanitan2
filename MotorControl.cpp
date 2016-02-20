@@ -8,8 +8,8 @@ MotorControl::MotorControl() :
 	GAIN_LIN_P(1000),
 	GAIN_LIN_I(150),
 	GAIN_LIN_D(0.0),
-	GAIN_RAD_P(10000),
-	GAIN_RAD_I(0),
+	GAIN_RAD_P(500),
+	GAIN_RAD_I(1),
 	GAIN_RAD_D(0)
 {
 	cur_lin_x = 0.0;
@@ -49,8 +49,8 @@ void MotorControl::controlVel(){
 	static float tar_motor_l_power = 0;
 	static float tar_vel_rev = 0;
 	static float tar_rad_rev = 0;
-	static float integral_lin_encoder = 0;
-	static float integral_rad_gyro = 0;
+	static float integral_lin_encoder = 0.0;
+	static float integral_rad_gyro = 0.0;
 
 	// // 壁積分値の計算
 	// integral_wall += Sensor::getCorrection(MAX_WALL_CORRECTION);
