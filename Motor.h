@@ -7,7 +7,7 @@
 
 #include "stm32f4xx.h"
 
-enum class MotorSide : unsigned char{
+enum class MotorSide : uint8_t{
 	LEFT,
 	RIGHT,
 };
@@ -16,7 +16,7 @@ class Motor{
 private:
 	explicit Motor();
 
-	const int MAX_PERIOD;
+	const uint16_t MAX_PERIOD;
 
 	void setForward(MotorSide);
 	void setBackward(MotorSide);
@@ -25,7 +25,7 @@ public:
 	void enable();
 	void disable();
 
-	void setDuty(MotorSide, int);
+	void setDuty(MotorSide, int16_t);
 
 	static Motor* getInstance();
 };

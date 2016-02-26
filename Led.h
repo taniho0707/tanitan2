@@ -7,7 +7,7 @@
 
 #include "stm32f4xx.h"
 
-enum class LedNumbers : char {
+enum class LedNumbers : uint8_t {
 	FRONT,
 	LEFT1,
 	LEFT2,

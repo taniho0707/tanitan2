@@ -72,7 +72,7 @@ bool Gyro::whoami(){
 	std::vector<uint8_t> readdata(1);
 	writedata[0] = static_cast<uint8_t>(GyroCommands::WHO_AM_I) | 0x80;
 	readdata[0] = 0x00;
-	int retval = rwMultiByte(readdata, writedata, 1, 1);
+	auto retval = rwMultiByte(readdata, writedata, 1, 1);
 	if(retval) return false;
 	retval = configAutomatic();
 	if(retval) return false;

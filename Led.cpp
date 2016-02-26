@@ -46,7 +46,7 @@ void Led::init(){
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
 	GPIO_Init(GPIOH, &GPIO_InitStructure);
-	for(int i=0; i<5; ++i)
+	for(auto i=0; i<5; ++i)
 		off(static_cast<LedNumbers>(i));
 }
 

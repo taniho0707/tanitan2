@@ -10,13 +10,13 @@
 #include <vector>
 #include "Spi.h"
 
-enum class GyroAxises : char {
+enum class GyroAxises : uint8_t {
 	YAW,
 	ROLL,
 	PITCH,
 };
 
-enum class GyroCommands : unsigned char {
+enum class GyroCommands : uint8_t {
 	FUNC_CFG_ACCESS = 0x01,
 	SENSOR_SYNC_TIME_FRAME = 0x04,
 	FIFO_CTRL1,

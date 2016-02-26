@@ -73,7 +73,7 @@ int main(void){
 	motorcontrol->setRadVelocity(0.0);
 
 	uint32_t tmp = 0.0;
-	for (int i=0; i<1000; i++) {
+	for (auto i=0; i<1000; i++) {
 		tmp += gyro->readGyroZ();
 		Timer::wait_ms(1);
 	}
@@ -97,7 +97,8 @@ int main(void){
 		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
 		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 
-		*compc << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << " : " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
+		*compc << compc->hex(tmp-gyro->readGyroZ()) << "\n";
+		// *compc << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << " : " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
 		
 		// if(flag){
 		// 	ret = 0xFF;

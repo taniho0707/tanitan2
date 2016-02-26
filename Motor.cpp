@@ -94,8 +94,8 @@ void Motor::disable(){
 	TIM_Cmd(TIM5, ENABLE);
 }
 
-void Motor::setDuty(MotorSide side, int duty){
-	int duty_t;
+void Motor::setDuty(MotorSide side, int16_t duty){
+	int16_t duty_t;
 	if(duty < 0){
 		if(side == MotorSide::LEFT){
 			setBackward(side);

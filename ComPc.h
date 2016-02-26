@@ -15,7 +15,7 @@ private:
 
 	explicit ComPc(USART_TypeDef *port);
 
-	unsigned char bit2hex(const uint8_t val);
+	uint8_t bit2hex(const uint8_t val);
 
 public:
 

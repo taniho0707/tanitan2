@@ -9,8 +9,8 @@ MotorControl::MotorControl() :
 	GAIN_LIN_I(150),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(500),
-	GAIN_RAD_I(1),
-	GAIN_RAD_D(0)
+	GAIN_RAD_I(3.0),
+	GAIN_RAD_D(0.0)
 {
 	cur_lin_x = 0.0;
 	cur_lin_vel = 0.0;

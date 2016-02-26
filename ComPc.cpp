@@ -37,7 +37,7 @@ ComPc *ComPc::getInstance(){
 }
 
 
-unsigned char ComPc::bit2hex(const uint8_t val){
+uint8_t ComPc::bit2hex(const uint8_t val){
 	if(val < 0x0A) return '0' + val;
 	else if(val > 0x0F) return 'X';
 	else return 'A' + (val - 0x0A);
@@ -56,7 +56,7 @@ std::string ComPc::hex(const uint8_t val){
 std::string ComPc::hex(const uint16_t val){
 	std::string tmp;
 	tmp += " 0x";
-	for (int i=3; i>=0; i--) {
+	for (auto i=3; i>=0; i--) {
 		tmp += bit2hex((val>>(4*i)) & 0x0F);
 	}
 	tmp += " ";
@@ -66,7 +66,7 @@ std::string ComPc::hex(const uint16_t val){
 std::string ComPc::hex(const uint32_t val){
 	std::string tmp;
 	tmp += " 0x";
-	for (int i=7; i>=0; i--) {
+	for (auto i=7; i>=0; i--) {
 		tmp += bit2hex((val>>(4*i)) & 0x0F);
 	}
 	tmp += " ";
@@ -81,13 +81,13 @@ std::string ComPc::dec(const float val){
 		tmp += "-";
 		c = -1 * val;
 	}
-	for (int i=0; i<8; i++) {
+	for (auto i=0; i<8; i++) {
 		tmp += bit2hex(static_cast<uint8_t>(c/div)%10);
 		div /= 10;
 	}
 	tmp += ".";
 	div = 10;
-	for (int i=0; i<8; i++) {
+	for (auto i=0; i<8; i++) {
 		tmp += bit2hex(static_cast<uint8_t>(c*div)%10);
 		div *= 10;
 	}
