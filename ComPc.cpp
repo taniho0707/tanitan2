@@ -161,4 +161,16 @@ ComPc& ComPc::operator << (const std::string& str) {
 	return *this;
 }
 
+uint16_t ComPc::printf(const char *fmt, ...){
+	static char buffer[100];
+	int len;
+
+	va_list ap;
+	va_start(ap, fmt);
+
+	len = vsprintf(buffer, fmt, ap);
+	sendnbyte(buffer, len);
+	va_end(ap);
+	return static_cast<uint16_t>(len);
+}
 
