@@ -8,6 +8,7 @@
 #include "stm32f4xx.h"
 
 #include <vector>
+#include "Timer.h"
 #include "Spi.h"
 
 enum class GyroAxises : uint8_t {
@@ -108,6 +109,9 @@ enum class GyroCommands : uint8_t {
 class Gyro : protected Spi{
 private:
 
+	const float lsb2dps;
+	float zero_gyroz;
+
 	explicit Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 
 	bool configAutomatic();
@@ -123,6 +127,11 @@ public:
 	int16_t readAccelX();
 	int16_t readAccelY();
 	int16_t readAccelZ();
+
+	void resetCalibration();
+
+	// returns [degree/sec] in float
+	float getGyroYaw();
 
 };
 

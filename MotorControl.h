@@ -11,6 +11,7 @@
 #include "WallSensor.h"
 #include "Encoder.h"
 #include "Motor.h"
+#include "Gyro.h"
 
 class MotorControl{
 private:
@@ -19,6 +20,7 @@ private:
 	Motor* motor = Motor::getInstance();
 	Encoder* encoder = Encoder::getInstance();
 	WallSensor* wall = WallSensor::getInstance();
+	Gyro* gyro = Gyro::getInstance();
 
 	const float GAIN_LIN_P;
 	const float GAIN_LIN_I;

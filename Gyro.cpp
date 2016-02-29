@@ -4,7 +4,9 @@
 #include "Gyro.h"
 
 Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
-	Spi(spi, gpio, gpiopin)
+	Spi(spi, gpio, gpiopin),
+	lsb2dps(0.030532837),
+	zero_gyroz(0.0)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
@@ -155,6 +157,21 @@ int16_t Gyro::readAccelZ(){
 	rwMultiByte(readdata, writedata, 1, 1);
 	ret += readdata[0];
 	return ret;
+}
+
+
+void Gyro::resetCalibration(){
+	float tmp = 0.0;
+	for (auto i=0; i<1000; i++) {
+		tmp += readGyroZ();
+		Timer::wait_ms(1);
+	}
+	tmp /= 1000;
+	zero_gyroz = tmp;
+}
+
+float Gyro::getGyroYaw(){
+	return (static_cast<float>(readGyroZ()) - zero_gyroz);
 }
 
 

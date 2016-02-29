@@ -68,9 +68,9 @@ int main(void){
 	Timer::wait_ms(1000);
 
 	bool flag = false;
-	// motorcontrol->stay();
-	// motorcontrol->setVelocity(0.2);
-	// motorcontrol->setRadVelocity(0.0);
+	motorcontrol->stay();
+	motorcontrol->setRadVelocity(100.0);
+	motorcontrol->setVelocity(0.0);
 
 	uint32_t tmp = 0.0;
 	for (auto i=0; i<1000; i++) {

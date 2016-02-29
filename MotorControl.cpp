@@ -5,11 +5,11 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P(1000),
-	GAIN_LIN_I(150),
+	GAIN_LIN_P(600),
+	GAIN_LIN_I(400),
 	GAIN_LIN_D(0.0),
-	GAIN_RAD_P(500),
-	GAIN_RAD_I(0.0),
+	GAIN_RAD_P(0.02),
+	GAIN_RAD_I(0.0005),
 	GAIN_RAD_D(0.0)
 {
 	cur_lin_x = 0.0;
@@ -61,13 +61,13 @@ void MotorControl::controlVel(){
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
 	// // rotation成分の計算
-	tar_rad_rev = tar_rad_vel - (encoder->getVelocity(EncoderSide::RIGHT) - encoder->getVelocity(EncoderSide::LEFT));
+	tar_rad_rev = tar_rad_vel - gyro->getGyroYaw();
 	integral_rad_gyro += tar_rad_rev;
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
 	// モーター出力
-	tar_motor_r_power = tar_motor_lin_power + tar_motor_rad_power;
-	tar_motor_l_power = tar_motor_lin_power - tar_motor_rad_power;
+	tar_motor_r_power = tar_motor_lin_power - tar_motor_rad_power;
+	tar_motor_l_power = tar_motor_lin_power + tar_motor_rad_power;
 
 	motor->setDuty(MotorSide::LEFT, tar_motor_l_power);
 	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
