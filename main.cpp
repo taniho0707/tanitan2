@@ -68,9 +68,9 @@ int main(void){
 	Timer::wait_ms(1000);
 
 	bool flag = false;
-	motorcontrol->stay();
-	motorcontrol->setVelocity(0.2);
-	motorcontrol->setRadVelocity(0.0);
+	// motorcontrol->stay();
+	// motorcontrol->setVelocity(0.2);
+	// motorcontrol->setRadVelocity(0.0);
 
 	uint32_t tmp = 0.0;
 	for (auto i=0; i<1000; i++) {
@@ -78,7 +78,10 @@ int main(void){
 		Timer::wait_ms(1);
 	}
 	tmp /= 1000;
-	*compc << compc->hex(tmp) << "\n";
+	compc->printf("Gyro Reference: %d\n", tmp);
+	compc->printf("Hello World!\n");
+
+	uint32_t whilecounter = 0;
 
 	while(true){
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
@@ -97,7 +100,13 @@ int main(void){
 		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
 		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 
-		*compc << compc->hex(tmp-gyro->readGyroZ()) << "\n";
+		compc->printf("%d\t", whilecounter++);
+		compc->printf("%d\t", gyro->readGyroX());
+		compc->printf("%d\t", gyro->readGyroY());
+		compc->printf("%d\n", gyro->readGyroZ());
+		// compc->printf("%d\t", gyro->readGyroX());
+		// compc->printf("%d\t", gyro->readGyroY());
+		// compc->printf("%d\n", gyro->readGyroZ());
 		// *compc << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << " : " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
 		
 		// if(flag){

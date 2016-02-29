@@ -117,8 +117,12 @@ public:
 
 	bool whoami();
 
-	uint16_t readGyroZ();
-	uint16_t readAccelY();
+	int16_t readGyroX();
+	int16_t readGyroY();
+	int16_t readGyroZ();
+	int16_t readAccelX();
+	int16_t readAccelY();
+	int16_t readAccelZ();
 
 };
 
