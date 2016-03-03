@@ -100,10 +100,10 @@ int main(void){
 		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
 		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 
-		compc->printf("%d\t", whilecounter++);
-		compc->printf("%d\t", gyro->readGyroX());
-		compc->printf("%d\t", gyro->readGyroY());
-		compc->printf("%d\n", gyro->readGyroZ());
+		compc->printf("%3d, ", whilecounter++);
+		// compc->printf("%f", gyro->getGyroYaw());
+		*compc << compc->dec(12.345678*1000000) << "\n";
+		compc->printf("\n\n");
 		// compc->printf("%d\t", gyro->readGyroX());
 		// compc->printf("%d\t", gyro->readGyroY());
 		// compc->printf("%d\n", gyro->readGyroZ());

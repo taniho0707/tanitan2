@@ -171,7 +171,7 @@ void Gyro::resetCalibration(){
 }
 
 float Gyro::getGyroYaw(){
-	return (static_cast<float>(readGyroZ()) - zero_gyroz);
+	return (static_cast<float>(readGyroZ()) - zero_gyroz) * lsb2dps;
 }
 
 

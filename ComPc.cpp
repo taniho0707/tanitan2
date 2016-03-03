@@ -88,7 +88,7 @@ std::string ComPc::dec(const float val){
 	tmp += ".";
 	div = 10;
 	for (auto i=0; i<8; i++) {
-		tmp += bit2hex(static_cast<uint8_t>(c*div)%10);
+		tmp += bit2hex((static_cast<uint8_t>(c*div)) %10);
 		div *= 10;
 	}
 	return tmp;
@@ -162,7 +162,7 @@ ComPc& ComPc::operator << (const std::string& str) {
 }
 
 uint16_t ComPc::printf(const char *fmt, ...){
-	static char buffer[100];
+	char buffer[100];
 	int len;
 
 	va_list ap;

@@ -5,8 +5,7 @@
 #define INCLUDED_COMPC_HPP
 
 #include <string>
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdarg>
 #include "stm32f4xx.h"
 
 #include "Usart.h"
