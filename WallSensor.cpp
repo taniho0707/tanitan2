@@ -4,7 +4,16 @@
 using namespace std;
 
 /// @todo add wait REDEN flag
-WallSensor::WallSensor(){
+WallSensor::WallSensor() :
+	VAL_REF_FLEFT(0x02D5),
+	VAL_REF_LEFT(0x02D5),
+	VAL_REF_RIGHT(0x0345),
+	VAL_REF_FRIGHT(0x02D5),
+	VAL_THR_FLEFT(0x0805),
+	VAL_THR_LEFT(0x01D5),
+	VAL_THR_RIGHT(0x0145),
+	VAL_THR_FRIGHT(0x0805)
+{
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
@@ -67,6 +76,11 @@ WallSensor::WallSensor(){
 	TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
 	TIM_ITConfig(TIM9, TIM_IT_Update, ENABLE);
 	TIM_Cmd(TIM9, ENABLE);
+
+	thr_straight_value[0] = VAL_THR_FLEFT;
+	thr_straight_value[1] = VAL_THR_LEFT;
+	thr_straight_value[2] = VAL_THR_RIGHT;
+	thr_straight_value[3] = VAL_THR_FRIGHT;
 }
 
 void WallSensor::onLed(){
@@ -220,7 +234,17 @@ bool WallSensor::isExistWall(SensorPosition pos){
 
 Walldata WallSensor::getWall(){}
 
-uint16_t WallSensor::getCorrection(uint16_t max){}
+uint16_t WallSensor::getCorrection(uint16_t max){
+	uint16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
+	uint16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
+
+	if(isExistWall(SensorPosition::FLeft) && isExistWall(SensorPosition::FRight)) return 0;
+
+	uint16_t retval = tmpR + tmpL;
+	if(retval > max) return max;
+	if(-1*retval < -1*max) return -max;
+	return retval;
+}
 
 
 WallSensor *WallSensor::getInstance(){

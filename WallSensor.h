@@ -22,6 +22,15 @@ enum class SensorPosition : uint8_t{
 
 class WallSensor{
 private:
+	const uint16_t VAL_REF_FLEFT;
+	const uint16_t VAL_REF_LEFT;
+	const uint16_t VAL_REF_RIGHT;
+	const uint16_t VAL_REF_FRIGHT;
+	const uint16_t VAL_THR_FLEFT;
+	const uint16_t VAL_THR_LEFT;
+	const uint16_t VAL_THR_RIGHT;
+	const uint16_t VAL_THR_FRIGHT;
+	
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
 	bool is_working;

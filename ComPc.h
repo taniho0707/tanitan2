@@ -6,6 +6,7 @@
 
 #include <string>
 #include <cstdarg>
+#include <cstdio>
 #include "stm32f4xx.h"
 
 #include "Usart.h"

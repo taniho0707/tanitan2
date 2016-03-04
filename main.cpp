@@ -69,8 +69,8 @@ int main(void){
 
 	bool flag = false;
 	motorcontrol->stay();
-	motorcontrol->setRadVelocity(100.0);
-	motorcontrol->setVelocity(0.0);
+	motorcontrol->setRadVelocity(0.0);
+	motorcontrol->setVelocity(0.2);
 
 	uint32_t tmp = 0.0;
 	for (auto i=0; i<1000; i++) {
@@ -100,10 +100,11 @@ int main(void){
 		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
 		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
 
-		compc->printf("%3d, ", whilecounter++);
-		// compc->printf("%f", gyro->getGyroYaw());
-		*compc << compc->dec(12.345678*1000000) << "\n";
-		compc->printf("\n\n");
+		// compc->printf("%3d, ", whilecounter++);
+		// // compc->printf("%f", gyro->getGyroYaw());
+		// *compc << compc->dec((float)(12.345678f)) << "\n";
+		// compc->printf("\n\n");
+
 		// compc->printf("%d\t", gyro->readGyroX());
 		// compc->printf("%d\t", gyro->readGyroY());
 		// compc->printf("%d\n", gyro->readGyroZ());
@@ -116,8 +117,10 @@ int main(void){
 		// 	Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
 		// 	*compc << "Acel: " << compc->hex(ret) << "\n";
 		// } else {
-		// 	*compc << "Wall: " << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
+			// *compc << "Wall: " << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
 		// }
+		*compc << "WallCorrection: " << compc->hex(wall->getCorrection(10000)) << "\n";
+		
 		Timer::wait_ms(50);
 	}
 }

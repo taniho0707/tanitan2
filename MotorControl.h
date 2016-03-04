@@ -28,6 +28,8 @@ private:
 	const float GAIN_RAD_P;
 	const float GAIN_RAD_I;
 	const float GAIN_RAD_D;
+	const float GAIN_WALL_P;
+	const float GAIN_WALL_I;
 
 	float cur_lin_x;
 	float cur_lin_vel;

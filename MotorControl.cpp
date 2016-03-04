@@ -8,15 +8,19 @@ MotorControl::MotorControl() :
 	GAIN_LIN_P(600),
 	GAIN_LIN_I(400),
 	GAIN_LIN_D(0.0),
-	GAIN_RAD_P(0.02),
-	GAIN_RAD_I(0.0005),
-	GAIN_RAD_D(0.0)
+	GAIN_RAD_P(0.01f),
+	GAIN_RAD_I(0.01f),
+	GAIN_RAD_D(0.0f),
+	// GAIN_RAD_P(0.0f),
+	// GAIN_RAD_I(0.0f),
+	// GAIN_RAD_D(0.0f),
+	GAIN_WALL_P(0.0f),
+	GAIN_WALL_I(0.0f)
 {
 	cur_lin_x = 0.0;
 	cur_lin_vel = 0.0;
 	cur_lin_acc = 0.0;
 	tar_lin_vel = 0.0;
-
 }
 
 void MotorControl::setVelocity(float vel){
@@ -52,8 +56,12 @@ void MotorControl::controlVel(){
 	static float integral_lin_encoder = 0.0;
 	static float integral_rad_gyro = 0.0;
 
+	static uint16_t integral_wall = 0;
+
+	static float d_rad_gyro = 0.0;
+
 	// // 壁積分値の計算
-	// integral_wall += Sensor::getCorrection(MAX_WALL_CORRECTION);
+	integral_wall += wall->getCorrection(10000);
 
 	// linear成分の計算
 	tar_vel_rev = tar_lin_vel - ((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
@@ -61,9 +69,10 @@ void MotorControl::controlVel(){
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
 	// // rotation成分の計算
-	tar_rad_rev = tar_rad_vel - gyro->getGyroYaw();
+	d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
+	tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw();
 	integral_rad_gyro += tar_rad_rev;
-	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
+	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
 
 	// モーター出力
 	tar_motor_r_power = tar_motor_lin_power - tar_motor_rad_power;
