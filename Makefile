@@ -1,5 +1,5 @@
 SHELL = /bin/sh
-TARGET_ARCH = -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16
+TARGET_ARCH = -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -mtune=cortex-m4
 INCLUDE_DIRS = -I ../STM32F4xx_DSP_StdPeriph_Lib/Libraries \
 				-I ./ \
 				-I ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc \
@@ -10,7 +10,6 @@ INCLUDE_DIRS = -I ../STM32F4xx_DSP_StdPeriph_Lib/Libraries \
 STARTUP_DIR = ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7
 MPU_OPTS = -DSTM32F40_41xxx
 BOARD_DIR = -DHSE_VALUE=\(\(uint32_t\)8000000\) $(MPU_OPTS)
-#-DSTM32F4XX
 FIRMWARE_OPTS = -DUSE_STDPERIPH_DRIVER
 COMPILE_OPTS = -O0 -g3 -ffunction-sections -fpermissive -fdata-sections -funsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS)
 
@@ -24,7 +23,7 @@ OBJCOPY = $(TOOLDIR)arm-none-eabi-objcopy
 CFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 CXXFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 ASFLAGS = -x assembler-with-cpp -c $(TARGET_ARCH) $(COMPILE_OPTS)
-LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -Wl,--end-group
+LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -Wl,--end-group -u _printf_float
 
 .PHONY: all
 all: libstm32f4xx startup bin/main.bin

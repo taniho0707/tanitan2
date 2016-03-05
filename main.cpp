@@ -81,6 +81,8 @@ int main(void){
 	compc->printf("Gyro Reference: %d\n", tmp);
 	compc->printf("Hello World!\n");
 
+	compc->printf("%f\n", 12.345);
+
 	uint32_t whilecounter = 0;
 
 	while(true){
