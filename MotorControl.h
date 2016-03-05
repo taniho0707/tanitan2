@@ -13,6 +13,8 @@
 #include "Motor.h"
 #include "Gyro.h"
 
+#include "Datalog.h"
+
 class MotorControl{
 private:
 	explicit MotorControl();
@@ -21,6 +23,8 @@ private:
 	Encoder* encoder = Encoder::getInstance();
 	WallSensor* wall = WallSensor::getInstance();
 	Gyro* gyro = Gyro::getInstance();
+
+	Datalog* log = Datalog::getInstance();
 
 	const float GAIN_LIN_P;
 	const float GAIN_LIN_I;

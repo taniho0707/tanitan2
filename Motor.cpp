@@ -63,6 +63,8 @@ Motor::Motor() :
 	TIM_CtrlPWMOutputs(TIM2, ENABLE);
 	TIM_ARRPreloadConfig(TIM3, ENABLE);
 	TIM_CtrlPWMOutputs(TIM3, ENABLE);
+
+	enabled = false;
 }
 
 void Motor::setForward(MotorSide side){
@@ -85,6 +87,7 @@ void Motor::enable(){
 	GPIO_SetBits(GPIOC, GPIO_Pin_2);
 	TIM_Cmd(TIM2, ENABLE);
 	TIM_Cmd(TIM5, ENABLE);
+	enabled = true;
 }
 
 void Motor::disable(){
@@ -92,6 +95,11 @@ void Motor::disable(){
 	GPIO_ResetBits(GPIOC, GPIO_Pin_2);
 	TIM_Cmd(TIM2, ENABLE);
 	TIM_Cmd(TIM5, ENABLE);
+	enabled = false;
+}
+
+bool Motor::isEnabled(){
+	return enabled;
 }
 
 void Motor::setDuty(MotorSide side, int16_t duty){

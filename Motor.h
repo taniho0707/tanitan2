@@ -16,6 +16,8 @@ class Motor{
 private:
 	explicit Motor();
 
+	bool enabled;
+
 	const uint16_t MAX_PERIOD;
 
 	void setForward(MotorSide);
@@ -24,6 +26,7 @@ private:
 public:
 	void enable();
 	void disable();
+	bool isEnabled();
 
 	void setDuty(MotorSide, int16_t);
 
