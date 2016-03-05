@@ -163,7 +163,7 @@ int16_t Gyro::readAccelZ(){
 void Gyro::resetCalibration(){
 	float tmp = 0.0;
 	for (auto i=0; i<1000; i++) {
-		tmp += readGyroZ();
+		tmp += getGyroYaw();
 		Timer::wait_ms(1);
 	}
 	tmp /= 1000;
