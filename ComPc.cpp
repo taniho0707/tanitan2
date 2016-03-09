@@ -162,7 +162,7 @@ ComPc& ComPc::operator << (const std::string& str) {
 }
 
 uint16_t ComPc::printf(const char *fmt, ...){
-	char buffer[100];
+	char buffer[300];
 	int len;
 
 	va_list ap;

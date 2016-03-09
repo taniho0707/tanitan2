@@ -25,6 +25,8 @@
 #include "Walldata.h"
 #include "Footmap.h"
 
+#include "Datalog.h"
+
 
 int main();
 

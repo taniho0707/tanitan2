@@ -35,33 +35,52 @@ int main(void){
 	Motor *motor = Motor::getInstance();
 	MotorControl *motorcontrol = MotorControl::getInstance();
 
+	*compc <<"Hello STM32F405!\n\n";
+
+	*compc << "* Gyro\n";
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
 	if(ret_bool){
 		Led::on(LedNumbers::LEFT2);
-		*compc << "Success WHO_AM_I from gyro\n";
+		*compc << "\tSuccess WHO_AM_I from gyro\n";
 	} else{
 		Led::off(LedNumbers::FRONT);
-		*compc << "Failure WHO_AM_I from gyro\n";
+		*compc << "\tFailure WHO_AM_I from gyro\n";
 	}
-	*compc << "Gyro setting was completed\n";
-
-	// for (int i=0; i<10; i++) {
-	// 	*compc << compc->dec(11111.11111*i) << " " << compc->dec(-11111.11111*i) << "\n";
-	// }
-
 	Timer::wait_ms(1000);
+	gyro->resetCalibration();
+	*compc << "\tGyro Calibration done.\n";
+	*compc << "\tGyro setting was completed\n\n";
 
+	Timer::wait_ms(100);
 
+	*compc << "* MRAM\n";
 	mram->writeEnable();
-	*compc <<"Hello STM32F405!\n";
 	std::vector<uint8_t> mram_ret(1);
 	mram_ret[0] = 0xAB;
 	mram->writeData(mram_ret, 0x0000, 1);
 	mram_ret[0] = 0xFF;
-	*compc << "Wrote\n";
+	*compc << "\tWrote '0xAB'\n";
 	mram->readData(mram_ret, 0x0000, 1);
 	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
+
+	Datalog *log = Datalog::getInstance();
+	if(Switch::isPushing(SwitchNumbers::RIGHT)){
+		// for(auto i=0; i<2048; ++i){
+		for(auto i=0; i<682; ++i){
+			compc->printf("%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", i, log->readFloat(12*i), log->readFloat(12*i+1), log->readFloat(12*i+2), log->readFloat(12*i+3), log->readFloat(12*i+4), log->readFloat(12*i+5), log->readFloat(12*i+6), log->readFloat(12*i+7), log->readFloat(12*i+8), log->readFloat(12*i+9), log->readFloat(12*i+10), log->readFloat(12*i+11));
+		}
+	}
+
+	*compc << "* Flash\n";
+	float log_ret = 12.34f;
+	log->eraseSector(FLASH_Sector_10);
+	*compc << "\tErace Sector10 done.\n";
+	// log->writeData(0x080C0000, log_ret);
+	// *compc << "\twrite '12.34f' done.\n";
+	// log_ret = 0.0f;
+	// log->readData(0x080C0000, log_ret);
+	// compc->printf("\t%f\n\n", log_ret);
 
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
@@ -69,19 +88,8 @@ int main(void){
 
 	bool flag = false;
 	motorcontrol->stay();
-	motorcontrol->setRadVelocity(0.0);
-	motorcontrol->setVelocity(0.2);
-
-	uint32_t tmp = 0.0;
-	for (auto i=0; i<1000; i++) {
-		tmp += gyro->readGyroZ();
-		Timer::wait_ms(1);
-	}
-	tmp /= 1000;
-	compc->printf("Gyro Reference: %d\n", tmp);
-	compc->printf("Hello World!\n");
-
-	compc->printf("%f\n", 12.345);
+	motorcontrol->setRadVelocity(10.0f);
+	motorcontrol->setVelocity(0.2f);
 
 	uint32_t whilecounter = 0;
 
@@ -98,31 +106,7 @@ int main(void){
 		} else {
 			Led::off(LedNumbers::LEFT3);
 		}
-
-		// *compc << "\tLEFT: " << compc->dec(encoder->getVelocity(EncoderSide::LEFT)) << "  ";
-		// *compc << "\tRIGHT: " << compc->dec(encoder->getVelocity(EncoderSide::RIGHT)) << "\n";
-
-		// compc->printf("%3d, ", whilecounter++);
-		// // compc->printf("%f", gyro->getGyroYaw());
-		// *compc << compc->dec((float)(12.345678f)) << "\n";
-		// compc->printf("\n\n");
-
-		// compc->printf("%d\t", gyro->readGyroX());
-		// compc->printf("%d\t", gyro->readGyroY());
-		// compc->printf("%d\n", gyro->readGyroZ());
-		// *compc << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::LEFT))) << " : " << compc->hex(static_cast<uint16_t>(1000*encoder->getVelocity(EncoderSide::RIGHT))) << "\n";
 		
-		// if(flag){
-		// 	ret = 0xFF;
-		// 	Gyro::readSingleWord(GyroCommands::OUTZ_H_G, ret);
-		// 	*compc << "Gyro: " << compc->hex(ret) << ", ";
-		// 	Gyro::readSingleWord(GyroCommands::OUTZ_L_G, ret);
-		// 	*compc << "Acel: " << compc->hex(ret) << "\n";
-		// } else {
-			// *compc << "Wall: " << compc->hex(wall->getValue(SensorPosition::FLeft)) << ", " << compc->hex(wall->getValue(SensorPosition::Left)) << ", " << compc->hex(wall->getValue(SensorPosition::Right)) << ", " << compc->hex(wall->getValue(SensorPosition::FRight)) << "\n";
-		// }
-		*compc << "WallCorrection: " << compc->hex(wall->getCorrection(10000)) << "\n";
-		
-		Timer::wait_ms(50);
+		Timer::wait_ms(100);
 	}
 }
