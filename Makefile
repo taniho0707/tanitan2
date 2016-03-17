@@ -49,7 +49,7 @@ $(LIB_OBJS): \
 
 .PHONY: clean
 clean:
-	rm -rf *.o *.s bin/*
+	rm -rf *.o *.s bin/* *\~
 
 debug:
 
