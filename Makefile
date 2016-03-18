@@ -1,5 +1,5 @@
 SHELL = /bin/sh
-TARGET_ARCH = -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -mtune=cortex-m4
+TARGET_ARCH = -mcpu=cortex-m4 -march=armv7e-m -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -mthumb -mtune=cortex-m4
 INCLUDE_DIRS = -I ../STM32F4xx_DSP_StdPeriph_Lib/Libraries \
 				-I ./ \
 				-I ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/STM32F4xx_StdPeriph_Driver/inc \
@@ -11,19 +11,19 @@ STARTUP_DIR = ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/CMSIS/Device/ST/STM32F4xx
 MPU_OPTS = -DSTM32F40_41xxx
 BOARD_DIR = -DHSE_VALUE=\(\(uint32_t\)8000000\) $(MPU_OPTS)
 FIRMWARE_OPTS = -DUSE_STDPERIPH_DRIVER
-COMPILE_OPTS = -O0 -g3 -ffunction-sections -fpermissive -fdata-sections -funsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS)
+COMPILE_OPTS = -O0 -g0 -ffunction-sections -fdata-sections -fpermissive -funsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS)
 
-TOOLDIR = /usr/bin/
-CC = $(TOOLDIR)arm-none-eabi-g++
+TOOLDIR = /usr/bin
+CC = $(TOOLDIR)/arm-none-eabi-g++
 CXX = $(CC)
 AS = $(CC)
 LD = $(CC)
-AR = $(TOOLDIR)arm-none-eabi-ar
-OBJCOPY = $(TOOLDIR)arm-none-eabi-objcopy
+AR = $(TOOLDIR)/arm-none-eabi-ar
+OBJCOPY = $(TOOLDIR)/arm-none-eabi-objcopy
 CFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 CXXFLAGS = $(COMPILE_OPTS) $(TARGET_ARCH)
 ASFLAGS = -x assembler-with-cpp -c $(TARGET_ARCH) $(COMPILE_OPTS)
-LDFLAGS = -Wl,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -mcpu=cortex-m4 -march=armv7e-m -mthumb -lm -lstdc++ -L $(TOOLDIR)../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -Wl,--start-group -lgcc -lc -lm -lrdimon -Wl,--end-group -u _printf_float
+LDFLAGS = -Wl,-lgcc,-lc,-lm,-lrdimon,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -lm -lstdc++ -L $(TOOLDIR)/../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -u _printf_float $(TARGET_ARCH)
 
 .PHONY: all
 all: libstm32f4xx startup bin/main.bin
@@ -56,6 +56,4 @@ debug:
 .PHONY: flash
 flash:
 	python write_main.py
-# stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
-# gtkterm
 
