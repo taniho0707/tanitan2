@@ -2,8 +2,7 @@
  * @file Timer.hpp
  * 正確に秒数を計ることを担ったクラス
  */
-#ifndef INCLUDED_TIMER_H
-#define INCLUDED_TIMER_H
+#pragma once
 
 #include "stm32f4xx.h"
 #include "Encoder.h"
@@ -27,6 +26,8 @@ public:
 
 	static void wait_ms_decrement();
 
+	static int32_t getTime();
+
 	/**
 	 * @brief タイマーの加算を行う。<br>
 	 * 正確に1msごとに呼ばれる必要がある。
@@ -35,5 +36,3 @@ public:
 
 
 };
-
-#endif

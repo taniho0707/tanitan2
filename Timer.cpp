@@ -16,11 +16,16 @@ void Timer::wait_ms(__IO int32_t t){
 
 void Timer::wait_ms_decrement(){
 	if(waitnum != 0x00) --waitnum;
-	++ total;
 }
+
+int32_t Timer::getTime(){
+	return total;
+}
+
 
 void Timer::interrupt(){
 	wait_ms_decrement();
+	++ total;
 	static Encoder *encoder = Encoder::getInstance();
 	static MotorControl *motor = MotorControl::getInstance();
 	encoder->interrupt();
