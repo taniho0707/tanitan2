@@ -13,6 +13,7 @@
 #include "Encoder.h"
 #include "Motor.h"
 #include "MotorControl.h"
+#include "VelocityControl.h"
 
 #include "WallSensor.h"
 

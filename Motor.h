@@ -1,9 +1,7 @@
 /**
  * @file Motor.h
  */
-
-#ifndef INCLUDED_MOTOR_H
-#define INCLUDED_MOTOR_H
+#pragma once
 
 #include "stm32f4xx.h"
 
@@ -32,5 +30,3 @@ public:
 
 	static Motor* getInstance();
 };
-
-#endif

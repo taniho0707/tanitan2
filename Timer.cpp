@@ -4,6 +4,7 @@
 
 #include "Timer.h"
 #include "MotorControl.h"
+#include "VelocityControl.h"
 
 __IO int32_t Timer::total = 0;
 __IO int32_t Timer::waitnum = 0;
@@ -28,6 +29,8 @@ void Timer::interrupt(){
 	++ total;
 	static Encoder *encoder = Encoder::getInstance();
 	static MotorControl *motor = MotorControl::getInstance();
+	static VelocityControl* vc = VelocityControl::getInstance();
+	vc->interrupt();
 	encoder->interrupt();
 	motor->interrupt();
 }

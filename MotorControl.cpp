@@ -5,11 +5,11 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P(300),
-	GAIN_LIN_I(400),
+	GAIN_LIN_P(180),
+	GAIN_LIN_I(100),
 	GAIN_LIN_D(0.0),
-	GAIN_RAD_P(1.0f),
-	GAIN_RAD_I(0.007f),
+	GAIN_RAD_P(0.5f),
+	GAIN_RAD_I(0.12f),
 	GAIN_RAD_D(0.0f),
 	// GAIN_RAD_P(0.0f),
 	// GAIN_RAD_I(0.0f),
@@ -37,7 +37,7 @@ void MotorControl::stay(){
 	setRadVelocity(0.0);
 }
 
-void MotorControl::culcIntegral(){
+void MotorControl::calcIntegral(){
 	cur_lin_vel = (encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2;
 	cur_lin_x += cur_lin_vel;
 }
@@ -81,6 +81,9 @@ void MotorControl::controlVel(){
 	motor->setDuty(MotorSide::LEFT, tar_motor_l_power);
 	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
 
+	static uint8_t hogehoge = 0;
+	if(hogehoge++ != 4) return;
+	hogehoge = 0;
 	log->writeFloat(tar_lin_vel);
 	log->writeFloat((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
 	log->writeFloat(tar_vel_rev);
@@ -102,7 +105,7 @@ void MotorControl::controlVel(){
 
 void MotorControl::interrupt(){
 	if(motor->isEnabled()){
-		culcIntegral();
+		calcIntegral();
 		controlVel();
 	}
 }

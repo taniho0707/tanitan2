@@ -1,13 +1,12 @@
 /**
  * @file MotorControl.h
  */
-
-#ifndef INCLUDED_MOTORCONTROL_H
-#define INCLUDED_MOTORCONTROL_H
+#pragma once
 
 #include "stm32f4xx.h"
 
 #include <vector>
+
 #include "WallSensor.h"
 #include "Encoder.h"
 #include "Motor.h"
@@ -42,7 +41,7 @@ private:
 	float tar_lin_vel;
 	float tar_rad_vel;
 
-	void culcIntegral();
+	void calcIntegral();
 	void controlX();
 	void controlVel();
 
@@ -56,5 +55,3 @@ public:
 	
 	static MotorControl *getInstance();
 };
-
-#endif

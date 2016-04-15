@@ -88,8 +88,11 @@ int main(void){
 
 	bool flag = false;
 	motorcontrol->stay();
-	motorcontrol->setRadVelocity(10.0f);
-	motorcontrol->setVelocity(0.2f);
+	// motorcontrol->setRadVelocity(0.0f);
+	// motorcontrol->setVelocity(0.10f);
+	VelocityControl* vc = VelocityControl::getInstance();
+	vc->runTrapAccel(0.0, 0.5, 0.0, 1.0, 1.0);
+
 
 	uint32_t whilecounter = 0;
 
