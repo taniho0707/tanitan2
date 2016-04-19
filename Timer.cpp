@@ -30,7 +30,9 @@ void Timer::interrupt(){
 	static Encoder *encoder = Encoder::getInstance();
 	static MotorControl *motor = MotorControl::getInstance();
 	static VelocityControl* vc = VelocityControl::getInstance();
-	vc->interrupt();
+	static Gyro* gy = Gyro::getInstance();
 	encoder->interrupt();
 	motor->interrupt();
+	vc->interrupt();
+	gy->getGyroYaw();
 }

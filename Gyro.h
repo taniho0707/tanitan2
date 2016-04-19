@@ -1,9 +1,7 @@
 /**
  * @file Gyro.h
  */
-
-#ifndef INCLUDED_GYRO_H
-#define INCLUDED_GYRO_H
+#pragma once
 
 #include "stm32f4xx.h"
 
@@ -116,6 +114,8 @@ private:
 
 	bool configAutomatic();
 
+	float cur_gyro_yaw;
+
 public:
 	static Gyro *getInstance();
 
@@ -128,11 +128,11 @@ public:
 	int16_t readAccelY();
 	int16_t readAccelZ();
 
+	void readGyroYaw();
+
 	void resetCalibration();
 
 	// returns [degree/sec] in float
 	float getGyroYaw();
 
 };
-
-#endif

@@ -66,9 +66,8 @@ int main(void){
 
 	Datalog *log = Datalog::getInstance();
 	if(Switch::isPushing(SwitchNumbers::RIGHT)){
-		// for(auto i=0; i<2048; ++i){
-		for(auto i=0; i<682; ++i){
-			compc->printf("%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", i, log->readFloat(12*i), log->readFloat(12*i+1), log->readFloat(12*i+2), log->readFloat(12*i+3), log->readFloat(12*i+4), log->readFloat(12*i+5), log->readFloat(12*i+6), log->readFloat(12*i+7), log->readFloat(12*i+8), log->readFloat(12*i+9), log->readFloat(12*i+10), log->readFloat(12*i+11));
+		for(auto i=0; i<2048; ++i){
+			compc->printf("%d\t%f\t%f\t%f\t%f\n", i, log->readFloat(4*i), log->readFloat(4*i+1), log->readFloat(4*i+2), log->readFloat(4*i+3));
 		}
 	}
 
@@ -88,28 +87,11 @@ int main(void){
 
 	bool flag = false;
 	motorcontrol->stay();
-	// motorcontrol->setRadVelocity(0.0f);
-	// motorcontrol->setVelocity(0.10f);
 	VelocityControl* vc = VelocityControl::getInstance();
 	vc->runTrapAccel(0.0, 0.5, 0.0, 1.0, 1.0);
 
 
-	uint32_t whilecounter = 0;
-
 	while(true){
-		if(Switch::isPushing(SwitchNumbers::RIGHT)){
-			Led::on(LedNumbers::RIGHT);
-			flag = true;
-		} else {
-			Led::off(LedNumbers::RIGHT);
-		}
-		if(Switch::isPushing(SwitchNumbers::LEFT)){
-			Led::on(LedNumbers::LEFT3);
-			flag = false;
-		} else {
-			Led::off(LedNumbers::LEFT3);
-		}
 		
-		Timer::wait_ms(100);
 	}
 }

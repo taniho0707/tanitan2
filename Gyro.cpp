@@ -159,6 +159,11 @@ int16_t Gyro::readAccelZ(){
 	return ret;
 }
 
+void Gyro::readGyroYaw(){
+	cur_gyro_yaw = (static_cast<float>(readGyroZ()) - zero_gyroz) * lsb2dps;
+	return;
+}
+
 
 void Gyro::resetCalibration(){
 	float tmp = 0.0;
@@ -171,7 +176,7 @@ void Gyro::resetCalibration(){
 }
 
 float Gyro::getGyroYaw(){
-	return (static_cast<float>(readGyroZ()) - zero_gyroz) * lsb2dps;
+	return cur_gyro_yaw;
 }
 
 
