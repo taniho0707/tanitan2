@@ -81,25 +81,10 @@ void MotorControl::controlVel(){
 	motor->setDuty(MotorSide::LEFT, tar_motor_l_power);
 	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
 
-	static uint8_t hogehoge = 0;
-	if(hogehoge++ != 4) return;
-	hogehoge = 0;
 	log->writeFloat(tar_lin_vel);
 	log->writeFloat((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
-	log->writeFloat(tar_vel_rev);
-	log->writeFloat(integral_lin_encoder);
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(gyro->getGyroYaw());
-	log->writeFloat(tar_rad_rev);
-	log->writeFloat(integral_rad_gyro);
-	log->writeFloat(tar_motor_lin_power);
-	log->writeFloat(tar_motor_rad_power);
-	log->writeFloat(tar_motor_r_power);
-	log->writeFloat(tar_motor_l_power);
-	// log->writeFloat(tar_lin_vel);
-	// log->writeFloat((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
-	// log->writeFloat(tar_rad_vel);
-	// log->writeFloat(gyro->getGyroYaw());
 }
 
 
