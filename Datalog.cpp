@@ -5,8 +5,8 @@
 #include "Datalog.h"
 
 Datalog::Datalog() :
-	POS_MAX(8192),
-	POS_ZERO(0x080C0000)
+	POS_MAX(131072),
+	POS_ZERO(0x08080000) //512kByte Sector8-11
 {
 	pos = 0;
 }
@@ -25,6 +25,18 @@ float Datalog::readFloat(const uint32_t pos){
 	float ret = 0.0f;
 	readData(POS_ZERO + (4*pos), ret);
 	return ret;
+}
+
+bool Datalog::cleanFlash(){
+	eraseSector(FLASH_Sector_8);
+	eraseSector(FLASH_Sector_9);
+	eraseSector(FLASH_Sector_10);
+	eraseSector(FLASH_Sector_11);
+}
+
+
+const uint32_t Datalog::getSize(){
+	return POS_MAX;
 }
 
 Datalog* Datalog::getInstance(){

@@ -20,6 +20,9 @@ public:
 	bool writeFloat(const float, const uint32_t);
 
 	float readFloat(const uint32_t);
+
+	bool cleanFlash();
+	const uint32_t getSize();
 	
 	static Datalog* getInstance();
 };

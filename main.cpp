@@ -66,15 +66,15 @@ int main(void){
 
 	Datalog *log = Datalog::getInstance();
 	if(Switch::isPushing(SwitchNumbers::RIGHT)){
-		for(auto i=0; i<2048; ++i){
+		for(auto i=0; i<log->getSize()/4; ++i){
 			compc->printf("%d\t%f\t%f\t%f\t%f\n", i, log->readFloat(4*i), log->readFloat(4*i+1), log->readFloat(4*i+2), log->readFloat(4*i+3));
 		}
 	}
 
 	*compc << "* Flash\n";
 	float log_ret = 12.34f;
-	log->eraseSector(FLASH_Sector_10);
-	*compc << "\tErace Sector10 done.\n";
+	log->cleanFlash();
+	*compc << "\tErace Sector8-11 done.\n";
 	// log->writeData(0x080C0000, log_ret);
 	// *compc << "\twrite '12.34f' done.\n";
 	// log_ret = 0.0f;
