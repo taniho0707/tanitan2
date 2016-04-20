@@ -1,5 +1,6 @@
 #include "VelocityControl.h"
 
+using namespace slalomparams;
 
 VelocityControl::VelocityControl(){
 	// mc = MotorControl::getInstance();
@@ -56,6 +57,7 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	}
 	target_linvel = v;
 }
+
 
 
 void VelocityControl::runPivotTurn(

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SlalomParams.h"
+
 #include "Motor.h"
 #include "MotorControl.h"
 #include "WallSensor.h"
@@ -9,23 +11,6 @@
 
 #include "ComPc.h"
 
-
-enum class RunType : uint8_t {
-	TRAPACCEL,
-	PIVOTTURN,
-	SLALOM90SML_RIGHT,
-	SLALOM90SML_LEFT,
-	SLALOM90_RIGHT,
-	SLALOM90_LEFT,
-	SLALOM180_RIGHT,
-	SLALOM180_LEFT,
-	SLALOM45_RIGHT,
-	SLALOM45_LEFT,
-	SLALOM135_RIGHT,
-	SLALOM135_LEFT,
-	SLALOM90OBL_RIGHT,
-	SLALOM90OBL_LEFT,
-};
 
 class VelocityControl{
 private:
@@ -37,7 +22,7 @@ private:
 	int32_t time;
 	bool end_flag;
 
-	enum RunType reg_type;
+	enum slalomparams::RunType reg_type;
 	float reg_start_vel;
 	float reg_max_vel;
 	float reg_end_vel;
