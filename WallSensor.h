@@ -59,7 +59,7 @@ public:
 
 	Walldata getWall();
 
-	uint16_t getCorrection(uint16_t max);
+	int16_t getCorrection(uint16_t max);
 
 	static WallSensor* getInstance();
 };

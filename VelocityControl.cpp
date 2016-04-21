@@ -15,7 +15,8 @@ VelocityControl::VelocityControl(){
 }
 
 bool VelocityControl::isRunning(){
-	return end_flag;
+	if(end_flag) return false;
+	else return true;
 }
 
 void VelocityControl::runTrapAccel(

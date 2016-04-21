@@ -14,7 +14,7 @@ MotorControl::MotorControl() :
 	// GAIN_RAD_P(0.5f),
 	// GAIN_RAD_I(0.001f),
 	// GAIN_RAD_D(0.0f),
-	GAIN_WALL_P(0.01f),
+	GAIN_WALL_P(0.1f),
 	GAIN_WALL_I(0.0f)
 {
 	cur_lin_x = 0.0;

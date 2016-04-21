@@ -99,6 +99,7 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.2f, 1.0f);
+	while(vc->isRunning());
 
 	while(true){
 		motorcontrol->stay();

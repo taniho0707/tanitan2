@@ -186,12 +186,6 @@ void WallSensor::interrupt(){
 	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 	tmp[static_cast<uint8_t>(SensorPosition::Left)] = ADC_GetConversionValue(ADC1);
 
-	// current_value[0] = tmp[0];
-	// current_value[1] = tmp[1];
-	// current_value[2] = tmp[2];
-	// current_value[3] = tmp[3];
-	// return;
-
 	offLed();
 	for(int i=0; i<1000000; ++i);
 
@@ -234,13 +228,13 @@ bool WallSensor::isExistWall(SensorPosition pos){
 
 Walldata WallSensor::getWall(){}
 
-uint16_t WallSensor::getCorrection(uint16_t max){
-	uint16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
-	uint16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
+int16_t WallSensor::getCorrection(uint16_t max){
+	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
+	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
 
 	if(isExistWall(SensorPosition::FLeft) && isExistWall(SensorPosition::FRight)) return 0;
 
-	uint16_t retval = tmpR + tmpL;
+	int16_t retval = tmpR + tmpL;
 	if(retval > max) return max;
 	if(-1*retval < -1*max) return -max;
 	return retval;
