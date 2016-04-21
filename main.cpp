@@ -66,8 +66,18 @@ int main(void){
 
 	Datalog *log = Datalog::getInstance();
 	if(Switch::isPushing(SwitchNumbers::RIGHT)){
-		for(auto i=0; i<log->getSize()/4; ++i){
-			compc->printf("%d\t%f\t%f\t%f\t%f\n", i, log->readFloat(4*i), log->readFloat(4*i+1), log->readFloat(4*i+2), log->readFloat(4*i+3));
+		constexpr auto num = 5;
+		for(auto i=0; i<log->getSize()/num; ++i){
+			compc->printf("%d\t%f\t%f\t%f\t%f\t%f\n", i, log->readFloat(num*i), log->readFloat(num*i+1), log->readFloat(num*i+2), log->readFloat(num*i+3), log->readFloat(num*i+4));
+		}
+	}
+
+	WallSensor* wall = WallSensor::getInstance();
+	wall->start();
+	if(Switch::isPushing(SwitchNumbers::LEFT)){
+		while(true){
+			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight));
+			Timer::wait_ms(100);
 		}
 	}
 
@@ -76,9 +86,6 @@ int main(void){
 	log->cleanFlash();
 	*compc << "\tErace Sector8-11 done.\n";
 
-	WallSensor* wall = WallSensor::getInstance();
-	wall->start();
-
 	for(auto i=0; i<3; ++i){
 		Timer::wait_ms(120);
 		Led::off(LedNumbers::FRONT);
@@ -86,12 +93,14 @@ int main(void){
 		Led::on(LedNumbers::FRONT);
 	}
 
+	// while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
+
 	bool flag = false;
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runPivotTurn(200, 100, 1000);
+	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.2f, 1.0f);
 
 	while(true){
-		
+		motorcontrol->stay();
 	}
 }
