@@ -75,20 +75,21 @@ int main(void){
 	float log_ret = 12.34f;
 	log->cleanFlash();
 	*compc << "\tErace Sector8-11 done.\n";
-	// log->writeData(0x080C0000, log_ret);
-	// *compc << "\twrite '12.34f' done.\n";
-	// log_ret = 0.0f;
-	// log->readData(0x080C0000, log_ret);
-	// compc->printf("\t%f\n\n", log_ret);
 
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
-	Timer::wait_ms(1000);
+
+	for(auto i=0; i<3; ++i){
+		Timer::wait_ms(120);
+		Led::off(LedNumbers::FRONT);
+		Timer::wait_ms(80);
+		Led::on(LedNumbers::FRONT);
+	}
 
 	bool flag = false;
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runPivotTurn(200, 360*2, 10);
+	vc->runPivotTurn(200, 100, 1000);
 
 	while(true){
 		

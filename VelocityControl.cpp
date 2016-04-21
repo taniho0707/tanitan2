@@ -97,6 +97,8 @@ void VelocityControl::calcPivotTurn(int32_t t){
 	}
 	target_linvel = 0.0;
 	target_radvel = v;
+	static ComPc* cp = ComPc::getInstance();
+	cp->printf("%f, %f, %f, %d, %d, %d, %d, %f\n", x1,x2,x3,t0,t1,t2,t3,v);
 }
 
 
@@ -112,6 +114,7 @@ void VelocityControl::setRadVel(){
 void VelocityControl::interrupt(){
 	if(end_flag) return;
 	if(reg_type == RunType::TRAPACCEL) calcTrapAccel(Timer::getTime());
+	else if(reg_type == RunType::PIVOTTURN) calcPivotTurn(Timer::getTime());
 	
 	setLinVel();
 	setRadVel();

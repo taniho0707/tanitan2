@@ -34,5 +34,5 @@ void Timer::interrupt(){
 	encoder->interrupt();
 	motor->interrupt();
 	vc->interrupt();
-	gy->getGyroYaw();
+	gy->readGyroYaw();
 }
