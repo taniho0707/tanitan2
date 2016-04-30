@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # coding=utf-8
 
 import sys, optparse, datetime
@@ -71,12 +71,12 @@ try:
 		dest="time_flag",
 		default=False,
 		help="print time after the start of connection with a device")
-        parser.add_option(
-                "-b", "--binary",
-                action="store_true",
-                dest="binary_flag",
-                default=False,
-                help="analyze input file as binary file")
+	parser.add_option(
+		"-b", "--binary",
+		action="store_true",
+		dest="binary_flag",
+		default=False,
+		help="analyze input file as binary file")
 
 	(options, args) = parser.parse_args()
 	if not args:
