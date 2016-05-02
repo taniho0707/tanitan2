@@ -55,5 +55,5 @@ debug:
 
 .PHONY: flash
 flash:
-	python write_main.py
+	python2 write_main.py
 

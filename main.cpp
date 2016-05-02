@@ -102,6 +102,7 @@ int main(void){
 	while(vc->isRunning());
 
 	while(true){
+		compc->printf("%f\n", gyro->getGyroYaw());
 		motorcontrol->stay();
 	}
 }
