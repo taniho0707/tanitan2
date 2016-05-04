@@ -93,7 +93,7 @@ int main(void){
 		Led::on(LedNumbers::FRONT);
 	}
 
-	// while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
+	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
 
 	bool flag = false;
 	motorcontrol->stay();

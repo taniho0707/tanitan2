@@ -35,6 +35,9 @@ private:
 	void calcTrapAccel(int32_t t);
 	void calcPivotTurn(int32_t t);
 
+	float x1, x2, x3, v;
+	int32_t t1, t2, t3;
+
 	VelocityControl();
 
 public:

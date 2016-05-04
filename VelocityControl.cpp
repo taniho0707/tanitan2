@@ -34,17 +34,17 @@ void VelocityControl::runTrapAccel(
 	reg_end_vel = end_vel;
 	reg_distance = distance;
 	reg_accel = accel;
+	x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
+	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
+	x2 = reg_distance - x1 - x3;
+	t1 = static_cast<int32_t>(1000.0f * (reg_max_vel - reg_start_vel) / reg_accel);
+	t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
+	t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
+	v = 0.0f;
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
-	float x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
-	float x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
-	float x2 = reg_distance - x1 - x3;
 	int32_t t0 = t - time;
-	int32_t t1 = static_cast<int32_t>(1000.0f * (reg_max_vel - reg_start_vel) / reg_accel);
-	int32_t t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
-	int32_t t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
-	float v = 0.0f;
 
 	if(t0 < t1){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
@@ -74,17 +74,17 @@ void VelocityControl::runPivotTurn(
 	reg_end_vel = 0.0;
 	reg_distance = degree;
 	reg_accel = accel;
+	x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
+	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
+	x2 = reg_distance - x1 - x3;
+	t1 = static_cast<int32_t>(1000.0f * (reg_max_vel - reg_start_vel) / reg_accel);
+	t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
+	t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
+	v = 0.0f;
 }
 
 void VelocityControl::calcPivotTurn(int32_t t){
-	float x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
-	float x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
-	float x2 = reg_distance - x1 - x3;
 	int32_t t0 = t - time;
-	int32_t t1 = static_cast<int32_t>(1000.0f * (reg_max_vel - reg_start_vel) / reg_accel);
-	int32_t t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
-	int32_t t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
-	float v = 0.0f;
 
 	if(t0 < t1){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
@@ -98,8 +98,6 @@ void VelocityControl::calcPivotTurn(int32_t t){
 	}
 	target_linvel = 0.0;
 	target_radvel = v;
-	static ComPc* cp = ComPc::getInstance();
-	cp->printf("%f, %f, %f, %d, %d, %d, %d, %f\n", x1,x2,x3,t0,t1,t2,t3,v);
 }
 
 
