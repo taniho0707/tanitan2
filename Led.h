@@ -1,9 +1,7 @@
 /**
  * @file Led.h
  */
-
-#ifndef INCLUDED_LED_H
-#define INCLUDED_LED_H
+#pragma once
 
 #include "stm32f4xx.h"
 
@@ -13,7 +11,7 @@ enum class LedNumbers : uint8_t {
 	LEFT2,
 	LEFT3,
 	RIGHT,
-	};
+};
 
 class Led{
 private:
@@ -34,6 +32,3 @@ public:
 	static void off(LedNumbers num);
 
 };
-
-
-#endif
