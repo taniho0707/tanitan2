@@ -110,8 +110,8 @@ int main(void){
 	bool flag = false;
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	// vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.2f, 1.0f);
-	vc->runPivotTurn(100, 360, 500);
+	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.35f, 1.0f);
+	// vc->runPivotTurn(100, 360, 500);
 	while(vc->isRunning());
 
 	while(true){
