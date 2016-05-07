@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "MotorControl.h"
 #include "VelocityControl.h"
+#include "Led.h"
 
 __IO int32_t Timer::total = 0;
 __IO int32_t Timer::waitnum = 0;
@@ -31,8 +32,10 @@ void Timer::interrupt(){
 	static MotorControl *motor = MotorControl::getInstance();
 	static VelocityControl* vc = VelocityControl::getInstance();
 	static Gyro* gy = Gyro::getInstance();
+	static Led* led = Led::getInstance();
 	encoder->interrupt();
 	gy->readGyroYaw();
 	vc->interrupt();
 	motor->interrupt();
+	led->interrupt();
 }

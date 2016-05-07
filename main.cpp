@@ -7,25 +7,26 @@ int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
 
-	Led::init();
 	Switch::init();
 	Speaker::init();
 
 	Timer::wait_ms(500);
 
+	Led *led = Led::getInstance();
+	// led->on(LedNumbers::FRONT);
+	// led->on(LedNumbers::RIGHT);
+	// led->on(LedNumbers::LEFT1);
+	// led->on(LedNumbers::LEFT2);
+	// led->on(LedNumbers::LEFT3);
+	// Timer::wait_ms(500);
+	// led->off(LedNumbers::RIGHT);
+	// led->off(LedNumbers::LEFT1);
+	// led->off(LedNumbers::LEFT2);
+	// led->off(LedNumbers::LEFT3);
+	led->flickSync(LedNumbers::FRONT, 2.0f, 2000);
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
-
-	Led::on(LedNumbers::FRONT);
-	Led::on(LedNumbers::RIGHT);
-	Led::on(LedNumbers::LEFT1);
-	Led::on(LedNumbers::LEFT2);
-	Led::on(LedNumbers::LEFT3);
-	Timer::wait_ms(500);
-	Led::off(LedNumbers::RIGHT);
-	Led::off(LedNumbers::LEFT1);
-	Led::off(LedNumbers::LEFT2);
-	Led::off(LedNumbers::LEFT3);
+	led->flickAsync(LedNumbers::RIGHT, 5.0f, 5000);
 
 	ComPc *compc = ComPc::getInstance();
 	Nfc *nfc = Nfc::getInstance();
@@ -41,10 +42,10 @@ int main(void){
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
 	if(ret_bool){
-		Led::on(LedNumbers::LEFT2);
+		led->on(LedNumbers::LEFT2);
 		*compc << "\tSuccess WHO_AM_I from gyro\n";
 	} else{
-		Led::off(LedNumbers::FRONT);
+		led->off(LedNumbers::FRONT);
 		*compc << "\tFailure WHO_AM_I from gyro\n";
 	}
 	Timer::wait_ms(1000);
@@ -97,13 +98,13 @@ int main(void){
 	log->cleanFlash();
 	*compc << "\tErace Sector8-11 done.\n";
 
-	Led::off(LedNumbers::FRONT);
+	led->off(LedNumbers::FRONT);
 	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
 	for(auto i=0; i<3; ++i){
 		Timer::wait_ms(120);
-		Led::off(LedNumbers::FRONT);
+		led->off(LedNumbers::FRONT);
 		Timer::wait_ms(80);
-		Led::on(LedNumbers::FRONT);
+		led->on(LedNumbers::FRONT);
 	}
 	Timer::wait_ms(200);
 
