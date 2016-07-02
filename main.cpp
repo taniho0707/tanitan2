@@ -7,66 +7,24 @@ int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
 
-	Switch::init();
-	Speaker::init();
-
 	Timer::wait_ms(500);
 
+	Speaker* speaker = Speaker::getInstance();
 	Led *led = Led::getInstance();
-	// led->on(LedNumbers::FRONT);
-	// led->on(LedNumbers::RIGHT);
-	// led->on(LedNumbers::LEFT1);
-	// led->on(LedNumbers::LEFT2);
-	// led->on(LedNumbers::LEFT3);
-	// Timer::wait_ms(500);
-	// led->off(LedNumbers::RIGHT);
-	// led->off(LedNumbers::LEFT1);
-	// led->off(LedNumbers::LEFT2);
-	// led->off(LedNumbers::LEFT3);
-	led->flickSync(LedNumbers::FRONT, 2.0f, 2000);
-	Speaker::playSound(880, 100, true);
-	Speaker::playSound(1175, 300, true);
-	led->flickAsync(LedNumbers::RIGHT, 5.0f, 5000);
+	speaker->playSound(880, 100, true);
+	speaker->playSound(1175, 300, true);
 
-	ComPc *compc = ComPc::getInstance();
-	Nfc *nfc = Nfc::getInstance();
-	Mram *mram = Mram::getInstance();
-	Gyro *gyro = Gyro::getInstance();
-	Encoder *encoder = Encoder::getInstance();
-	Motor *motor = Motor::getInstance();
-	MotorControl *motorcontrol = MotorControl::getInstance();
-
-	*compc <<"Hello STM32F405!\n\n";
-
-	*compc << "* Gyro\n";
-	uint8_t ret = 0x00;
-	bool ret_bool = gyro->whoami();
-	if(ret_bool){
-		led->on(LedNumbers::LEFT2);
-		*compc << "\tSuccess WHO_AM_I from gyro\n";
-	} else{
-		led->off(LedNumbers::FRONT);
-		*compc << "\tFailure WHO_AM_I from gyro\n";
-	}
-	Timer::wait_ms(1000);
-	gyro->resetCalibration();
-	*compc << "\tGyro Calibration done.\n";
-	*compc << "\tGyro setting was completed\n\n";
-
-	Timer::wait_ms(100);
-
-	*compc << "* MRAM\n";
-	mram->writeEnable();
-	std::vector<uint8_t> mram_ret(1);
-	mram_ret[0] = 0xAB;
-	mram->writeData(mram_ret, 0x0000, 1);
-	mram_ret[0] = 0xFF;
-	*compc << "\tWrote '0xAB'\n";
-	mram->readData(mram_ret, 0x0000, 1);
-	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
+	Switch* sw = Switch::getInstance();
+	ComPc* compc = ComPc::getInstance();
+	Nfc* nfc = Nfc::getInstance();
+	Mram* mram = Mram::getInstance();
+	Gyro* gyro = Gyro::getInstance();
+	Encoder* encoder = Encoder::getInstance();
+	Motor* motor = Motor::getInstance();
+	MotorControl* motorcontrol = MotorControl::getInstance();
 
 	Datalog *log = Datalog::getInstance();
-	if(Switch::isPushing(SwitchNumbers::RIGHT)){
+	if(sw->isPushing(SwitchNumbers::RIGHT)){
 		constexpr auto num = 10;
 		for(auto i=0; i<log->getSize()/num; ++i){
 			compc->printf("%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n", i,
@@ -84,29 +42,52 @@ int main(void){
 		}
 	}
 
+	*compc <<"Hello STM32F405!\n\n";
+
+	*compc << "* Gyro\n";
+	uint8_t ret = 0x00;
+	bool ret_bool = gyro->whoami();
+	if(ret_bool){
+		*compc << "\tSuccess WHO_AM_I from gyro\n";
+	} else{
+		*compc << "\tFailure WHO_AM_I from gyro\n";
+	}
+	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
+	led->flickAsync(LedNumbers::FRONT, 5.0f, 1100);
+	gyro->resetCalibration();
+	*compc << "\tGyro Calibration done.\n";
+	*compc << "\tGyro setting was completed\n\n";
+
+	*compc << "* MRAM\n";
+	mram->writeEnable();
+	std::vector<uint8_t> mram_ret(1);
+	mram_ret[0] = 0xAB;
+	mram->writeData(mram_ret, 0x0000, 1);
+	mram_ret[0] = 0xFF;
+	*compc << "\tWrote '0xAB'\n";
+	mram->readData(mram_ret, 0x0000, 1);
+	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
+
 	WallSensor* wall = WallSensor::getInstance();
 	wall->start();
-	if(Switch::isPushing(SwitchNumbers::LEFT)){
+	if(sw->isPushing(SwitchNumbers::LEFT)){
 		while(true){
 			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight));
 			Timer::wait_ms(100);
 		}
 	}
 
+	led->on(LedNumbers::RIGHT);
 	*compc << "* Flash\n";
 	float log_ret = 12.34f;
 	log->cleanFlash();
 	*compc << "\tErace Sector8-11 done.\n";
+	led->off(LedNumbers::RIGHT);
 
 	led->off(LedNumbers::FRONT);
 	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
-	for(auto i=0; i<3; ++i){
-		Timer::wait_ms(120);
-		led->off(LedNumbers::FRONT);
-		Timer::wait_ms(80);
-		led->on(LedNumbers::FRONT);
-	}
-	Timer::wait_ms(200);
+	led->sync(LedNumbers::FRONT, 2.0f, 1500);
+	led->on(LedNumbers::FRONT);
 
 	bool flag = false;
 	motorcontrol->stay();

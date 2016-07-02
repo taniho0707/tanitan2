@@ -5,7 +5,7 @@
 #include "Speaker.h"
 
 
-void Speaker::init(){
+Speaker::Speaker(){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	TIM_TimeBaseInitTypeDef TIM_InitStructure;
 	TIM_OCInitTypeDef TIM_OC_InitStructure;
@@ -87,3 +87,8 @@ void Speaker::playSound(int freq, int length, bool sync){
 	}
 }
 
+
+Speaker* Speaker::getInstance(){
+	static Speaker* instance;
+	return instance;
+}

@@ -1,36 +1,29 @@
 /**
  * @file Switch.h
  */
-
-#ifndef INCLUDED_SWITCH_H
-#define INCLUDED_SWITCH_H
+#pragma once
 
 #include "stm32f4xx.h"
 
-enum class SwitchNumbers : char {
+enum class SwitchNumbers : uint8_t {
 	LEFT,
 	RIGHT,
 };
 
 class Switch{
 private:
-	static GPIO_TypeDef * gpio_port;
-	static uint16_t gpio_channel;
+	GPIO_TypeDef * gpio_port;
+	uint16_t gpio_channel;
 
 	Switch();
-	~Switch();
 
-	static void setType(SwitchNumbers num);
+	void setType(SwitchNumbers num);
 
 public:
 
-	static void init();
+	bool hasPushed(SwitchNumbers num);
 
-	static bool hasPushed(SwitchNumbers num);
+	bool isPushing(SwitchNumbers num);
 
-	static bool isPushing(SwitchNumbers num);
-
+	static Switch* getInstance();
 };
-
-
-#endif

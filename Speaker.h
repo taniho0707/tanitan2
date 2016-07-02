@@ -1,9 +1,7 @@
 /**
  * @file Speaker.h
  */
-
-#ifndef INCLUDED_SPEAKER_H
-#define INCLUDED_SPEAKER_H
+#pragma once
 
 #include "stm32f4xx.h"
 
@@ -13,13 +11,9 @@ class Speaker{
 private:
 	
 	Speaker();
-	~Speaker();
 	
 public:
-	static void init();
-	
-	static void playSound(int freq, int length, bool sync);
-	
-};
+	void playSound(int freq, int length, bool sync);
 
-#endif
+	static Speaker* getInstance();
+};
