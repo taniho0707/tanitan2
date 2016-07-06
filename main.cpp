@@ -13,16 +13,6 @@ int main(void){
 	Timer::wait_ms(500);
 
 	Led *led = Led::getInstance();
-	// led->on(LedNumbers::FRONT);
-	// led->on(LedNumbers::RIGHT);
-	// led->on(LedNumbers::LEFT1);
-	// led->on(LedNumbers::LEFT2);
-	// led->on(LedNumbers::LEFT3);
-	// Timer::wait_ms(500);
-	// led->off(LedNumbers::RIGHT);
-	// led->off(LedNumbers::LEFT1);
-	// led->off(LedNumbers::LEFT2);
-	// led->off(LedNumbers::LEFT3);
 	led->flickSync(LedNumbers::FRONT, 2.0f, 2000);
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
