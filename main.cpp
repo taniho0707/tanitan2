@@ -34,14 +34,14 @@ int main(void){
 	if(ret_bool){
 		led->on(LedNumbers::LEFT2);
 		*compc << "\tSuccess WHO_AM_I from gyro\n";
+		Timer::wait_ms(1000);
+		gyro->resetCalibration();
+		*compc << "\tGyro Calibration done.\n";
+		*compc << "\tGyro setting was completed\n\n";
 	} else{
 		led->off(LedNumbers::FRONT);
 		*compc << "\tFailure WHO_AM_I from gyro\n";
 	}
-	Timer::wait_ms(1000);
-	gyro->resetCalibration();
-	*compc << "\tGyro Calibration done.\n";
-	*compc << "\tGyro setting was completed\n\n";
 
 	Timer::wait_ms(100);
 
