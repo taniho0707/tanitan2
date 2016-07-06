@@ -99,6 +99,7 @@ int main(void){
 	Timer::wait_ms(200);
 
 	bool flag = false;
+	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.35f, 1.0f);

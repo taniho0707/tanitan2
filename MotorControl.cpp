@@ -6,7 +6,7 @@
 
 MotorControl::MotorControl() : 
 	GAIN_LIN_P(180),
-	GAIN_LIN_I(100),
+	GAIN_LIN_I(150),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.5f),
 	GAIN_RAD_I(0.05f),
@@ -49,10 +49,12 @@ void MotorControl::controlX(){
 void MotorControl::controlVel(){
 	static float tar_motor_lin_power = 0;
 	static float tar_motor_rad_power = 0;
-	static float tar_motor_r_power = 0;
-	static float tar_motor_l_power = 0;
+	static int16_t tar_motor_r_power = 0;
+	static int16_t tar_motor_l_power = 0;
 	static float tar_vel_rev = 0;
 	static float tar_rad_rev = 0;
+	static float integral_r = 0.0f;
+	static float integral_l = 0.0f;
 	static float integral_lin_encoder = 0.0;
 	static float integral_rad_gyro = 0.0;
 
@@ -64,30 +66,35 @@ void MotorControl::controlVel(){
 	integral_wall += wall->getCorrection(10000);
 
 	// linear成分の計算
-	tar_vel_rev = tar_lin_vel - ((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
-	integral_lin_encoder += tar_vel_rev;
-	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
+	tar_vel_rev = tar_lin_vel - (encoder->getVelocity(EncoderSide::RIGHT));
+	integral_r += tar_vel_rev;
+	tar_motor_r_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_r;
+	
+	tar_vel_rev = tar_lin_vel - (encoder->getVelocity(EncoderSide::LEFT));
+	integral_l += tar_vel_rev;
+	tar_motor_l_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_l;
 
 	// rotation成分の計算
 	tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw();
 	d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	integral_rad_gyro += tar_rad_rev;
-	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
+	// tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
+	tar_motor_rad_power = 0.0;
 
-	// モーター出力
-	tar_motor_r_power = tar_motor_lin_power - tar_motor_rad_power;
-	tar_motor_l_power = tar_motor_lin_power + tar_motor_rad_power;
+	// // モーター出力
+	// tar_motor_r_power = tar_motor_lin_power - tar_motor_rad_power;
+	// tar_motor_l_power = tar_motor_lin_power + tar_motor_rad_power;
 
-	motor->setDuty(MotorSide::LEFT, static_cast<int16_t>(tar_motor_l_power));
-	motor->setDuty(MotorSide::RIGHT, static_cast<int16_t>(tar_motor_r_power));
+	motor->setDuty(MotorSide::LEFT, tar_motor_l_power);
+	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
 
 	log->writeFloat(tar_lin_vel);
 	log->writeFloat((encoder->getVelocity(EncoderSide::RIGHT) + encoder->getVelocity(EncoderSide::LEFT)) / 2.0);
 	log->writeFloat(integral_lin_encoder);
 	log->writeFloat(tar_rad_vel);
-	log->writeFloat(gyro->getGyroYaw());
-	log->writeFloat(integral_rad_gyro);
-	log->writeFloat(tar_motor_lin_power);
+	log->writeFloat(GAIN_LIN_P * tar_vel_rev);
+	log->writeFloat(GAIN_LIN_P);
+	log->writeFloat(tar_vel_rev);
 	log->writeFloat(tar_motor_rad_power);
 	log->writeFloat(tar_motor_l_power);
 	log->writeFloat(tar_motor_r_power);
