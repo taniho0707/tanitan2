@@ -68,11 +68,11 @@ void MotorControl::controlVel(){
 	integral_lin_encoder += tar_vel_rev;
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
-	// rotation成分の計算
-	tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw();
-	d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
-	integral_rad_gyro += tar_rad_rev;
-	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
+	// // rotation成分の計算
+	// tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw();
+	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
+	// integral_rad_gyro += tar_rad_rev;
+	// tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
 
 	// モーター出力
 	tar_motor_r_power = tar_motor_lin_power - tar_motor_rad_power;
