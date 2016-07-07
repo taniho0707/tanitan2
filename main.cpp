@@ -13,10 +13,18 @@ int main(void){
 	Timer::wait_ms(500);
 
 	Led *led = Led::getInstance();
-	led->flickSync(LedNumbers::FRONT, 2.0f, 2000);
+	led->on(LedNumbers::RIGHT);
+	led->on(LedNumbers::LEFT1);
+	led->on(LedNumbers::LEFT2);
+	led->on(LedNumbers::LEFT3);
+	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
-	led->flickAsync(LedNumbers::RIGHT, 5.0f, 5000);
+	led->off(LedNumbers::RIGHT);
+	led->off(LedNumbers::LEFT1);
+	led->off(LedNumbers::LEFT2);
+	led->off(LedNumbers::LEFT3);
+	led->flickAsync(LedNumbers::RIGHT, 5.0f, 60000);
 
 	ComPc *compc = ComPc::getInstance();
 	Nfc *nfc = Nfc::getInstance();
@@ -32,15 +40,15 @@ int main(void){
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
 	if(ret_bool){
-		led->on(LedNumbers::LEFT2);
 		*compc << "\tSuccess WHO_AM_I from gyro\n";
-		Timer::wait_ms(1000);
-		gyro->resetCalibration();
-		*compc << "\tGyro Calibration done.\n";
-		*compc << "\tGyro setting was completed\n\n";
+		led->flickAsync(LedNumbers::LEFT1, 4.0f, 1000);
+		// Timer::wait_ms(1000);
+		// gyro->resetCalibration();
+		// *compc << "\tGyro Calibration done.\n";
+		// *compc << "\tGyro setting was completed\n\n";
 	} else{
-		led->off(LedNumbers::FRONT);
 		*compc << "\tFailure WHO_AM_I from gyro\n";
+		led->flickAsync(LedNumbers::LEFT2, 4.0f, 1000);
 	}
 
 	Timer::wait_ms(100);
@@ -84,26 +92,23 @@ int main(void){
 	}
 
 	*compc << "* Flash\n";
+	led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
 	float log_ret = 12.34f;
 	log->cleanFlash();
 	*compc << "\tErace Sector8-11 done.\n";
+	led->flickStop(LedNumbers::LEFT3);
 
-	led->off(LedNumbers::FRONT);
+	led->flickStop(LedNumbers::FRONT);
 	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
-	for(auto i=0; i<3; ++i){
-		Timer::wait_ms(120);
-		led->off(LedNumbers::FRONT);
-		Timer::wait_ms(80);
-		led->on(LedNumbers::FRONT);
-	}
-	Timer::wait_ms(200);
+	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
+	led->on(LedNumbers::FRONT);
 
 	bool flag = false;
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.35f, 1.0f);
-	// vc->runPivotTurn(100, 360, 500);
+	// vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.35f, 1.0f);
+	vc->runPivotTurn(100, 360, 500);
 	while(vc->isRunning());
 
 	while(true){

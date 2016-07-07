@@ -25,14 +25,19 @@ private:
 
 	Datalog* log = Datalog::getInstance();
 
-	const float GAIN_LIN_P;
-	const float GAIN_LIN_I;
-	const float GAIN_LIN_D;
+	const float GAIN_LIN_P_R;
+	const float GAIN_LIN_I_R;
+	const float GAIN_LIN_D_R;
+	const float GAIN_LIN_P_L;
+	const float GAIN_LIN_I_L;
+	const float GAIN_LIN_D_L;
 	const float GAIN_RAD_P;
 	const float GAIN_RAD_I;
 	const float GAIN_RAD_D;
 	const float GAIN_WALL_P;
 	const float GAIN_WALL_I;
+
+	const float TREAD;
 
 	float cur_lin_x;
 	float cur_lin_vel;
