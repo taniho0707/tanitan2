@@ -5,11 +5,11 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P_L(280),
-	GAIN_LIN_I_L(40),
+	GAIN_LIN_P_L(430),
+	GAIN_LIN_I_L(0),
 	GAIN_LIN_D_L(0.0),
-	GAIN_LIN_P_R(300),
-	GAIN_LIN_I_R(45),
+	GAIN_LIN_P_R(450),
+	GAIN_LIN_I_R(0),
 	GAIN_LIN_D_R(0.0),
 	GAIN_RAD_P(1.0f),
 	GAIN_RAD_I(0.0f),
@@ -69,22 +69,22 @@ void MotorControl::controlVel(){
 	// // 壁積分値の計算
 	integral_wall += wall->getCorrection(10000);
 
-	// linear成分の計算
-	tar_vel_rev = tar_lin_vel - (encoder->getVelocity(EncoderSide::RIGHT));
-	integral_r += tar_vel_rev;
-	tar_motor_r_power = GAIN_LIN_P_R * tar_vel_rev + GAIN_LIN_I_R * integral_r;
-	
-	tar_vel_rev = tar_lin_vel - (encoder->getVelocity(EncoderSide::LEFT));
-	integral_l += tar_vel_rev;
-	tar_motor_l_power = GAIN_LIN_P_L * tar_vel_rev + GAIN_LIN_I_L * integral_l;
-
 	// rotation成分の計算
-	tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - (encoder->getVelocity(EncoderSide::LEFT)-encoder->getVelocity(EncoderSide::RIGHT))*2/TREAD;
+	tar_rad_rev = (encoder->getVelocity(EncoderSide::LEFT)-encoder->getVelocity(EncoderSide::RIGHT))*2/TREAD;
 	integral_rad_gyro += tar_rad_rev;
 	// tar_rad_rev = (tar_rad_vel + GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw();
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	// integral_rad_gyro += tar_rad_rev;
-	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro + GAIN_RAD_D * d_rad_gyro;
+	tar_motor_rad_power = (GAIN_WALL_P * wall->getCorrection(10000));
+
+	// linear成分の計算
+	tar_vel_rev = (tar_lin_vel + tar_rad_vel) - (encoder->getVelocity(EncoderSide::RIGHT)) + (tar_rad_rev);
+	integral_r += tar_vel_rev;
+	tar_motor_r_power = GAIN_LIN_P_R * tar_vel_rev + GAIN_LIN_I_R * integral_r;
+	
+	tar_vel_rev = (tar_lin_vel - tar_rad_vel) - (encoder->getVelocity(EncoderSide::LEFT)) - (tar_rad_rev);
+	integral_l += tar_vel_rev;
+	tar_motor_l_power = GAIN_LIN_P_L * tar_vel_rev + GAIN_LIN_I_L * integral_l;
 
 	// モーター出力
 	tar_motor_r_power = tar_motor_r_power - tar_motor_rad_power;
@@ -97,9 +97,9 @@ void MotorControl::controlVel(){
 	log->writeFloat(encoder->getVelocity(EncoderSide::LEFT));
 	log->writeFloat(encoder->getVelocity(EncoderSide::RIGHT));
 	log->writeFloat((encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2.0f);
-	log->writeFloat(integral_l);
-	log->writeFloat(integral_r);
-	log->writeFloat(0.0f);
+	log->writeFloat(tar_rad_rev);
+	log->writeFloat(tar_rad_vel);
+	log->writeFloat(tar_motor_rad_power);
 	log->writeFloat(tar_motor_rad_power);
 	log->writeFloat(tar_motor_l_power);
 	log->writeFloat(tar_motor_r_power);
