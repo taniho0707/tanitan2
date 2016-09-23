@@ -169,6 +169,21 @@ void SysTick_Handler(void){
 /* 	/\* if(++c > 3) c = 0; *\/ */
 /* } */
 
+void DMA2_Stream7_IRQHandler(void){
+	/* Test on DMA Stream Transfer Complete interrupt */
+	if (DMA_GetITStatus(DMA2_Stream7, DMA_IT_TCIF7)){
+		/* Clear DMA Stream Transfer Complete interrupt pending bit */
+		DMA_ClearITPendingBit(DMA2_Stream7, DMA_IT_TCIF7);
+		DMA_Cmd(DMA2_Stream7, DISABLE);
+	}
+	
+	/* Test on DMA Stream Half Transfer interrupt */
+	if (DMA_GetITStatus(DMA2_Stream7, DMA_IT_HTIF7)){
+		/* Clear DMA Stream Half Transfer interrupt pending bit */
+		DMA_ClearITPendingBit(DMA2_Stream7, DMA_IT_HTIF7);
+	}
+}
+
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

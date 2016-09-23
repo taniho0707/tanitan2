@@ -2,13 +2,15 @@
  * @file Usart.h
  * @brief USART通信を行う際の基底クラス。単体での使用不可
  */
-#ifndef INCLUDED_USART_HPP
-#define INCLUDED_USART_HPP
+#pragma once
 
+#include <cstring>
 #include <vector>
 
 #include "stm32f4xx.h"
 
+
+static const uint16_t BUFSIZE = 256;
 
 class Usart{
 private:
@@ -16,7 +18,7 @@ private:
 protected:
 	USART_TypeDef *usart_port;
 
-	uint8_t buffer[100];
+	uint8_t send_buf[BUFSIZE];
 
 	virtual uint8_t getChecksum(const uint8_t *data, const uint8_t num);
 	virtual uint8_t getChecksum(const std::vector<uint8_t>& data, const uint8_t num);
@@ -36,6 +38,9 @@ protected:
 	void sendnbyte(const char *c, const int n);
 	void sendnbyte(const std::vector<uint8_t>& c, const int n);
 
+	void sendbydma(const char *c, const int n);
+	void sendbydma(const std::vector<uint8_t>& c, const int n);
+
 	bool recv1byte(uint8_t& data);
 	bool recvnbyte(std::vector<uint8_t>& c, const int n);
 
@@ -45,6 +50,3 @@ public:
 
 };
 
-
-
-#endif

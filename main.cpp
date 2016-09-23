@@ -3,6 +3,8 @@
  */
 #include "main.h"
 
+int test();
+
 int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
@@ -34,9 +36,10 @@ int main(void){
 	Motor *motor = Motor::getInstance();
 	MotorControl *motorcontrol = MotorControl::getInstance();
 
-	*compc <<"Hello STM32F405!\n\n";
+	compc->printf("Hello STM32F405!\n\n");
+	led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
 
-	*compc << "* Gyro\n";
+	compc->printf("* Gyro\n");
 	uint8_t ret = 0x00;
 	bool ret_bool = gyro->whoami();
 	if(ret_bool){

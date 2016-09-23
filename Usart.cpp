@@ -45,6 +45,19 @@ void Usart::sendnbyte(const std::vector<uint8_t>& c, const int n){
 	for(auto v : c) send1byte(v);
 }
 
+
+void Usart::sendbydma(const char *data, const int len){
+	strcpy(send_buf, data);
+	DMA_ClearFlag(DMA2_Stream7, DMA_FLAG_TCIF7);
+	DMA_Cmd(DMA2_Stream7, ENABLE);
+	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+}
+void Usart::sendbydma(const std::vector<uint8_t>& c, const int n){
+	USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+	// strcpy(send_buf, c);
+	// for(auto v : c) send1byte(v);
+}
+
 bool Usart::recv1byte(uint8_t& data){
 	while(USART_GetFlagStatus(usart_port, USART_FLAG_RXNE) == RESET);
 	data = USART_ReceiveData(usart_port);
@@ -58,10 +71,4 @@ bool Usart::recvnbyte(std::vector<uint8_t>& c, const int n){
 	}
 	return true;
 }
-
-
-
-
-
-
 

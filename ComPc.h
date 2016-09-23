@@ -1,8 +1,7 @@
 /**
  * @file Usart.h
  */
-#ifndef INCLUDED_COMPC_HPP
-#define INCLUDED_COMPC_HPP
+#pragma once
 
 #include <string>
 #include <cstdarg>
@@ -18,6 +17,8 @@ private:
 	explicit ComPc(USART_TypeDef *port);
 
 	uint8_t bit2hex(const uint8_t val);
+
+	DMA_InitTypeDef DMA_InitStructure;
 
 public:
 
@@ -45,6 +46,3 @@ public:
 
 };
 
-
-
-#endif
