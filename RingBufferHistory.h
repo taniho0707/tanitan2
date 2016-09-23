@@ -1,23 +1,21 @@
 /**
  * @file RingBufferHistory.h
  */
-
-#ifndef RING_BUFFER_HISTORY_H
-#define RING_BUFFER_HISTORY_H
+#pragma once
 
 #include <array>
 
-template <typename T, std::size_t N>
+template <typename T, uint16_t N>
 class RingBufferHistory{
 private:
 	std::array<T, N> buf;
-	std::size_t ite;
+	uint16_t ite;
 public:
 	explicit RingBufferHistory(){ }
 
 	void push(const T& data){
 		buf[ite] = data;
-		if(++ite >= N) ite -= N;
+		if(++ite >= N) ite = 0;
 		return;
 	}
 
@@ -25,5 +23,3 @@ public:
 		return buf[ite];
 	}
 };
-
-#endif
