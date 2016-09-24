@@ -184,6 +184,25 @@ void DMA2_Stream7_IRQHandler(void){
 	}
 }
 
+void DMA1_Stream5_IRQHandler(void){
+	/* Test on DMA Stream Transfer Complete interrupt */
+	if (DMA_GetITStatus(DMA1_Stream5, DMA_IT_TCIF5)){
+		/* Clear DMA Stream Transfer Complete interrupt pending bit */
+		DMA_ClearITPendingBit(DMA1_Stream5, DMA_IT_TCIF5);
+		DMA_Cmd(DMA1_Stream5, DISABLE);
+
+		// reset spi3 cs
+		// TODO kitanai
+		GPIO_SetBits(GPIOA, GPIO_Pin_15);
+	}
+	
+	/* Test on DMA Stream Half Transfer interrupt */
+	if (DMA_GetITStatus(DMA1_Stream5, DMA_IT_HTIF5)){
+		/* Clear DMA Stream Half Transfer interrupt pending bit */
+		DMA_ClearITPendingBit(DMA1_Stream5, DMA_IT_HTIF5);
+	}
+}
+
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
