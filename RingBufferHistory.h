@@ -11,9 +11,24 @@ private:
 	std::array<T, N> buf;
 	uint16_t ite;
 public:
-	explicit RingBufferHistory();
+	explicit RingBufferHistory(){ }
 
-	void push(const T& data);
-	T read();
-	T getAverage();
+	void push(const T& data){
+		buf.at(ite) = data;
+		if(++ite >= N) ite = 0;
+		return;
+	}
+
+	T read(){
+		return buf[ite];
+	}
+
+	T getAverage(){
+		float sum = 0.0f;
+		for (auto i: buf) {
+			sum += i;
+		}
+		sum /= N;
+		return sum;
+	}
 };

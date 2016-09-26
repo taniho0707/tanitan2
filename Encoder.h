@@ -5,8 +5,6 @@
 
 #include "stm32f4xx.h"
 
-#include "RingBufferHistory.h"
-
 enum class EncoderSide : uint8_t{
 	LEFT,
 	RIGHT,
@@ -16,8 +14,9 @@ class Encoder{
 private:
 	explicit Encoder();
 
-	RingBufferHistory<float, 50> hist_l;
-	RingBufferHistory<float, 50> hist_r;
+	float hist_l[50];
+	float hist_r[50];
+	uint8_t ite_hist;
 
 	const static uint16_t MEDIAN;
 	const static float PULSE_L;
