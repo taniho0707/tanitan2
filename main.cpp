@@ -59,10 +59,10 @@ int main(void){
 	*compc << "* MRAM\n";
 	mram->writeEnable();
 	std::vector<uint8_t> mram_ret(1);
-	mram_ret[0] = 0xAB;
-	mram->writeData(mram_ret, 0x0000, 1);
-	mram_ret[0] = 0xFF;
-	*compc << "\tWrote '0xAB'\n";
+	// mram_ret[0] = 0xAB;
+	// mram->writeData(mram_ret, 0x0000, 1);
+	// mram_ret[0] = 0xFF;
+	// *compc << "\tWrote '0xAB'\n";
 	mram->readData(mram_ret, 0x0000, 1);
 	*compc << "\tMRAM: " << compc->hex(mram_ret[0]) << "\n\n";
 
@@ -105,6 +105,11 @@ int main(void){
 	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	led->on(LedNumbers::FRONT);
+
+	while(1){
+		compc->printf("%x\n", encoder->getVelocity(EncoderSide::LEFT));
+		Timer::wait_ms(50);
+	}
 
 	bool flag = false;
 	Speaker::playSound(1175, 300, true);

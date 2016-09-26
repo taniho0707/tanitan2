@@ -196,7 +196,8 @@ uint16_t ComPc::printf(const char *fmt, ...){
 	va_start(ap, fmt);
 
 	len = vsprintf(buffer, fmt, ap);
-	sendbydma(buffer, len);
+	// sendbydma(buffer, len);
+	sendnbyte(buffer, len);
 	va_end(ap);
 	return static_cast<uint16_t>(len);
 }

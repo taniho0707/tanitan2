@@ -1,11 +1,11 @@
 /**
  * @file Encoder.h
  */
-
-#ifndef INCLUDED_ENCODER_H
-#define INCLUDED_ENCODER_H
+#pragma once
 
 #include "stm32f4xx.h"
+
+#include "RingBufferHistory.h"
 
 enum class EncoderSide : uint8_t{
 	LEFT,
@@ -15,7 +15,10 @@ enum class EncoderSide : uint8_t{
 class Encoder{
 private:
 	explicit Encoder();
-	
+
+	RingBufferHistory<float, 50> hist_l;
+	RingBufferHistory<float, 50> hist_r;
+
 	const static uint16_t MEDIAN;
 	const static float PULSE_L;
 	const static float PULSE_R;
@@ -31,4 +34,3 @@ public:
 	static Encoder* getInstance();
 };
 
-#endif

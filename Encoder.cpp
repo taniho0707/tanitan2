@@ -62,12 +62,14 @@ float Encoder::getVelocity(EncoderSide s){
 }
 
 void Encoder::interrupt(){
-	velocity_l = PULSE_L * static_cast<int16_t>(last_l - TIM3->CNT);
-	velocity_r = PULSE_R * static_cast<int16_t>(TIM4->CNT - last_r);
+	last_l = PULSE_L * static_cast<int16_t>(last_l - TIM3->CNT);
+	last_r = PULSE_R * static_cast<int16_t>(TIM4->CNT - last_r);
 	TIM3->CNT = MEDIAN;
 	TIM4->CNT = MEDIAN;
-	last_l = TIM3->CNT;
-	last_r = TIM4->CNT;
+	hist_l.push(last_l);
+	hist_r.push(last_r);
+	velocity_l = hist_l.getAverage();
+	velocity_r = hist_r.getAverage();
 }
 
 Encoder* Encoder::getInstance(){
