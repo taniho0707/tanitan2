@@ -22,4 +22,13 @@ public:
 	T read(){
 		return buf[ite];
 	}
+
+	T getAverage(){
+		float sum = 0.0f;
+		for (auto i: buf) {
+			sum += i;
+		}
+		sum /= N;
+		return sum;
+	}
 };
