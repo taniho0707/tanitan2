@@ -5,13 +5,13 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P_L(430),
-	GAIN_LIN_I_L(0),
+	GAIN_LIN_P_L(200),
+	GAIN_LIN_I_L(2),
 	GAIN_LIN_D_L(0.0),
-	GAIN_LIN_P_R(450),
-	GAIN_LIN_I_R(0),
+	GAIN_LIN_P_R(220),
+	GAIN_LIN_I_R(2),
 	GAIN_LIN_D_R(0.0),
-	GAIN_RAD_P(1.0f),
+	GAIN_RAD_P(0.0f),
 	GAIN_RAD_I(0.0f),
 	GAIN_RAD_D(0.0f),
 	// GAIN_RAD_P(0.5f),

@@ -14,17 +14,18 @@ class Encoder{
 private:
 	explicit Encoder();
 
-	float hist_l[50];
-	float hist_r[50];
+	float hist_l[20];
+	float hist_r[20];
 	uint8_t ite_hist;
 
 	const static uint16_t MEDIAN;
 	const static float PULSE_L;
 	const static float PULSE_R;
+	const static uint16_t BUFSIZE;
 	float velocity_l;
 	float velocity_r;
-	uint16_t last_l;
-	uint16_t last_r;
+	float last_l;
+	float last_r;
 	
 public:
 	float getVelocity(EncoderSide);

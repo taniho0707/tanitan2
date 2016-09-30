@@ -10,6 +10,7 @@ const float Encoder::PULSE_L = 0.02100;
 const float Encoder::PULSE_R = 0.02085;
 // const float Encoder::PULSE_L = 0.021475781;
 // const float Encoder::PULSE_R = 0.021475781;
+const uint16_t Encoder::BUFSIZE = 50;
 
 Encoder::Encoder(){
 	velocity_l = 0.0;
@@ -17,8 +18,8 @@ Encoder::Encoder(){
 	for (auto &i : hist_l) i = 0;
 	for (auto &i : hist_r) i = 0;
 	ite_hist = 0;
-	last_l = MEDIAN;
-	last_r = MEDIAN;
+	last_l = 0.0f;
+	last_r = 0.0f;
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
@@ -71,13 +72,13 @@ void Encoder::interrupt(){
 	TIM4->CNT = MEDIAN;
 	hist_l[ite_hist] = last_l;
 	hist_r[ite_hist] = last_r;
-	if(++ite_hist >= 50) ite_hist = 0;
+	if(++ite_hist >= BUFSIZE) ite_hist = 0;
 	velocity_l = 0;
 	velocity_r = 0;
 	for (auto i : hist_l) velocity_l += i;
 	for (auto i : hist_r) velocity_r += i;
-	velocity_l /= 50;
-	velocity_r /= 50;
+	velocity_l /= BUFSIZE;
+	velocity_r /= BUFSIZE;
 }
 
 Encoder* Encoder::getInstance(){

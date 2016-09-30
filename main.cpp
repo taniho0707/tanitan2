@@ -39,20 +39,20 @@ int main(void){
 	compc->printf("Hello STM32F405!\n\n");
 	led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
 
-	compc->printf("* Gyro\n");
-	uint8_t ret = 0x00;
-	bool ret_bool = gyro->whoami();
-	if(ret_bool){
-		*compc << "\tSuccess WHO_AM_I from gyro\n";
-		led->flickAsync(LedNumbers::LEFT1, 4.0f, 1000);
-		// Timer::wait_ms(1000);
-		// gyro->resetCalibration();
-		// *compc << "\tGyro Calibration done.\n";
-		// *compc << "\tGyro setting was completed\n\n";
-	} else{
-		*compc << "\tFailure WHO_AM_I from gyro\n";
-		led->flickAsync(LedNumbers::LEFT2, 4.0f, 1000);
-	}
+	// compc->printf("* Gyro\n");
+	// uint8_t ret = 0x00;
+	// bool ret_bool = gyro->whoami();
+	// if(ret_bool){
+	// 	*compc << "\tSuccess WHO_AM_I from gyro\n";
+	// 	led->flickAsync(LedNumbers::LEFT1, 4.0f, 1000);
+	// 	Timer::wait_ms(1000);
+	// 	gyro->resetCalibration();
+	// 	*compc << "\tGyro Calibration done.\n";
+	// 	*compc << "\tGyro setting was completed\n\n";
+	// } else{
+	// 	*compc << "\tFailure WHO_AM_I from gyro\n";
+	// 	led->flickAsync(LedNumbers::LEFT2, 4.0f, 1000);
+	// }
 
 	Timer::wait_ms(100);
 
@@ -105,11 +105,6 @@ int main(void){
 	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	led->on(LedNumbers::FRONT);
-
-	while(1){
-		compc->printf("%x\n", encoder->getVelocity(EncoderSide::LEFT));
-		Timer::wait_ms(50);
-	}
 
 	bool flag = false;
 	Speaker::playSound(1175, 300, true);

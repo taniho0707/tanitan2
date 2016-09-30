@@ -125,7 +125,7 @@ void Motor::setDuty(MotorSide side, int16_t duty){
 	TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OC_InitStructure.TIM_Pulse = duty_t;
-	if(side == MotorSide::LEFT){
+	if(side == MotorSide::RIGHT){
 		TIM_OC1Init(TIM2,&TIM_OC_InitStructure);
 		TIM_OC1PreloadConfig(TIM2,TIM_OCPreload_Enable);
 	} else {
