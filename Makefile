@@ -56,4 +56,9 @@ debug:
 .PHONY: flash
 flash:
 	python2 write_main.py
+<<<<<<< HEAD
+=======
+# stm32flash -b 115200 -w bin/main.hex -v -g 0x0 /dev/ttyUSB0
+# gtkterm
+>>>>>>> master
 

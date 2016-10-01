@@ -3,5 +3,8 @@ bin/*
 *.o
 TAGS
 \#*\#
+<<<<<<< HEAD
 plot/*
+=======
+>>>>>>> master
 *.pyc

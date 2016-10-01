@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # coding=utf-8
 
 import sys, os, platform, subprocess
@@ -45,7 +45,7 @@ try:
 	# command += " --compare"
 	command += " --go"
 	command += " --time"
-        command += " --binary"
+	command += " --binary"
 	command += " " + mot_files
 	print command
 	print
