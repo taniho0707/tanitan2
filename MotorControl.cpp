@@ -5,12 +5,9 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P_L(200),
-	GAIN_LIN_I_L(1.3),
-	GAIN_LIN_D_L(0.0),
-	GAIN_LIN_P_R(220),
-	GAIN_LIN_I_R(1.3),
-	GAIN_LIN_D_R(0.0),
+	GAIN_LIN_P(220),
+	GAIN_LIN_I(1.3),
+	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.0f),
 	GAIN_RAD_I(0.0f),
 	GAIN_RAD_D(0.0f),
@@ -63,29 +60,23 @@ void MotorControl::controlVel(){
 
 	static float d_rad_gyro = 0.0;
 
-	// // 壁積分値の計算
+	// 壁積分値の計算
 	integral_wall += wall->getCorrection(10000);
 
 	// rotation成分の計算
-	// tar_rad_rev = (encoder->getVelocity(EncoderSide::LEFT)-encoder->getVelocity(EncoderSide::RIGHT))*2/TREAD;
-	// integral_rad_gyro += tar_rad_rev;
 	tar_rad_rev = ((tar_rad_vel - GAIN_WALL_P * wall->getCorrection(10000)) - (GAIN_RAD_P * gyro->getGyroYaw())) * TREAD * 3.1416 / 360;
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	integral_rad_gyro += tar_rad_rev;
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
 	// linear成分の計算
-	tar_vel_rev = (tar_lin_vel + tar_rad_vel) - (encoder->getVelocity(EncoderSide::RIGHT)) - (tar_rad_rev);
-	integral_r += tar_vel_rev;
-	tar_motor_r_power = GAIN_LIN_P_R * tar_vel_rev + GAIN_LIN_I_R * integral_r;
-	
-	tar_vel_rev = (tar_lin_vel - tar_rad_vel) - (encoder->getVelocity(EncoderSide::LEFT)) + (tar_rad_rev);
-	integral_l += tar_vel_rev;
-	tar_motor_l_power = GAIN_LIN_P_L * tar_vel_rev + GAIN_LIN_I_L * integral_l;
+	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2);
+	integral_lin_encoder += tar_vel_rev;
+	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
 	// モーター出力
-	tar_motor_r_power = tar_motor_r_power - tar_motor_rad_power;
-	tar_motor_l_power = tar_motor_l_power + tar_motor_rad_power;
+	tar_motor_r_power = static_cast<int16_t>(tar_motor_lin_power - tar_motor_rad_power);
+	tar_motor_l_power = static_cast<int16_t>(tar_motor_lin_power + tar_motor_rad_power);
 
 	motor->setDuty(MotorSide::LEFT, tar_motor_l_power);
 	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
