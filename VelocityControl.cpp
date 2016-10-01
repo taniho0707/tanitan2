@@ -79,7 +79,7 @@ void VelocityControl::runPivotTurn(
 	reg_start_vel = 0.0;
 	reg_max_vel = max_vel;
 	reg_end_vel = 0.0;
-	reg_distance = degree;
+	reg_distance = degree / 180.0f * 3.1416 * 0.019f;
 	reg_accel = accel;
 	x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
 	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);

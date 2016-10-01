@@ -5,7 +5,7 @@
 
 Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	Spi(spi, gpio, gpiopin),
-	lsb2dps(0.030532837),
+	lsb2dps(0.07),
 	zero_gyroz(0.0)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);

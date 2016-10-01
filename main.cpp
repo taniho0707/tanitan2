@@ -103,7 +103,7 @@ int main(void){
 	led->flickStop(LedNumbers::LEFT3);
 
 	led->flickStop(LedNumbers::FRONT);
-	while((!wall->isExistWall(SensorPosition::FLeft)) && (!wall->isExistWall(SensorPosition::FRight)));
+	while((wall->isExistWall(SensorPosition::FLeft)) && (wall->isExistWall(SensorPosition::FRight)));
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	led->on(LedNumbers::FRONT);
 
@@ -111,13 +111,13 @@ int main(void){
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runTrapAccel(0.0f, 0.2f, 0.0f, 0.54f, 2.0f);
-	// vc->runPivotTurn(100, 360, 500);
+	// vc->runTrapAccel(0.0f, 0.2f, 0.0f, 0.54f, 2.0f);
+	vc->runPivotTurn(0.1, 360, 2.0f);
 	while(vc->isRunning());
 	wall->stop();
 
 	while(true){
-		// compc->printf("%f\n", gyro->getGyroYaw());
-		motorcontrol->stay();
+		compc->printf("%f\n", gyro->getGyroYaw());
+		Timer::wait_ms(100);
 	}
 }
