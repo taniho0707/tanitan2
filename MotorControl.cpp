@@ -8,7 +8,7 @@ MotorControl::MotorControl() :
 	GAIN_LIN_P(220),
 	GAIN_LIN_I(1.3),
 	GAIN_LIN_D(0.0),
-	GAIN_RAD_P(0.0f),
+	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.0f),
 	GAIN_RAD_D(0.0f),
 	GAIN_WALL_P(0.002f),
