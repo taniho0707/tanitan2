@@ -6,13 +6,13 @@ using namespace std;
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
 	VAL_REF_FLEFT(0x02D5),
-	VAL_REF_LEFT(730),
-	VAL_REF_RIGHT(700),
+	VAL_REF_LEFT(760),
+	VAL_REF_RIGHT(749),
 	VAL_REF_FRIGHT(0x02D5),
-	VAL_THR_FLEFT(460),
-	VAL_THR_LEFT(700),
-	VAL_THR_RIGHT(680),
-	VAL_THR_FRIGHT(535)
+	VAL_THR_FLEFT(605),
+	VAL_THR_LEFT(730),
+	VAL_THR_RIGHT(710),
+	VAL_THR_FRIGHT(570)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -64,11 +64,11 @@ WallSensor::WallSensor() :
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
-	// 40kHz 250us -> 10000 times conversion/second
+	// 4kHz 2500us -> 1000 times conversion/second
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM9, ENABLE);
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_TimeBaseStructure.TIM_Period = 420 - 1;
-	TIM_TimeBaseStructure.TIM_Prescaler = 10 - 1;
+	TIM_TimeBaseStructure.TIM_Prescaler = 100 - 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM9, &TIM_TimeBaseStructure);
