@@ -231,12 +231,25 @@ Walldata WallSensor::getWall(){}
 int16_t WallSensor::getCorrection(uint16_t max){
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
+	bool is_singlewall = false;
 
 	if(isExistWall(SensorPosition::FLeft) && isExistWall(SensorPosition::FRight)) return 0;
 
+	if(!isExistWall(SensorPosition::Left)){
+		tmpL = 0;
+		is_singlewall = true;
+	}
+	if(!isExistWall(SensorPosition::Right)){
+		tmpR = 0;
+		is_singlewall = true;
+	}
+
 	int16_t retval = tmpR + tmpL;
+	if(is_singlewall) retval *= 2;
+	
 	if(retval > max) return max;
 	if(-1*retval < -1*max) return -max;
+	
 	return retval;
 }
 
