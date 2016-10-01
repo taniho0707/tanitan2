@@ -44,8 +44,9 @@ int main(void){
 	bool ret_bool = gyro->whoami();
 	if(ret_bool){
 		*compc << "\tSuccess WHO_AM_I from gyro\n";
-		led->flickAsync(LedNumbers::LEFT1, 4.0f, 1000);
+		led->flickAsync(LedNumbers::LEFT1, 2.0f, 1000);
 		Timer::wait_ms(1000);
+		led->flickAsync(LedNumbers::LEFT1, 4.0f, 1000);
 		gyro->resetCalibration();
 		*compc << "\tGyro Calibration done.\n";
 		*compc << "\tGyro setting was completed\n\n";
@@ -110,9 +111,10 @@ int main(void){
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runTrapAccel(0.0f, 0.3f, 0.0f, 1.35f, 1.0f);
+	vc->runTrapAccel(0.0f, 0.2f, 0.0f, 0.54f, 2.0f);
 	// vc->runPivotTurn(100, 360, 500);
 	while(vc->isRunning());
+	wall->stop();
 
 	while(true){
 		// compc->printf("%f\n", gyro->getGyroYaw());

@@ -6,18 +6,15 @@
 
 MotorControl::MotorControl() : 
 	GAIN_LIN_P_L(200),
-	GAIN_LIN_I_L(2),
+	GAIN_LIN_I_L(1.3),
 	GAIN_LIN_D_L(0.0),
 	GAIN_LIN_P_R(220),
-	GAIN_LIN_I_R(2),
+	GAIN_LIN_I_R(1.3),
 	GAIN_LIN_D_R(0.0),
 	GAIN_RAD_P(0.002f),
 	GAIN_RAD_I(0.0f),
 	GAIN_RAD_D(0.0f),
-	// GAIN_RAD_P(0.5f),
-	// GAIN_RAD_I(0.05f),
-	// GAIN_WALL_P(0.0f),
-	GAIN_WALL_P(0.01f),
+	GAIN_WALL_P(0.002f),
 	GAIN_WALL_I(0.0f),
 	TREAD(380.0f)
 {

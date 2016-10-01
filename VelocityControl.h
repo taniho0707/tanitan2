@@ -2,6 +2,8 @@
 
 #include "SlalomParams.h"
 
+#include <cmath>
+
 #include "Motor.h"
 #include "MotorControl.h"
 #include "WallSensor.h"
