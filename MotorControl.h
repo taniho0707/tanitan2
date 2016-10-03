@@ -43,6 +43,8 @@ private:
 	float tar_lin_vel;
 	float tar_rad_vel;
 
+	uint16_t enabled_wall_control;
+
 	void calcIntegral();
 	void controlX();
 	void controlVel();
@@ -50,6 +52,9 @@ private:
 public:
 	void setVelocity(float);
 	void setRadVelocity(float);
+
+	void enableWallControl();
+	void disableWallControl();
 
 	void stay();
 

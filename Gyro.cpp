@@ -5,7 +5,7 @@
 
 Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	Spi(spi, gpio, gpiopin),
-	lsb2dps(0.07),
+	lsb2dps(0.035),
 	zero_gyroz(0.0)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -168,10 +168,10 @@ void Gyro::readGyroYaw(){
 void Gyro::resetCalibration(){
 	float tmp = 0.0;
 	for (auto i=0; i<1000; i++) {
-		tmp += getGyroYaw();
+		readGyroYaw();
+		tmp += (getGyroYaw() / 1000);
 		Timer::wait_ms(1);
 	}
-	tmp /= 1000;
 	zero_gyroz = tmp;
 }
 

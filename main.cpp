@@ -111,9 +111,37 @@ int main(void){
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	// vc->runTrapAccel(0.0f, 0.2f, 0.0f, 0.54f, 2.0f);
-	vc->runPivotTurn(0.1, 360, 2.0f);
+	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+	// vc->runPivotTurn(360.0f, 360, 1000.0f);
 	while(vc->isRunning());
+
+	while(true){
+		if(!wall->isExistWall(SensorPosition::Left)){
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			vc->runPivotTurn(360, -90, 1000);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			while(vc->isRunning());
+		} else if(!wall->isExistWall(SensorPosition::FLeft)){
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+		} else if(!wall->isExistWall(SensorPosition::Right)){
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			vc->runPivotTurn(360, 90, 1000);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			while(vc->isRunning());
+		} else {
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			vc->runPivotTurn(360, 180, 1000);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			while(vc->isRunning());
+		}
+	}
 	wall->stop();
 
 	while(true){

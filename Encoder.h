@@ -14,14 +14,16 @@ class Encoder{
 private:
 	explicit Encoder();
 
-	float hist_l[20];
-	float hist_r[20];
+	// BUFFER SIZE of history of velocity
+	constexpr static uint16_t BUFSIZE = 50;
+
+	float hist_l[BUFSIZE];
+	float hist_r[BUFSIZE];
 	uint8_t ite_hist;
 
 	const static uint16_t MEDIAN;
 	const static float PULSE_L;
 	const static float PULSE_R;
-	const static uint16_t BUFSIZE;
 	float velocity_l;
 	float velocity_r;
 	float last_l;
