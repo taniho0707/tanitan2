@@ -95,7 +95,7 @@ void MotorControl::controlVel(){
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
 	// linear成分の計算
-	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2);
+	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2 + gyro->getAccelFront() * 0.0005);
 	integral_lin_encoder += tar_vel_rev;
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 

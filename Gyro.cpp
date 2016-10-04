@@ -6,7 +6,9 @@
 Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	Spi(spi, gpio, gpiopin),
 	lsb2dps(0.035),
-	zero_gyroz(0.0)
+	lsb2mps(0.000049762),
+	zero_gyroz(0.0),
+	zero_accelx(0.0)
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
@@ -159,6 +161,11 @@ int16_t Gyro::readAccelZ(){
 	return ret;
 }
 
+void Gyro::readAccelFront(){
+	cur_accel_front = (static_cast<float>(readAccelX()) - zero_accelx) * lsb2mps;
+	return;
+}
+
 void Gyro::readGyroYaw(){
 	cur_gyro_yaw = (static_cast<float>(readGyroZ()) - zero_gyroz) * lsb2dps;
 	return;
@@ -173,6 +180,10 @@ void Gyro::resetCalibration(){
 		Timer::wait_ms(1);
 	}
 	zero_gyroz = tmp;
+}
+
+float Gyro::getAccelFront(){
+	return cur_accel_front;
 }
 
 float Gyro::getGyroYaw(){

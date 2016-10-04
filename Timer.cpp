@@ -35,6 +35,7 @@ void Timer::interrupt(){
 	static Led* led = Led::getInstance();
 	encoder->interrupt();
 	gy->readGyroYaw();
+	gy->readAccelFront();
 	vc->interrupt();
 	motor->interrupt();
 	led->interrupt();

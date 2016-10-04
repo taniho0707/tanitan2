@@ -110,7 +110,6 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
-	// vc->runPivotTurn(360.0f, -360, 1000.0f);
 	while(vc->isRunning());
 
 	while(true){
@@ -121,7 +120,7 @@ int main(void){
 			while(vc->isRunning());
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			while(vc->isRunning());
-		} else if(!wall->isExistWall(SensorPosition::FLeft)){
+		} else if(!wall->isExistWall(SensorPosition::FRight)){
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::Right)){

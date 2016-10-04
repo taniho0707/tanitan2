@@ -108,13 +108,16 @@ class Gyro : protected Spi{
 private:
 
 	const float lsb2dps;
+	const float lsb2mps;
 	float zero_gyroz;
+	float zero_accelx;
 
 	explicit Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin);
 
 	bool configAutomatic();
 
 	float cur_gyro_yaw;
+	float cur_accel_front;
 
 public:
 	static Gyro *getInstance();
@@ -128,9 +131,12 @@ public:
 	int16_t readAccelY();
 	int16_t readAccelZ();
 
+	void readAccelFront();
 	void readGyroYaw();
 
 	void resetCalibration();
+
+	float getAccelFront();
 
 	// returns [degree/sec] in float
 	float getGyroYaw();
