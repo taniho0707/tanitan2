@@ -1,6 +1,4 @@
-
-#ifndef INCLUDED_WALLSENSOR_HPP
-#define INCLUDED_WALLSENSOR_HPP
+#pragma once
 
 #include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
@@ -40,7 +38,11 @@ private:
 	WallSensor();
 
 public:
+	array<float, 4> dark_value;
+	array<float, 4> bright_value;
 	array<float, 4> current_value;
+
+	bool isWorking();
 
 	void start();
 	void stop();
@@ -48,7 +50,9 @@ public:
 	void interrupt();
 
 	inline void onLed();
+	inline void onLed(SensorPosition);
 	inline void offLed();
+	inline void offLed(SensorPosition);
 
 	void setBrightValue(SensorPosition);
 	void setDarkValue(SensorPosition);
@@ -64,4 +68,3 @@ public:
 	static WallSensor* getInstance();
 };
 
-#endif

@@ -97,7 +97,7 @@ void VelocityControl::calcPivotTurn(int32_t t){
 	} else if(t0 < t2){
 		v = (reg_distance>0?1:-1) * reg_max_vel;
 	} else if(t0 < t3){
-		v = (reg_distance>0?1:-1) * reg_max_vel - reg_accel*(t0-t2)/1000.0f;
+		v = (reg_distance>0?1:-1) * (reg_max_vel - reg_accel*(t0-t2)/1000.0f);
 	} else {
 		v = (reg_distance>0?1:-1) * reg_end_vel;
 		end_flag = true;

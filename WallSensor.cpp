@@ -6,13 +6,13 @@ using namespace std;
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
 	VAL_REF_FLEFT(0x02D5),
-	VAL_REF_LEFT(760),
-	VAL_REF_RIGHT(749),
+	VAL_REF_LEFT(550),
+	VAL_REF_RIGHT(550),
 	VAL_REF_FRIGHT(0x02D5),
-	VAL_THR_FLEFT(605),
-	VAL_THR_LEFT(720),
-	VAL_THR_RIGHT(710),
-	VAL_THR_FRIGHT(570)
+	VAL_THR_FLEFT(550),
+	VAL_THR_LEFT(525),
+	VAL_THR_RIGHT(540),
+	VAL_THR_FRIGHT(535)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -83,11 +83,31 @@ WallSensor::WallSensor() :
 	thr_straight_value[3] = VAL_THR_FRIGHT;
 }
 
+bool WallSensor::isWorking(){
+	return is_working;
+}
+
 void WallSensor::onLed(){
 	GPIO_SetBits(GPIOB, GPIO_Pin_2);
 	GPIO_SetBits(GPIOB, GPIO_Pin_4);
 	GPIO_SetBits(GPIOB, GPIO_Pin_5);
 	GPIO_SetBits(GPIOA, GPIO_Pin_8);
+}
+void WallSensor::onLed(SensorPosition pos){
+	switch(pos){
+	case SensorPosition::FLeft:
+		GPIO_SetBits(GPIOB, GPIO_Pin_5);
+		break;
+	case SensorPosition::Left:
+		GPIO_SetBits(GPIOB, GPIO_Pin_4);
+		break;
+	case SensorPosition::Right:
+		GPIO_SetBits(GPIOA, GPIO_Pin_8);
+		break;
+	case SensorPosition::FRight:
+		GPIO_SetBits(GPIOB, GPIO_Pin_2);
+		break;
+	}
 }
 
 void WallSensor::offLed(){
@@ -95,6 +115,22 @@ void WallSensor::offLed(){
 	GPIO_ResetBits(GPIOB, GPIO_Pin_4);
 	GPIO_ResetBits(GPIOB, GPIO_Pin_5);
 	GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+}
+void WallSensor::offLed(SensorPosition pos){
+	switch(pos){
+	case SensorPosition::FLeft:
+		GPIO_ResetBits(GPIOB, GPIO_Pin_5);
+		break;
+	case SensorPosition::Left:
+		GPIO_ResetBits(GPIOB, GPIO_Pin_4);
+		break;
+	case SensorPosition::Right:
+		GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+		break;
+	case SensorPosition::FRight:
+		GPIO_ResetBits(GPIOB, GPIO_Pin_2);
+		break;
+	}
 }
 
 void WallSensor::start(){
@@ -124,7 +160,7 @@ void WallSensor::setBrightValue(SensorPosition pos){
 	}
 	ADC_SoftwareStartConv(ADC1);
 	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-	current_value[static_cast<uint8_t>(pos)] = ADC_GetConversionValue(ADC1);
+	bright_value[static_cast<uint8_t>(pos)] = ADC_GetConversionValue(ADC1);
 }
 
 void WallSensor::setDarkValue(SensorPosition pos){
@@ -145,10 +181,13 @@ void WallSensor::setDarkValue(SensorPosition pos){
 	}
 	ADC_SoftwareStartConv(ADC1);
 	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
-	current_value[static_cast<uint8_t>(pos)] -= ADC_GetConversionValue(ADC1);
+	dark_value[static_cast<uint8_t>(pos)] = ADC_GetConversionValue(ADC1);
 }
 
 void WallSensor::calcValue(){
+	for(int i=0; i<4; ++i){
+		current_value[i] = bright_value[i] - dark_value[i];
+	}
 	buf.push(current_value);
 	return;
 }
@@ -269,28 +308,36 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 	if(TIM_GetITStatus(TIM9, TIM_IT_Update) != RESET){
 		TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
 		
-		/// @todo check enable
-		switch(c){
-		case 0:
-			s->onLed();
-			break;
-		case 1:
-			s->setBrightValue(SensorPosition::FLeft);
-			s->setBrightValue(SensorPosition::Left);
-			s->setBrightValue(SensorPosition::Right);
-			s->setBrightValue(SensorPosition::FRight);
-			break;
-		case 2:
-			s->offLed();
-			break;
-		case 3:
-			s->setDarkValue(SensorPosition::FLeft);
-			s->setDarkValue(SensorPosition::Left);
-			s->setDarkValue(SensorPosition::Right);
-			s->setDarkValue(SensorPosition::FRight);
-			s->calcValue();
-			break;
+		if(s->isWorking()){
+			/// @todo check enable
+			switch(c){
+			case 0:
+				s->setDarkValue(SensorPosition::FLeft);
+				s->onLed(SensorPosition::FLeft);
+				s->setBrightValue(SensorPosition::Right);
+				s->offLed(SensorPosition::Right);
+				break;
+			case 1:
+				s->setDarkValue(SensorPosition::Left);
+				s->onLed(SensorPosition::Left);
+				s->setDarkValue(SensorPosition::FRight);
+				s->onLed(SensorPosition::FRight);
+				break;
+			case 2:
+				s->setBrightValue(SensorPosition::FLeft);
+				s->offLed(SensorPosition::FLeft);
+				s->setDarkValue(SensorPosition::Right);
+				s->onLed(SensorPosition::Right);
+				break;
+			case 3:
+				s->setBrightValue(SensorPosition::Left);
+				s->offLed(SensorPosition::Left);
+				s->setBrightValue(SensorPosition::FRight);
+				s->offLed(SensorPosition::FRight);
+				s->calcValue();
+				break;
+			}
+			if(++c > 3) c = 0;
 		}
-		if(++c > 3) c = 0;
 	}
 }

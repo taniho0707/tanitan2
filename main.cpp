@@ -3,8 +3,6 @@
  */
 #include "main.h"
 
-int test();
-
 int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
@@ -87,12 +85,32 @@ int main(void){
 	}
 
 	WallSensor* wall = WallSensor::getInstance();
-	wall->start();
+	// wall->start();
 	if(Switch::isPushing(SwitchNumbers::LEFT)){
+		wall->start();
 		while(true){
 			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight));
 			Timer::wait_ms(100);
 		}
+	}
+
+	// This is test code
+	while(true){
+		wall->offLed();
+		Timer::wait_ms(1000);
+		wall->setDarkValue(SensorPosition::Left);
+		Timer::wait_ms(1000);
+		compc->printf("off:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
+		wall->onLed(SensorPosition::Left);
+		Timer::wait_ms(1000);
+		wall->setDarkValue(SensorPosition::Left);
+		Timer::wait_ms(1000);
+		compc->printf("1on:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
+		wall->onLed();
+		Timer::wait_ms(1000);
+		wall->setDarkValue(SensorPosition::Left);
+		Timer::wait_ms(1000);
+		compc->printf("4on:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
 	}
 
 	*compc << "* Flash\n";
@@ -103,7 +121,7 @@ int main(void){
 	led->flickStop(LedNumbers::LEFT3);
 
 	led->flickStop(LedNumbers::FRONT);
-	while((wall->isExistWall(SensorPosition::FLeft)) && (wall->isExistWall(SensorPosition::FRight)));
+	while(!((wall->isExistWall(SensorPosition::FLeft)) && (wall->isExistWall(SensorPosition::FRight))));
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	led->on(LedNumbers::FRONT);
 
@@ -112,7 +130,7 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
-	// vc->runPivotTurn(360.0f, 360, 1000.0f);
+	// vc->runPivotTurn(360.0f, -360, 1000.0f);
 	while(vc->isRunning());
 
 	while(true){
@@ -149,3 +167,4 @@ int main(void){
 		Timer::wait_ms(100);
 	}
 }
+
