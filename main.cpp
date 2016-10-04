@@ -85,32 +85,12 @@ int main(void){
 	}
 
 	WallSensor* wall = WallSensor::getInstance();
-	// wall->start();
+	wall->start();
 	if(Switch::isPushing(SwitchNumbers::LEFT)){
-		wall->start();
 		while(true){
 			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight));
 			Timer::wait_ms(100);
 		}
-	}
-
-	// This is test code
-	while(true){
-		wall->offLed();
-		Timer::wait_ms(1000);
-		wall->setDarkValue(SensorPosition::Left);
-		Timer::wait_ms(1000);
-		compc->printf("off:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
-		wall->onLed(SensorPosition::Left);
-		Timer::wait_ms(1000);
-		wall->setDarkValue(SensorPosition::Left);
-		Timer::wait_ms(1000);
-		compc->printf("1on:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
-		wall->onLed();
-		Timer::wait_ms(1000);
-		wall->setDarkValue(SensorPosition::Left);
-		Timer::wait_ms(1000);
-		compc->printf("4on:%f\n", wall->dark_value.at(static_cast<uint16_t>(SensorPosition::Left)));
 	}
 
 	*compc << "* Flash\n";

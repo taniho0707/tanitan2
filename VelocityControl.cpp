@@ -39,7 +39,7 @@ void VelocityControl::runTrapAccel(
 	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
 	x2 = reg_distance - x1 - x3;
 	if(x2 < 0){
-		t1 = static_cast<int32_t>(sqrt(1000.0f * reg_distance / reg_accel));
+		t1 = static_cast<int32_t>(1000.0f * sqrt(reg_distance / reg_accel));
 		t2 = t1;
 		t3 = 2 * t1;
 		reg_max_vel = reg_accel * t1 / 1000.0f;
@@ -86,6 +86,12 @@ void VelocityControl::runPivotTurn(
 	t1 = static_cast<int32_t>(1000.0f * (reg_max_vel / reg_accel));
 	t2 = static_cast<int32_t>(1000.0f * (abs(degree) / reg_max_vel));
 	t3 = t2 + t1;
+	if(reg_max_vel * t1 > abs(degree)){
+		t1 = static_cast<int32_t>(1000.0f * sqrt(abs(reg_distance) / reg_accel));
+		t2 = t1;
+		t3 = 2 * t1;
+		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
+	}
 	v = 0.0f;
 }
 

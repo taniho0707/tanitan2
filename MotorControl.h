@@ -11,6 +11,7 @@
 #include "Encoder.h"
 #include "Motor.h"
 #include "Gyro.h"
+#include "Led.h"
 
 #include "Datalog.h"
 
@@ -22,6 +23,7 @@ private:
 	Encoder* encoder = Encoder::getInstance();
 	WallSensor* wall = WallSensor::getInstance();
 	Gyro* gyro = Gyro::getInstance();
+	Led* led = Led::getInstance();
 
 	Datalog* log = Datalog::getInstance();
 
@@ -44,6 +46,8 @@ private:
 	float tar_rad_vel;
 
 	uint16_t enabled_wall_control;
+
+	bool is_failsafe;
 
 	void calcIntegral();
 	void controlX();

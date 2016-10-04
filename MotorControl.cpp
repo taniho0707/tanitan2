@@ -20,6 +20,7 @@ MotorControl::MotorControl() :
 	cur_lin_acc = 0.0;
 	tar_lin_vel = 0.0;
 	enabled_wall_control = 0;
+	is_failsafe = false;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -68,6 +69,21 @@ void MotorControl::controlVel(){
 	static uint16_t integral_wall = 0;
 
 	static float d_rad_gyro = 0.0;
+
+	if(integral_lin_encoder > 100 || integral_rad_gyro > 100000){
+		led->flickAsync(LedNumbers::FRONT, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT1, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT2, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT3, 4.0f, 0);
+		led->flickAsync(LedNumbers::RIGHT, 4.0f, 0);
+		is_failsafe = true;
+	}
+
+	if(is_failsafe){
+		motor->setDuty(MotorSide::LEFT, 0);
+		motor->setDuty(MotorSide::RIGHT, 0);
+		return;
+	}
 
 	// 壁積分値の計算
 	integral_wall += wall->getCorrection(10000) * enabled_wall_control;
