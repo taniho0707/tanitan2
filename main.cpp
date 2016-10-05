@@ -109,6 +109,14 @@ int main(void){
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
+
+	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.135f, 2.0f);
+	while(vc->isRunning());
+	vc->runSlalom(slalomparams::RunType::SLALOM90SML_RIGHT, 0.25f);
+	while(vc->isRunning());
+	vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.135f, 2.0f);
+	while(true);
+
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
 

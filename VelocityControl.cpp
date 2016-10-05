@@ -1,5 +1,7 @@
 #include "VelocityControl.h"
 
+#include "SlalomParams.h"
+
 using namespace slalomparams;
 
 VelocityControl::VelocityControl(){
@@ -114,6 +116,25 @@ void VelocityControl::calcPivotTurn(int32_t t){
 	target_radvel = v;
 }
 
+bool VelocityControl::runSlalom(
+	slalomparams::RunType type,
+	float vel
+	){
+	// パラメータの存在確認
+	auto it = slalomparams::getParams().at(static_cast<uint16_t>(type))->find(vel);
+	if(it == slalomparams::getParams().at(static_cast<uint16_t>(type))->end()) return false;
+
+	// パラメータの取得
+	float delta_t = 0.001f;
+	float d_before;
+
+	// tの算出
+	return true;
+}
+
+void VelocityControl::calcSlalom(int32_t t){
+	
+}
 
 void VelocityControl::setLinVel(){
 	mc->setVelocity(target_linvel);

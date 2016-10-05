@@ -1,8 +1,7 @@
 /**
  * @file main.h
  */
-#ifndef INCLUDED_MAIN_H
-#define INCLUDED_MAIN_H
+#pragma once
 
 #include "stm32f4xx.h"
 
@@ -13,6 +12,7 @@
 #include "Encoder.h"
 #include "Motor.h"
 #include "MotorControl.h"
+#include "SlalomParams.h"
 #include "VelocityControl.h"
 
 #include "WallSensor.h"
@@ -31,4 +31,3 @@
 
 int main();
 
-#endif
