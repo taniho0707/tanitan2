@@ -141,7 +141,7 @@ bool VelocityControl::runSlalom(
 
 	// tの算出
 	t1 = 1000.0f * sqrt(2.0f * (reg_distance-const_deg) / 2.0f / reg_accel);
-	t2 = (reg_distance-const_deg) / 2.0f / reg_min_vel + t1;
+	t2 = 1000.0f * const_deg / (reg_accel * t1 / 1000.0f) + t1;
 	t3 = t1 + t2;
 
 	mc->disableWallControl();
@@ -155,6 +155,8 @@ bool VelocityControl::runSlalom(
 void VelocityControl::calcSlalom(int32_t t){
 	int32_t t0 = t - time;
 	float x0 = mc->getIntegralEncoder();
+	float is_positive = 1;
+	if(static_cast<int32_t>(reg_type)%2 == 1) is_positive = -1.0f;
 
 	if(reg_slalom_pos == 1){
 		// 前オフセット
@@ -171,18 +173,15 @@ void VelocityControl::calcSlalom(int32_t t){
 			end_flag = true;
 		}
 	} else if(t0 < t1){
-		led->on(LedNumbers::LEFT1);
 		// 加速
-		r += reg_accel * 0.001;
+		r += is_positive * reg_accel * 0.001;
 		reg_slalom_pos = 2;
 	} else if(t0 < t2){
-		led->on(LedNumbers::LEFT2);
 		// 等速
 		reg_slalom_pos = 3;
 	} else if(t0 < t3){
-		led->on(LedNumbers::LEFT3);
 		// 減速
-		r -= reg_accel * 0.001;
+		r -= is_positive * reg_accel * 0.001;
 		reg_slalom_pos = 4;
 	} else {
 		mc->setIntegralEncoder(0.0f);

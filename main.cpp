@@ -111,34 +111,38 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 
-	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.135f, 2.0f);
-	while(vc->isRunning());
-	vc->runSlalom(slalomparams::RunType::SLALOM90SML_RIGHT, 0.25f);
-	while(vc->isRunning());
-	vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.135f, 2.0f);
-	while(true);
+	// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.135f, 2.0f);
+	// while(vc->isRunning());
+	// vc->runSlalom(slalomparams::RunType::SLALOM90SML_RIGHT, 0.25f);
+	// while(vc->isRunning());
+	// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.135f, 2.0f);
+	// while(true);
 
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
 
+	using namespace slalomparams;
+
 	while(true){
 		if(!wall->isExistWall(SensorPosition::Left)){
-			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			// while(vc->isRunning());
+			// vc->runPivotTurn(360, -90, 1000);
+			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
 			while(vc->isRunning());
-			vc->runPivotTurn(360, -90, 1000);
-			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-			while(vc->isRunning());
+			// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+			// while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::FRight)){
 			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
 			while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::Right)){
-			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			// while(vc->isRunning());
+			// vc->runPivotTurn(360, 90, 1000);
+			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
 			while(vc->isRunning());
-			vc->runPivotTurn(360, 90, 1000);
-			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-			while(vc->isRunning());
+			// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+			// while(vc->isRunning());
 		} else {
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
