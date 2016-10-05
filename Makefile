@@ -11,7 +11,7 @@ STARTUP_DIR = ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/CMSIS/Device/ST/STM32F4xx
 MPU_OPTS = -DSTM32F40_41xxx
 BOARD_DIR = -DHSE_VALUE=\(\(uint32_t\)8000000\) $(MPU_OPTS)
 FIRMWARE_OPTS = -DUSE_STDPERIPH_DRIVER
-COMPILE_OPTS = -O0 -g0 -ffunction-sections -fdata-sections -fpermissive -funsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++11 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS) -fno-use-cxa-atexit
+COMPILE_OPTS = -O0 -g0 -ffunction-sections -fdata-sections -fpermissive -funsigned-char -fno-rtti -fexceptions -Wall -fmessage-length=0 -std=c++14 $(INCLUDE_DIRS) $(BOARD_OPTS) $(FIRMWARE_OPTS) $(MPU_OPTS) -fno-use-cxa-atexit
 
 TOOLDIR = /usr/bin
 CC = $(TOOLDIR)/arm-none-eabi-g++
