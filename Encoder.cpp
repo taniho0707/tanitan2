@@ -6,8 +6,8 @@
 
 
 const uint16_t Encoder::MEDIAN = 30000;
-const float Encoder::PULSE_L = 0.0188;
-const float Encoder::PULSE_R = 0.0188;
+const float Encoder::PULSE_L = 0.022;
+const float Encoder::PULSE_R = 0.022;
 // const float Encoder::PULSE_L = 0.021475781;
 // const float Encoder::PULSE_R = 0.021475781;
 
@@ -62,6 +62,11 @@ Encoder::Encoder(){
 float Encoder::getVelocity(EncoderSide s){
 	if(s == EncoderSide::LEFT) return velocity_l;
 	else return velocity_r;
+}
+
+float Encoder::getVelocityCorrect(EncoderSide s){
+	if(s == EncoderSide::LEFT) return hist_l[ite_hist];
+	else return hist_r[ite_hist];
 }
 
 void Encoder::interrupt(){

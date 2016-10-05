@@ -54,6 +54,9 @@ private:
 	void controlVel();
 
 public:
+	void setIntegralEncoder(float);
+	float getIntegralEncoder();
+
 	void setVelocity(float);
 	void setRadVelocity(float);
 

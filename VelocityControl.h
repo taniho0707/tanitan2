@@ -14,6 +14,27 @@
 #include "ComPc.h"
 
 
+enum class SlalomType : uint8_t {
+	S_90_R = 0,    // 0
+	S_90_L,        // 1
+	B_90_R,        // 2
+	B_90_L,        // 3
+	B_180_R,       // 4
+	B_180_L,       // 5
+	B_135_IN_R,    // 6
+	B_135_IN_L,    // 7
+	B_135_OUT_R,   // 8
+	B_135_OUT_L,   // 9
+	B_45_IN_R,     //10
+	B_45_IN_L,     //11
+	B_45_OUT_R,    //12
+	B_45_OUT_L,    //13
+	B_S90_R,       //14
+	B_S90_L,       //15
+}
+
+
+
 class VelocityControl{
 private:
 	MotorControl* mc = MotorControl::getInstance();

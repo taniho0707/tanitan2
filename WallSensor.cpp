@@ -10,9 +10,10 @@ WallSensor::WallSensor() :
 	VAL_REF_RIGHT(42),
 	VAL_REF_FRIGHT(120),
 	VAL_THR_FLEFT(20),
-	VAL_THR_LEFT(20),
-	VAL_THR_RIGHT(20),
-	VAL_THR_FRIGHT(20)
+	VAL_THR_LEFT(15),
+	VAL_THR_RIGHT(15),
+	VAL_THR_FRIGHT(20),
+	THR_WALL_DISAPPEAR(0)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -186,6 +187,7 @@ void WallSensor::setDarkValue(SensorPosition pos){
 
 void WallSensor::calcValue(){
 	for(int i=0; i<4; ++i){
+		last_value[i] = current_value[i];
 		current_value[i] = bright_value[i] - dark_value[i];
 	}
 	buf.push(current_value);
@@ -259,6 +261,9 @@ void WallSensor::interrupt(){
 uint16_t WallSensor::getValue(SensorPosition pos){
 	return current_value[static_cast<uint8_t>(pos)];
 }
+uint16_t WallSensor::getLastValue(SensorPosition pos){
+	return last_value[static_cast<uint8_t>(pos)];
+}
 
 bool WallSensor::isExistWall(SensorPosition pos){
 	if(current_value[static_cast<uint8_t>(pos)] > thr_straight_value[static_cast<uint8_t>(pos)]) return true;
@@ -274,11 +279,11 @@ int16_t WallSensor::getCorrection(uint16_t max){
 
 	if(isExistWall(SensorPosition::FLeft) && isExistWall(SensorPosition::FRight)) return 0;
 
-	if(!isExistWall(SensorPosition::Left)){
+	if(!isExistWall(SensorPosition::Left) || (getLastValue(SensorPosition::Left)-getValue(SensorPosition::Left) > THR_WALL_DISAPPEAR)){
 		tmpL = 0;
 		is_singlewall = true;
 	}
-	if(!isExistWall(SensorPosition::Right)){
+	if(!isExistWall(SensorPosition::Right) || (getLastValue(SensorPosition::Right)-getValue(SensorPosition::Right) > THR_WALL_DISAPPEAR)){
 		tmpR = 0;
 		is_singlewall = true;
 	}

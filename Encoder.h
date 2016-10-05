@@ -31,6 +31,7 @@ private:
 	
 public:
 	float getVelocity(EncoderSide);
+	float getVelocityCorrect(EncoderSide);
 	void interrupt();
 
 	static Encoder* getInstance();

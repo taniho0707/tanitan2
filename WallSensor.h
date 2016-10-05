@@ -28,6 +28,7 @@ private:
 	const uint16_t VAL_THR_LEFT;
 	const uint16_t VAL_THR_RIGHT;
 	const uint16_t VAL_THR_FRIGHT;
+	const uint16_t THR_WALL_DISAPPEAR;
 	
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
@@ -41,6 +42,7 @@ public:
 	array<float, 4> dark_value;
 	array<float, 4> bright_value;
 	array<float, 4> current_value;
+	array<float, 4> last_value;
 
 	bool isWorking();
 
@@ -59,6 +61,7 @@ public:
 	void calcValue();
 
 	uint16_t getValue(SensorPosition);
+	uint16_t getLastValue(SensorPosition);
 	bool isExistWall(SensorPosition);
 
 	Walldata getWall();

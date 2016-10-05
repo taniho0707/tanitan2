@@ -88,7 +88,7 @@ int main(void){
 	wall->start();
 	if(Switch::isPushing(SwitchNumbers::LEFT)){
 		while(true){
-			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight));
+			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d [%3d]\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight), wall->getCorrection(10000));
 			Timer::wait_ms(100);
 		}
 	}
@@ -109,33 +109,33 @@ int main(void){
 	Speaker::playSound(1175, 300, true);
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
-	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
 
 	while(true){
 		if(!wall->isExistWall(SensorPosition::Left)){
-			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			vc->runPivotTurn(360, -90, 1000);
 			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 			while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::FRight)){
-			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
 			while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::Right)){
-			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			vc->runPivotTurn(360, 90, 1000);
 			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 			while(vc->isRunning());
 		} else {
-			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			vc->runPivotTurn(360, 180, 1000);
 			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 			while(vc->isRunning());
 		}
 	}

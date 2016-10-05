@@ -38,8 +38,15 @@ void MotorControl::stay(){
 }
 
 void MotorControl::calcIntegral(){
-	cur_lin_vel = (encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2;
-	cur_lin_x += cur_lin_vel;
+	cur_lin_vel = (encoder->getVelocityCorrect(EncoderSide::LEFT)+encoder->getVelocityCorrect(EncoderSide::RIGHT))/2.0f;
+	cur_lin_x += cur_lin_vel * 0.001f;
+}
+
+void MotorControl::setIntegralEncoder(float t){
+	cur_lin_x = t;
+}
+float MotorControl::getIntegralEncoder(){
+	return cur_lin_x;
 }
 
 void MotorControl::controlX(){
@@ -70,7 +77,7 @@ void MotorControl::controlVel(){
 
 	static float d_rad_gyro = 0.0;
 
-	if(integral_lin_encoder > 100 || integral_rad_gyro > 100000){
+	if(integral_lin_encoder > 100 || integral_rad_gyro > 50000){
 		led->flickAsync(LedNumbers::FRONT, 4.0f, 0);
 		led->flickAsync(LedNumbers::LEFT1, 4.0f, 0);
 		led->flickAsync(LedNumbers::LEFT2, 4.0f, 0);
@@ -110,7 +117,7 @@ void MotorControl::controlVel(){
 	log->writeFloat(encoder->getVelocity(EncoderSide::LEFT));
 	log->writeFloat(encoder->getVelocity(EncoderSide::RIGHT));
 	log->writeFloat((encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2.0f);
-	log->writeFloat(tar_rad_rev);
+	log->writeFloat(cur_lin_x);
 	log->writeFloat(gyro->getGyroYaw());
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(tar_motor_rad_power);
@@ -121,8 +128,8 @@ void MotorControl::controlVel(){
 
 void MotorControl::interrupt(){
 	if(motor->isEnabled()){
-		calcIntegral();
 		controlVel();
+		calcIntegral();
 	}
 }
 

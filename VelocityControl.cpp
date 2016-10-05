@@ -48,21 +48,23 @@ void VelocityControl::runTrapAccel(
 		t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
 		t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
 	}
+	mc->setIntegralEncoder(0.0f);
 	v = 0.0f;
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
 	int32_t t0 = t - time;
+	float x0 = mc->getIntegralEncoder();
 
 	if(t0 < t1){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
-	} else if(t0 < t2){
-		v = reg_max_vel;
-	} else if(t0 < t3){
-		v = reg_max_vel - reg_accel*(t0-t2)/1000.0f;
-	} else {
+	} else if(x0 >= reg_distance){
 		v = reg_end_vel;
 		end_flag = true;
+	} else if(x0 >= x1+x2){
+		if(v > 0.01f) v -= reg_accel/1000.0f;
+	} else {
+		v = reg_max_vel;
 	}
 	target_linvel = v;
 }
