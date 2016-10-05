@@ -5,8 +5,6 @@
 
 namespace slalomparams{
 	enum class RunType : uint8_t {
-		TRAPACCEL,
-		PIVOTTURN,
 		SLALOM90SML_RIGHT,
 		SLALOM90SML_LEFT,
 		SLALOM90_RIGHT,
@@ -23,6 +21,8 @@ namespace slalomparams{
 		SLALOM135OUT_LEFT,
 		SLALOM90OBL_RIGHT,
 		SLALOM90OBL_LEFT,
+		TRAPACCEL,
+		PIVOTTURN,
 	};
 
 	struct pack{

@@ -18,17 +18,26 @@ private:
 	MotorControl* mc = MotorControl::getInstance();
 	WallSensor* sens = WallSensor::getInstance();
 	Gyro* gyro = Gyro::getInstance();
+	Led* led = Led::getInstance();
 	/* Map map; */
 
 	int32_t time;
 	bool end_flag;
 
 	enum slalomparams::RunType reg_type;
+
+	// for Trapezoid and Pivot ( and Slalom)
 	float reg_start_vel;
 	float reg_max_vel;
 	float reg_end_vel;
 	float reg_distance;
 	float reg_accel;
+
+	// for Slalom
+	float reg_d_before;
+	float reg_d_after;
+	int32_t reg_slalom_pos;
+	float reg_min_vel;
 
 	float target_linvel;
 	float target_radvel;
@@ -37,8 +46,8 @@ private:
 	void calcPivotTurn(int32_t t);
 	void calcSlalom(int32_t t);
 
-	float x1, x2, x3, v;
-	int32_t t1, t2, t3;
+	float x1, x2, x3, v, r;
+	int32_t t1, t2, t3, t4;
 
 	VelocityControl();
 

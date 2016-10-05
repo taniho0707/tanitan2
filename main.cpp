@@ -104,6 +104,7 @@ int main(void){
 	while(!((wall->isExistWall(SensorPosition::FLeft)) && (wall->isExistWall(SensorPosition::FRight))));
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	led->on(LedNumbers::FRONT);
+	led->flickStop(LedNumbers::RIGHT);
 
 	bool flag = false;
 	Speaker::playSound(1175, 300, true);

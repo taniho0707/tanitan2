@@ -5,82 +5,82 @@ using namespace slalomparams;
 
 array< map<float,pack_t>* , 16> slalomparams::getParams(){
 	static map<float, pack_t> SLALOM90SML_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
-		{0.25, {0.005,0.005,	70,		90,		30,	  0.25,	   0.25,	0.25,	  0.0}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
+		{0.25, {0.005, 0.005,  4000,  90,     30,   0.25,    0.25,    0.25,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90SML_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
-		{0.25, {0.005,0.005,	70,		90,		30,	  0.25,	   0.25,	0.25,	  0.0}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
+		{0.25, {0.005, 0.005,    70,  90,     30,   0.25,    0.25,    0.25,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM90_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM180_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM180_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM45IN_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM45IN_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM45OUT_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM45OUT_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM135IN_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM135IN_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM135OUT_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM135OUT_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM90OBL_RIGHT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
 	static map<float, pack_t> SLALOM90OBL_LEFT = {
-		//	{vel, {d_bef, d_aft, a_rad,	   deg, cnsdig, in_vel, out_vel, min_vel, acc_lin}},
+	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		
 	};
 	
