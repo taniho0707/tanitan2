@@ -10,7 +10,7 @@ Led::Led(){
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOH, ENABLE);
-  
+
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -20,7 +20,13 @@ Led::Led(){
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
 	GPIO_Init(GPIOH, &GPIO_InitStructure);
-	for(auto i=0; i<5; ++i)
+
+	// flag
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	for(auto i=0; i<7; ++i)
 		off(static_cast<LedNumbers>(i));
 }
 
@@ -45,6 +51,14 @@ void Led::setType(LedNumbers num){
 	case LedNumbers::RIGHT :
 		gpio_port = GPIOC;
 		gpio_channel = GPIO_Pin_13;
+		break;
+	case LedNumbers::TOP1 :
+		gpio_port = GPIOA;
+		gpio_channel = GPIO_Pin_10;
+		break;
+	case LedNumbers::TOP2 :
+		gpio_port = GPIOA;
+		gpio_channel = GPIO_Pin_11;
 		break;
 	}
 }

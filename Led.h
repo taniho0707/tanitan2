@@ -15,6 +15,8 @@ enum class LedNumbers : uint8_t {
 	LEFT2,
 	LEFT3,
 	RIGHT,
+	TOP1,
+	TOP2,
 };
 
 struct LedFlickParams{
@@ -27,7 +29,7 @@ class Led{
 private:
 	GPIO_TypeDef * gpio_port;
 	uint16_t gpio_channel;
-	std::array<LedFlickParams, 5> flick_params;
+	std::array<LedFlickParams, 7> flick_params;
 
 	Led();
 
