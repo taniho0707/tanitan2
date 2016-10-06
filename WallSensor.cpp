@@ -13,7 +13,7 @@ WallSensor::WallSensor() :
 	VAL_THR_LEFT(15),
 	VAL_THR_RIGHT(15),
 	VAL_THR_FRIGHT(20),
-	THR_WALL_DISAPPEAR(0)
+	THR_WALL_DISAPPEAR(3)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -317,28 +317,28 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 			/// @todo check enable
 			switch(c){
 			case 0:
-				s->setDarkValue(SensorPosition::FLeft);
 				s->onLed(SensorPosition::FLeft);
-				s->setBrightValue(SensorPosition::Right);
-				s->offLed(SensorPosition::Right);
-				break;
-			case 1:
-				s->setDarkValue(SensorPosition::Left);
 				s->onLed(SensorPosition::Left);
-				s->setDarkValue(SensorPosition::FRight);
+				s->onLed(SensorPosition::Right);
 				s->onLed(SensorPosition::FRight);
 				break;
-			case 2:
+			case 1:
 				s->setBrightValue(SensorPosition::FLeft);
+				s->setBrightValue(SensorPosition::Left);
+				s->setBrightValue(SensorPosition::Right);
+				s->setBrightValue(SensorPosition::FRight);
+				break;
+			case 2:
 				s->offLed(SensorPosition::FLeft);
-				s->setDarkValue(SensorPosition::Right);
-				s->onLed(SensorPosition::Right);
+				s->offLed(SensorPosition::Left);
+				s->offLed(SensorPosition::Right);
+				s->offLed(SensorPosition::FRight);
 				break;
 			case 3:
-				s->setBrightValue(SensorPosition::Left);
-				s->offLed(SensorPosition::Left);
-				s->setBrightValue(SensorPosition::FRight);
-				s->offLed(SensorPosition::FRight);
+				s->setDarkValue(SensorPosition::FLeft);
+				s->setDarkValue(SensorPosition::Left);
+				s->setDarkValue(SensorPosition::Right);
+				s->setDarkValue(SensorPosition::FRight);
 				s->calcValue();
 				break;
 			}

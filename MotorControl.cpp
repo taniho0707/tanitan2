@@ -13,6 +13,7 @@ MotorControl::MotorControl() :
 	GAIN_RAD_D(0.0f),
 	GAIN_WALL_P(5.0f),
 	GAIN_WALL_I(0.0f),
+	GAIN_WALL_D(0.0f),
 	TREAD(380.0f)
 {
 	cur_lin_x = 0.0;
@@ -77,6 +78,8 @@ void MotorControl::controlVel(){
 
 	static float d_rad_gyro = 0.0;
 
+	static int16_t lastwall = 0;
+
 	if(integral_lin_encoder > 100 || integral_rad_gyro > 50000){
 		led->flickAsync(LedNumbers::FRONT, 4.0f, 0);
 		led->flickAsync(LedNumbers::LEFT1, 4.0f, 0);
@@ -96,10 +99,14 @@ void MotorControl::controlVel(){
 	integral_wall += wall->getCorrection(10000) * enabled_wall_control;
 
 	// rotation成分の計算
-	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw());
+	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
-	integral_rad_gyro += tar_rad_rev;
+	integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());
+	if(wall->isExistWall(SensorPosition::Left) || wall->isExistWall(SensorPosition::Right)) integral_rad_gyro = 0.0f;
+	// integral_rad_gyro += tar_rad_rev;
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
+
+	lastwall = wall->getCorrection(10000);
 
 	// linear成分の計算
 	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2 + gyro->getAccelFront() * 0.0005);
@@ -116,13 +123,13 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_lin_vel);
 	log->writeFloat(encoder->getVelocity(EncoderSide::LEFT));
 	log->writeFloat(encoder->getVelocity(EncoderSide::RIGHT));
-	log->writeFloat((encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2.0f);
 	log->writeFloat(cur_lin_x);
 	log->writeFloat(gyro->getGyroYaw());
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(tar_motor_rad_power);
-	log->writeFloat(tar_motor_l_power);
-	log->writeFloat(tar_motor_r_power);
+	log->writeFloat(wall->getValue(SensorPosition::Left));
+	log->writeFloat(wall->getValue(SensorPosition::Right));
+	log->writeFloat(wall->getCorrection(10000));
 }
 
 

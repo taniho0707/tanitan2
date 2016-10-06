@@ -17,6 +17,8 @@ int main(void){
 	led->on(LedNumbers::LEFT1);
 	led->on(LedNumbers::LEFT2);
 	led->on(LedNumbers::LEFT3);
+	led->on(LedNumbers::TOP1);
+	led->on(LedNumbers::TOP2);
 	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
 	Speaker::playSound(880, 100, true);
 	Speaker::playSound(1175, 300, true);
@@ -24,6 +26,8 @@ int main(void){
 	led->off(LedNumbers::LEFT1);
 	led->off(LedNumbers::LEFT2);
 	led->off(LedNumbers::LEFT3);
+	led->off(LedNumbers::TOP1);
+	led->off(LedNumbers::TOP2);
 	led->flickAsync(LedNumbers::RIGHT, 5.0f, 60000);
 
 	ComPc *compc = ComPc::getInstance();
@@ -111,13 +115,6 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 
-	// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.135f, 2.0f);
-	// while(vc->isRunning());
-	// vc->runSlalom(slalomparams::RunType::SLALOM90SML_RIGHT, 0.25f);
-	// while(vc->isRunning());
-	// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.135f, 2.0f);
-	// while(true);
-
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
 
@@ -125,24 +122,14 @@ int main(void){
 
 	while(true){
 		if(!wall->isExistWall(SensorPosition::Left)){
-			// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
-			// while(vc->isRunning());
-			// vc->runPivotTurn(360, -90, 1000);
 			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
 			while(vc->isRunning());
-			// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-			// while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::FRight)){
 			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
 			while(vc->isRunning());
 		} else if(!wall->isExistWall(SensorPosition::Right)){
-			// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
-			// while(vc->isRunning());
-			// vc->runPivotTurn(360, 90, 1000);
 			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
 			while(vc->isRunning());
-			// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-			// while(vc->isRunning());
 		} else {
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());

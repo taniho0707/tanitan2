@@ -35,6 +35,7 @@ private:
 	const float GAIN_RAD_D;
 	const float GAIN_WALL_P;
 	const float GAIN_WALL_I;
+	const float GAIN_WALL_D;
 
 	const float TREAD;
 
