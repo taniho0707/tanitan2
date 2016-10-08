@@ -1,12 +1,11 @@
 /**
  * @file Walldata.h
  */
-#ifndef INCLUDED_WALLDATA_H
-#define INCLUDED_WALLDATA_H
+#pragma once
 
 #include <bitset>
 
-#include "const.h"
+#include "Position.h"
 
 /**
  * @brief 壁データを簡単に扱うためのクラス。<br>
@@ -43,21 +42,21 @@ public:
 	 * @param dir 壁を調べたい方向
 	 * @return 壁があればtrue，なければfalse
 	 */
-	bool existWall(EMouseDirection dir);
+	bool isExistWall(MouseAngle dir);
 
 	/**
 	 * @brief 指定した方向に壁を追加します。
 	 * @param dir 壁を追加したい方向
 	 */
-	void addWall(EMouseDirection dir);
+	void addWall(MouseAngle dir);
 
 	/**
 	 * @brief 指定した方向の壁を除去します。
 	 * @param dir 壁を除去したい方向
 	 */
-	void removeWall(EMouseDirection dir);
+	void removeWall(MouseAngle dir);
 
-	~Walldata();
+	static Walldata rotateWallToAbsolute(Walldata wall, MouseAngle angle);
+	static Walldata rotateWallToRelative(Walldata wall, MouseAngle angle);
 };
 
-#endif
