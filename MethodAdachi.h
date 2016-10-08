@@ -10,11 +10,10 @@
 #include "Walldata.h"
 #include "Footmap.h"
 
+#include "ComPc.h"
+
 class MethodAdachi{
 private:
-	Footmap fm;
-
-	Map map;
 
 	std::queue< std::pair<int8_t, int8_t> > que;
 
@@ -22,6 +21,10 @@ private:
 	int8_t goal_y;
 
 public:
+	Footmap fm;
+
+	Map map;
+	
 	MethodAdachi();
 
 	void setGoal(int8_t x, int8_t y);

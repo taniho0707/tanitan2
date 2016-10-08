@@ -78,9 +78,18 @@ void Map::addSingleWall(int8_t x, int8_t y, MazeAngle angle){
 // 	// }
 // }
 
+Walldata Map::getWalldata(int8_t x, int8_t y){
+	Walldata wall;
+	if(isExistWall(x, y, MazeAngle::NORTH)) wall.addWall(MouseAngle::FRONT);
+	if(isExistWall(x, y, MazeAngle::SOUTH)) wall.addWall(MouseAngle::BACK);
+	if(isExistWall(x, y, MazeAngle::EAST)) wall.addWall(MouseAngle::RIGHT);
+	if(isExistWall(x, y, MazeAngle::WEST)) wall.addWall(MouseAngle::LEFT);
+	return wall;
+}
+
 
 bool Map::isExistWall(int8_t x, int8_t y, MazeAngle angle){
-	int ans = 0;
+	uint32_t ans = 0;
 	if((x == 0 && angle == MazeAngle::WEST)
 			|| (x == 31 && angle == MazeAngle::EAST)
 			|| (y == 0 && angle == MazeAngle::SOUTH)
@@ -97,7 +106,7 @@ bool Map::isExistWall(int8_t x, int8_t y, MazeAngle angle){
 	} else {
 		ans = 1;
 	}
-	if(ans) return true;
+	if(ans > 0) return true;
 	else return false;
 }
 
@@ -116,4 +125,14 @@ bool Map::hasReached(int8_t x, int8_t y){
 			&& (reached[(y==0)?(y+1):(y-1)] & (0x80000000 >> x))
 			) return true;
 	else return false;
+}
+
+void Map::copyFrom(Map& m){
+	for(int i=0; i<31; i++){
+		column[i] = m.column[i];
+		row[i] = m.row[i];
+	}
+	for(int i=0; i<32; i++){
+		reached[i] = m.reached[i];
+	}
 }

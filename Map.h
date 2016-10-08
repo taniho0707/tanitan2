@@ -16,11 +16,11 @@ public:
 	/**
 	 * @brief 一番左の壁がMSB，右から2番目の壁がLSB，下から順
 	 */
-	uint32_t column[32];
+	uint32_t column[31];
 	/**
 	 * @brief 一番左の壁がMSB，右から2番目の壁がLSB，下から順
 	 */
-	uint32_t row[32];
+	uint32_t row[31];
 	/**
 	 * @brief 一番左のマスがMSB，一番右のマスがLSB，下から順
 	 */
@@ -74,6 +74,8 @@ public:
 	/*  *\/ */
 	/* void setSingleWall(int x, int y, MouseAngle angle, Walldata wall); */
 
+	Walldata getWalldata(int8_t x, int8_t y);
+
 
 	/**
 	 * @brief 絶対方向から見て壁があるか確認します
@@ -100,15 +102,21 @@ public:
 	 */
 	bool hasReached(int8_t, int8_t);
 
+	void copyFrom(Map&);
+
 
 	/**
 	 * @brief =演算子のオーバーロード。Mapクラスを代入します
 	 * @bug できない
 	 */
-	Map& operator= (Map tmp){
-		/* column = tmp.column; */
-		/* row = tmp.row; */
-		/* reached = tmp.reached; */
-		/* return *this; */
-	}
+	/* Map& operator= (Map tmp){ */
+	/* 	for(int i=0; i<31; i++){ */
+	/* 		column[i] = tmp.column[i]; */
+	/* 		row[i] = tmp.row[i]; */
+	/* 	} */
+	/* 	for(int i=0; i<32; i++){ */
+	/* 		reached[i] = tmp.reached[i]; */
+	/* 	} */
+	/* 	return *this; */
+	/* } */
 };

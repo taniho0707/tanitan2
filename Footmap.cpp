@@ -45,15 +45,15 @@ bool Footmap::isOutside(const int8_t x, const int8_t y){
 	else return false;
 }
 
-uint16_t Footmap::getMinNextTo(const int8_t x, const int8_t y){
+uint16_t Footmap::getMinNextTo(const int8_t x, const int8_t y, Walldata wall){
 	uint16_t min = 1024;
-	if(getFootmap(x-1, y, 1024) < min)
+	if(getFootmap(x-1, y, 1024) < min && (wall.isExistWall(MouseAngle::LEFT)==false))
 		min = getFootmap(x-1, y, 1024);
-	if(getFootmap(x+1, y, 1024) < min)
+	if(getFootmap(x+1, y, 1024) < min && (wall.isExistWall(MouseAngle::RIGHT)==false))
 		min = getFootmap(x+1, y, 1024);
-	if(getFootmap(x, y-1, 1024) < min)
+	if(getFootmap(x, y-1, 1024) < min && (wall.isExistWall(MouseAngle::BACK)==false))
 		min = getFootmap(x, y-1, 1024);
-	if(getFootmap(x, y+1, 1024) < min)
+	if(getFootmap(x, y+1, 1024) < min && (wall.isExistWall(MouseAngle::FRONT)==false))
 		min = getFootmap(x, y+1, 1024);
 	return min;
 }

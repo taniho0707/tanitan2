@@ -6,6 +6,8 @@
 
 #include <array>
 
+#include "Walldata.h"
+
 class Footmap{
 private:
 
@@ -38,7 +40,7 @@ public:
 
 	bool isOutside(const int8_t x, const int8_t y);
 
-	uint16_t getMinNextTo(const int8_t x, const int8_t y);
+	uint16_t getMinNextTo(const int8_t x, const int8_t y, Walldata wall);
 
 	~Footmap();
 	

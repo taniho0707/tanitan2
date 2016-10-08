@@ -174,26 +174,20 @@ int main(void){
 	adachi.renewFootmap();
 	footmap = adachi.getFootmap();
 
-	for(int i=0; i<32; ++i){
-		for(int j=0; j<32; ++j)
-			compc->printf("%4d ", footmap.getFootmap(j, 31-i, 1024));
-		compc->printf("\n");
-	}
-
-	for(int i=0; i<32; ++i) compc->printf("+--");
+	for(int i=0; i<32; ++i) compc->printf("+----");
 	compc->printf("+\n");
 
 	for(int j=0; j<32; ++j){
 		for(int i=0; i<32; ++i){
-			if(map.isExistWall(i, 31-j, MazeAngle::WEST)) compc->printf("|");
+			if(adachi.map.isExistWall(i, 31-j, MazeAngle::WEST)) compc->printf("|");
 			else compc->printf(" ");
-			compc->printf("  ");
+			compc->printf("%4d", adachi.fm.getFootmap(i, 31-j, 1024));
 		}
 		compc->printf("|\n");
 
 		for(int i=0; i<32; ++i){
-			if(map.isExistWall(i, 31-j, MazeAngle::SOUTH)) compc->printf("+--");
-			else compc->printf("+  ");
+			if(adachi.map.isExistWall(i, 31-j, MazeAngle::SOUTH)) compc->printf("+----");
+			else compc->printf("+    ");
 		}
 		compc->printf("+\n");
 	}
