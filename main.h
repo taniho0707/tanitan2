@@ -24,6 +24,7 @@
 #include "Mram.h"
 
 #include "Walldata.h"
+#include "Position.h"
 #include "Footmap.h"
 
 #include "Datalog.h"

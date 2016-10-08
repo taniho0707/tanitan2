@@ -115,6 +115,8 @@ int main(void){
 	motorcontrol->stay();
 	VelocityControl* vc = VelocityControl::getInstance();
 
+	Position pos;
+
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
 
@@ -132,12 +134,15 @@ int main(void){
 		if(!wall->isExistWall(SensorPosition::Left)){
 			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
 			while(vc->isRunning());
+			pos.setNextPosition(RunType::SLALOM90SML_LEFT);
 		} else if(!wall->isExistWall(SensorPosition::FRight)){
 			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
 			while(vc->isRunning());
+			pos.setNextPosition(RunType::TRAPACCEL);
 		} else if(!wall->isExistWall(SensorPosition::Right)){
 			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
 			while(vc->isRunning());
+			pos.setNextPosition(RunType::SLALOM90SML_RIGHT);
 		} else {
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
@@ -145,8 +150,15 @@ int main(void){
 			while(vc->isRunning());
 			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 			while(vc->isRunning());
+			pos.setNextPosition(RunType::PIVOTTURN);
+		}
+		if(pos.getPositionX() == 8 && pos.getPositionY() == 8){
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			break;
 		}
 	}
+	led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 	wall->stop();
 
 	while(true){
