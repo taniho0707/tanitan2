@@ -101,9 +101,9 @@ void MotorControl::controlVel(){
 	// rotation成分の計算
 	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
-	integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());
-	if(wall->isExistWall(SensorPosition::Left) || wall->isExistWall(SensorPosition::Right)) integral_rad_gyro = 0.0f;
-	// integral_rad_gyro += tar_rad_rev;
+	// integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());
+	// if(wall->isExistWall(SensorPosition::Left) || wall->isExistWall(SensorPosition::Right)) integral_rad_gyro = 0.0f;
+	integral_rad_gyro += tar_rad_rev;
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
 	lastwall = wall->getCorrection(10000);

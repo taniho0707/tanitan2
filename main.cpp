@@ -120,6 +120,14 @@ int main(void){
 
 	using namespace slalomparams;
 
+	// while(true){
+	// vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
+	// while(vc->isRunning());
+	// vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
+	// motorcontrol->disableWallControl();
+	// while(vc->isRunning());
+	// }
+
 	while(true){
 		if(!wall->isExistWall(SensorPosition::Left)){
 			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
