@@ -116,6 +116,10 @@ int main(void){
 	VelocityControl* vc = VelocityControl::getInstance();
 
 	Position pos;
+	Map map;
+	Footmap footmap;
+	MethodAdachi adachi;
+	Walldata walldata;
 
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
@@ -131,6 +135,8 @@ int main(void){
 	// }
 
 	while(true){
+		walldata = wall->getWall();
+		map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
 		if(!wall->isExistWall(SensorPosition::Left)){
 			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
 			while(vc->isRunning());
@@ -158,9 +164,41 @@ int main(void){
 			break;
 		}
 	}
+	adachi.setGoal(8, 8);
+	adachi.setMap(map);
 	led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
-	wall->stop();
+	motor->disable();
 
+	while(!Switch::isPushing(SwitchNumbers::RIGHT));
+
+	adachi.renewFootmap();
+	footmap = adachi.getFootmap();
+
+	for(int i=0; i<32; ++i){
+		for(int j=0; j<32; ++j)
+			compc->printf("%4d ", footmap.getFootmap(j, 31-i, 1024));
+		compc->printf("\n");
+	}
+
+	for(int i=0; i<32; ++i) compc->printf("+--");
+	compc->printf("+\n");
+
+	for(int j=0; j<32; ++j){
+		for(int i=0; i<32; ++i){
+			if(map.isExistWall(i, 31-j, MazeAngle::WEST)) compc->printf("|");
+			else compc->printf(" ");
+			compc->printf("  ");
+		}
+		compc->printf("|\n");
+
+		for(int i=0; i<32; ++i){
+			if(map.isExistWall(i, 31-j, MazeAngle::SOUTH)) compc->printf("+--");
+			else compc->printf("+  ");
+		}
+		compc->printf("+\n");
+	}
+
+	Timer::wait_ms(10000);
 	while(true){
 		compc->printf("%f\n", gyro->getGyroYaw());
 		Timer::wait_ms(100);

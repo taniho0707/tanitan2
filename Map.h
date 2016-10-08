@@ -45,7 +45,7 @@ public:
 	 * @param angle 今自分が向いている絶対方向
 	 * @param wall 今見えている壁情報
 	 */
-	void addWall(int8_t x, int8_t y, MouseAngle angle, Walldata wall);
+	void addWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall);
 
 	/* /\** */
 	/*  * @brief 壁を設定します */

@@ -270,7 +270,13 @@ bool WallSensor::isExistWall(SensorPosition pos){
 	else return false;
 }
 
-Walldata WallSensor::getWall(){}
+Walldata WallSensor::getWall(){
+	Walldata w;
+	if(isExistWall(SensorPosition::Left)) w.addWall(MouseAngle::LEFT);
+	if(isExistWall(SensorPosition::Right)) w.addWall(MouseAngle::RIGHT);
+	if(isExistWall(SensorPosition::FLeft)) w.addWall(MouseAngle::FRONT);
+	return w;
+}
 
 int16_t WallSensor::getCorrection(uint16_t max){
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;

@@ -26,6 +26,9 @@
 #include "Walldata.h"
 #include "Position.h"
 #include "Footmap.h"
+#include "Map.h"
+
+#include "MethodAdachi.h"
 
 #include "Datalog.h"
 

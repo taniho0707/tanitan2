@@ -30,7 +30,7 @@ void Map::formatReached(){
 	}
 }
 
-void Map::addWall(int8_t x, int8_t y, MouseAngle angle, Walldata wall){
+void Map::addWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall){
 	Walldata tmp = Walldata::rotateWallToAbsolute(wall, angle);
 	if(tmp.isExistWall(MouseAngle::FRONT)) addSingleWall(x, y, MazeAngle::NORTH);
 	if(tmp.isExistWall(MouseAngle::LEFT)) addSingleWall(x, y, MazeAngle::WEST);
@@ -56,11 +56,11 @@ void Map::addSingleWall(int8_t x, int8_t y, MazeAngle angle){
 	if(angle == MazeAngle::NORTH){
 		row[y] |= (0x80000000 >> x);
 	} else if(angle == MazeAngle::EAST){
-		column[y] |= (0x80000000 >> x);
+		column[x] |= (0x80000000 >> y);
 	} else if(angle == MazeAngle::SOUTH){
 		row[y-1] |= (0x80000000 >> x);
 	} else if(angle == MazeAngle::WEST){
-		column[y] |= (0x80000000 >> (x-1));
+		column[x-1] |= (0x80000000 >> y);
 	}
 }
 
@@ -82,17 +82,18 @@ void Map::addSingleWall(int8_t x, int8_t y, MazeAngle angle){
 bool Map::isExistWall(int8_t x, int8_t y, MazeAngle angle){
 	int ans = 0;
 	if((x == 0 && angle == MazeAngle::WEST)
-			|| (x == 15 && angle == MazeAngle::EAST)
+			|| (x == 31 && angle == MazeAngle::EAST)
 			|| (y == 0 && angle == MazeAngle::SOUTH)
-			|| (y == 15 && angle == MazeAngle::NORTH)) return true;
+			|| (y == 31 && angle == MazeAngle::NORTH)) return true;
+	if(x < 0 || x > 31 || y < 0 || y > 31) return true;
 	if(angle == MazeAngle::NORTH){
 		ans = row[y] & (0x80000000 >> x);
 	} else if(angle == MazeAngle::EAST) {
-		ans = column[y] & (0x80000000 >> x);
+		ans = column[x] & (0x80000000 >> y);
 	} else if(angle == MazeAngle::SOUTH){
 		ans = row[y-1] & (0x80000000 >> x);
 	} else if(angle == MazeAngle::WEST){
-		ans = column[y] & (0x80000000 >> (x-1));
+		ans = column[x-1] & (0x80000000 >> y);
 	} else {
 		ans = 1;
 	}
@@ -111,7 +112,7 @@ bool Map::hasReached(int8_t x, int8_t y){
 	else if(
 			(reached[y] & (0x80000000 >> (x+1)))
 			&& (reached[y] & (0x80000000 >> ((x==0)?(x+1):(x-1))))
-			&& (reached[(y==15)?(y-1):(y+1)] & (0x80000000 >> x))
+			&& (reached[(y==31)?(y-1):(y+1)] & (0x80000000 >> x))
 			&& (reached[(y==0)?(y+1):(y-1)] & (0x80000000 >> x))
 			) return true;
 	else return false;

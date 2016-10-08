@@ -56,7 +56,7 @@ public:
 	 */
 	void removeWall(MouseAngle dir);
 
-	static Walldata rotateWallToAbsolute(Walldata wall, MouseAngle angle);
-	static Walldata rotateWallToRelative(Walldata wall, MouseAngle angle);
+	static Walldata rotateWallToAbsolute(Walldata wall, MazeAngle angle);
+	static Walldata rotateWallToRelative(Walldata wall, MazeAngle angle);
 };
 
