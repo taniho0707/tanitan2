@@ -35,5 +35,5 @@ public:
 
 	Footmap getFootmap();
 
-	slalomparams::RunType getNextMotion(int8_t x, int8_t y, MazeAngle angle);
+	slalomparams::RunType getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata);
 };

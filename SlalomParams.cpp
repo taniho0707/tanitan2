@@ -6,12 +6,12 @@ using namespace slalomparams;
 array< map<float,pack_t>* , 16> slalomparams::getParams(){
 	static map<float, pack_t> SLALOM90SML_RIGHT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
-		{0.25, {0.012, 0.020,  9000,  96,     30,   0.25,    0.25,    0.25,     0.0}},
+		{0.25, {0.010, 0.012,  9000,95.5,     30,   0.25,    0.25,    0.25,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90SML_LEFT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
-		{0.25, {0.012, 0.020,  9000,  96,     30,   0.25,    0.25,    0.25,     0.0}},
+		{0.25, {0.010, 0.012,  9000,95.5,     30,   0.25,    0.25,    0.25,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90_RIGHT = {

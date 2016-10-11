@@ -133,41 +133,72 @@ int main(void){
 	// motorcontrol->disableWallControl();
 	// while(vc->isRunning());
 	// }
+	adachi.setGoal(11, 11);
 
+	
 	while(true){
+		led->off(LedNumbers::FRONT);
 		walldata = wall->getWall();
 		map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
-		if(!wall->isExistWall(SensorPosition::Left)){
-			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
+		// if(!wall->isExistWall(SensorPosition::Left)){
+		// 	vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
+		// 	while(vc->isRunning());
+		// 	pos.setNextPosition(RunType::SLALOM90SML_LEFT);
+		// } else if(!wall->isExistWall(SensorPosition::FRight)){
+		// 	vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
+		// 	while(vc->isRunning());
+		// 	pos.setNextPosition(RunType::TRAPACCEL);
+		// } else if(!wall->isExistWall(SensorPosition::Right)){
+		// 	vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
+		// 	while(vc->isRunning());
+		// 	pos.setNextPosition(RunType::SLALOM90SML_RIGHT);
+		// } else {
+		// 	vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+		// 	while(vc->isRunning());
+		// 	vc->runPivotTurn(360, 180, 1000);
+		// 	while(vc->isRunning());
+		// 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+		// 	while(vc->isRunning());
+		// 	pos.setNextPosition(RunType::PIVOTTURN);
+		// }
+		adachi.setMap(map);
+		adachi.renewFootmap();
+		slalomparams::RunType runtype = adachi.getNextMotion(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
+		led->on(LedNumbers::FRONT);
+
+		if(runtype == slalomparams::RunType::TRAPACCEL){
+			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.078f, 2.0f);
 			while(vc->isRunning());
-			pos.setNextPosition(RunType::SLALOM90SML_LEFT);
-		} else if(!wall->isExistWall(SensorPosition::FRight)){
-			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
-			while(vc->isRunning());
-			pos.setNextPosition(RunType::TRAPACCEL);
-		} else if(!wall->isExistWall(SensorPosition::Right)){
-			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
-			while(vc->isRunning());
-			pos.setNextPosition(RunType::SLALOM90SML_RIGHT);
-		} else {
+		} else if(runtype == slalomparams::RunType::PIVOTTURN){
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			vc->runPivotTurn(360, 180, 1000);
 			while(vc->isRunning());
 			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 			while(vc->isRunning());
-			pos.setNextPosition(RunType::PIVOTTURN);
+		} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
+			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
+			while(vc->isRunning());
+		} else if(runtype == slalomparams::RunType::SLALOM90SML_LEFT){
+			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.25f);
+			while(vc->isRunning());
+		} else {
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			break;
 		}
-		if(pos.getPositionX() == 8 && pos.getPositionY() == 8){
+
+		pos.setNextPosition(runtype);
+
+		if(pos.getPositionX() == 11 && pos.getPositionY() == 11){
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			break;
 		}
 	}
-	adachi.setGoal(8, 8);
 	adachi.setMap(map);
-	led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 	motor->disable();
+	led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 
 	while(!Switch::isPushing(SwitchNumbers::RIGHT));
 

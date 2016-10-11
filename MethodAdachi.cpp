@@ -74,29 +74,28 @@ Footmap MethodAdachi::getFootmap(){
 	return fm;
 }
 
-slalomparams::RunType MethodAdachi::getNextMotion(int8_t x, int8_t y, MazeAngle angle){
-	Walldata wall;
-	uint16_t min = fm.getMinNextTo(x, y, wall);
+slalomparams::RunType MethodAdachi::getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata){
+	uint16_t min = fm.getMinNextTo(x, y, Walldata::rotateWallToAbsolute(walldata, angle));
 	if(angle == MazeAngle::NORTH){
-		if(fm.getFootmap(x, y+1, 1024) == min) return slalomparams::RunType::TRAPEACCEL;
-		else if(fm.getFootmap(x+1, y, 1024) == min) return slalomparams::RunType::SLALOM90SML_RIGHT;
-		else if(fm.getFootmap(x-1, y, 1024) == min) return slalomparams::RunType::SLALOM90SML_LEFT;
-		else slalomparams::RunType::PIVOTTURN;
+		if(fm.getFootmap(x, y+1, 1024) == min && walldata.isExistWall(MouseAngle::FRONT)==false) return slalomparams::RunType::TRAPACCEL;
+		else if(fm.getFootmap(x+1, y, 1024) == min && walldata.isExistWall(MouseAngle::RIGHT)==false) return slalomparams::RunType::SLALOM90SML_RIGHT;
+		else if(fm.getFootmap(x-1, y, 1024) == min && walldata.isExistWall(MouseAngle::LEFT)==false) return slalomparams::RunType::SLALOM90SML_LEFT;
+		else return slalomparams::RunType::PIVOTTURN;
 	} else if(angle == MazeAngle::EAST){
-		if(fm.getFootmap(x+1, y, 1024) == min) return slalomparams::RunType::TRAPEACCEL;
-		else if(fm.getFootmap(x, y-1, 1024) == min) return slalomparams::RunType::SLALOM90SML_RIGHT;
-		else if(fm.getFootmap(x, y+1, 1024) == min) return slalomparams::RunType::SLALOM90SML_LEFT;
-		else slalomparams::RunType::PIVOTTURN;
+		if(fm.getFootmap(x+1, y, 1024) == min && walldata.isExistWall(MouseAngle::FRONT)==false) return slalomparams::RunType::TRAPACCEL;
+		else if(fm.getFootmap(x, y-1, 1024) == min && walldata.isExistWall(MouseAngle::RIGHT)==false) return slalomparams::RunType::SLALOM90SML_RIGHT;
+		else if(fm.getFootmap(x, y+1, 1024) == min && walldata.isExistWall(MouseAngle::LEFT)==false) return slalomparams::RunType::SLALOM90SML_LEFT;
+		else return slalomparams::RunType::PIVOTTURN;
 	} else if(angle == MazeAngle::SOUTH){
-		if(fm.getFootmap(x, y-1, 1024) == min) return slalomparams::RunType::TRAPEACCEL;
-		else if(fm.getFootmap(x-1, y, 1024) == min) return slalomparams::RunType::SLALOM90SML_RIGHT;
-		else if(fm.getFootmap(x+1, y, 1024) == min) return slalomparams::RunType::SLALOM90SML_LEFT;
-		else slalomparams::RunType::PIVOTTURN;
+		if(fm.getFootmap(x, y-1, 1024) == min && walldata.isExistWall(MouseAngle::FRONT)==false) return slalomparams::RunType::TRAPACCEL;
+		else if(fm.getFootmap(x-1, y, 1024) == min && walldata.isExistWall(MouseAngle::RIGHT)==false) return slalomparams::RunType::SLALOM90SML_RIGHT;
+		else if(fm.getFootmap(x+1, y, 1024) == min && walldata.isExistWall(MouseAngle::LEFT)==false) return slalomparams::RunType::SLALOM90SML_LEFT;
+		else return slalomparams::RunType::PIVOTTURN;
 	} else if(angle == MazeAngle::WEST){
-		if(fm.getFootmap(x-1, y, 1024) == min) return slalomparams::RunType::TRAPEACCEL;
-		else if(fm.getFootmap(x, y+1, 1024) == min) return slalomparams::RunType::SLALOM90SML_RIGHT;
-		else if(fm.getFootmap(x, y-1, 1024) == min) return slalomparams::RunType::SLALOM90SML_LEFT;
-		else slalomparams::RunType::PIVOTTURN;
+		if(fm.getFootmap(x-1, y, 1024) == min && walldata.isExistWall(MouseAngle::FRONT)==false) return slalomparams::RunType::TRAPACCEL;
+		else if(fm.getFootmap(x, y+1, 1024) == min && walldata.isExistWall(MouseAngle::RIGHT)==false) return slalomparams::RunType::SLALOM90SML_RIGHT;
+		else if(fm.getFootmap(x, y-1, 1024) == min && walldata.isExistWall(MouseAngle::LEFT)==false) return slalomparams::RunType::SLALOM90SML_LEFT;
+		else return slalomparams::RunType::PIVOTTURN;
 	}
 }
 

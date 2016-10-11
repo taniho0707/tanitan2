@@ -9,10 +9,12 @@ WallSensor::WallSensor() :
 	VAL_REF_LEFT(130),
 	VAL_REF_RIGHT(130),
 	VAL_REF_FRIGHT(120),
-	VAL_THR_FLEFT(20),
-	VAL_THR_LEFT(110),
+	VAL_THR_FLEFT(12),
+	VAL_THR_LEFT(105),
 	VAL_THR_RIGHT(110),
-	VAL_THR_FRIGHT(20),
+	VAL_THR_FRIGHT(12),
+	VAL_THR_CONTROL_LEFT(120),
+	VAL_THR_CONTROL_RIGHT(120),
 	THR_WALL_DISAPPEAR(1)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -283,7 +285,7 @@ int16_t WallSensor::getCorrection(uint16_t max){
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
 	bool is_singlewall = false;
 
-	if(isExistWall(SensorPosition::FLeft) && isExistWall(SensorPosition::FRight)) return 0;
+	if(current_value[static_cast<uint8_t>(SensorPosition::FLeft)] > VAL_THR_CONTROL_LEFT && current_value[static_cast<uint8_t>(SensorPosition::FRight)] > VAL_THR_CONTROL_RIGHT) return 0;
 
 	if(!isExistWall(SensorPosition::Left) || (getLastValue(SensorPosition::Left)-getValue(SensorPosition::Left) > THR_WALL_DISAPPEAR)){
 		tmpL = 0;
