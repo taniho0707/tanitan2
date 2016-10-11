@@ -11,6 +11,7 @@ VelocityControl::VelocityControl(){
 	
 	time = Timer::getTime();
 	end_flag = true;
+	is_started = false;
 
 	target_linvel = 0.0f;
 	target_radvel = 0.0f;
@@ -21,6 +22,16 @@ bool VelocityControl::isRunning(){
 	else return true;
 }
 
+void VelocityControl::startTrapAccel(
+	float start_vel,
+	float max_vel,
+	float distance,
+	float accel
+	){
+	runTrapAccel(start_vel, max_vel, max_vel, distance, accel);
+	is_started = true;
+}
+
 void VelocityControl::runTrapAccel(
 	float start_vel,
 	float max_vel,
@@ -29,14 +40,19 @@ void VelocityControl::runTrapAccel(
 	float accel
 	){
 	mc->enableWallControl();
-	time = Timer::getTime();
+	if(!is_started){ //先に台形加速を初めていない場合のみ
+		time = Timer::getTime();
+		mc->setIntegralEncoder(0.0f);
+		
+		reg_accel = accel;
+		reg_start_vel = start_vel;
+		reg_max_vel = max_vel;
+	}
+	is_started = false;
 	end_flag = false;
 	reg_type = RunType::TRAPACCEL;
-	reg_start_vel = start_vel;
-	reg_max_vel = max_vel;
 	reg_end_vel = end_vel;
 	reg_distance = distance;
-	reg_accel = accel;
 	x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
 	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
 	x2 = reg_distance - x1 - x3;
@@ -50,8 +66,6 @@ void VelocityControl::runTrapAccel(
 		t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
 		t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
 	}
-	mc->setIntegralEncoder(0.0f);
-	v = 0.0f;
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
@@ -149,7 +163,11 @@ bool VelocityControl::runSlalom(
 	v = in_vel;
 	r = 0.0f;
 	reg_slalom_pos = 1;
-	mc->setIntegralEncoder(0.0f);
+
+	if(!is_started){
+		mc->setIntegralEncoder(0.0f);
+		is_started = false;
+	}
 	return true;
 }
 

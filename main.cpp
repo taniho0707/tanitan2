@@ -124,6 +124,7 @@ int main(void){
 
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
 	while(vc->isRunning());
+	vc->startTrapAccel(0.25f, 0.25f, 0.09f, 2.0f);
 
 	using namespace slalomparams;
 
@@ -169,18 +170,18 @@ int main(void){
 		led->on(LedNumbers::FRONT);
 
 		if(runtype == slalomparams::RunType::TRAPACCEL){
-			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.078f, 2.0f);
+			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
 			while(vc->isRunning());
 		} else if(runtype == slalomparams::RunType::PIVOTTURN){
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
-			if(wall->isExistWall(SensorPosition::FLeft)){
-				led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-				MotorControl::getInstance()->disableWallControl();
-				collection->collectionByFrontDuringStop();// front correction 1.5s
-				led->flickStop(LedNumbers::FRONT);
-				led->on(LedNumbers::FRONT);
-			}
+			// if(wall->isExistWall(SensorPosition::FLeft)){
+			// 	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			// 	MotorControl::getInstance()->disableWallControl();
+			// 	collection->collectionByFrontDuringStop();// front correction 1.5s
+			// 	led->flickStop(LedNumbers::FRONT);
+			// 	led->on(LedNumbers::FRONT);
+			// }
 			vc->runPivotTurn(360, 180, 1000);
 			while(vc->isRunning());
 			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
@@ -198,6 +199,7 @@ int main(void){
 		}
 
 		pos.setNextPosition(runtype);
+		vc->startTrapAccel(0.25f, 0.25f, 0.09f, 2.0f);
 
 		if(pos.getPositionX() == 8 && pos.getPositionY() == 0){
 		// if(pos.getPositionX() == 11 && pos.getPositionY() == 11){

@@ -23,6 +23,7 @@ private:
 
 	int32_t time;
 	bool end_flag;
+	bool is_started;
 
 	enum slalomparams::RunType reg_type;
 
@@ -56,6 +57,16 @@ public:
 	void setRadVel();
 
 	bool isRunning();
+
+	// 加速もしくは等速のみ
+	// 指定距離が来た場合走り続けるため，オーバーランの可能性あり
+	// 他の走行を指定することで距離を残したまま継続
+	void startTrapAccel(
+		float start_vel,
+		float max_vel,
+		float distance,
+		float accel
+		);
 
 	void runTrapAccel(
 		float start_vel,
