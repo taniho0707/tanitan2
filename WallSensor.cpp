@@ -5,16 +5,16 @@ using namespace std;
 
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
-	VAL_REF_FLEFT(97),
-	VAL_REF_LEFT(130),
-	VAL_REF_RIGHT(130),
-	VAL_REF_FRIGHT(120),
-	VAL_THR_FLEFT(12),
-	VAL_THR_LEFT(105),
-	VAL_THR_RIGHT(110),
-	VAL_THR_FRIGHT(12),
-	VAL_THR_CONTROL_LEFT(120),
-	VAL_THR_CONTROL_RIGHT(120),
+	VAL_REF_FLEFT(226),
+	VAL_REF_LEFT(85),
+	VAL_REF_RIGHT(80),
+	VAL_REF_FRIGHT(315),
+	VAL_THR_FLEFT(10),
+	VAL_THR_LEFT(20),
+	VAL_THR_RIGHT(20),
+	VAL_THR_FRIGHT(10),
+	VAL_THR_CONTROL_LEFT(60),
+	VAL_THR_CONTROL_RIGHT(60),
 	THR_WALL_DISAPPEAR(1)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -84,6 +84,10 @@ WallSensor::WallSensor() :
 	thr_straight_value[1] = VAL_THR_LEFT;
 	thr_straight_value[2] = VAL_THR_RIGHT;
 	thr_straight_value[3] = VAL_THR_FRIGHT;
+	ref_straight_value[0] = VAL_REF_FLEFT;
+	ref_straight_value[1] = VAL_REF_LEFT;
+	ref_straight_value[2] = VAL_REF_RIGHT;
+	ref_straight_value[3] = VAL_REF_FRIGHT;
 }
 
 bool WallSensor::isWorking(){
@@ -263,6 +267,9 @@ void WallSensor::interrupt(){
 uint16_t WallSensor::getValue(SensorPosition pos){
 	return current_value[static_cast<uint8_t>(pos)];
 }
+uint16_t WallSensor::getDiffValue(SensorPosition pos){
+	return current_value[static_cast<uint8_t>(pos)] - ref_straight_value[static_cast<uint8_t>(pos)];
+}
 uint16_t WallSensor::getLastValue(SensorPosition pos){
 	return last_value[static_cast<uint8_t>(pos)];
 }
@@ -329,25 +336,27 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->onLed(SensorPosition::Left);
 				s->onLed(SensorPosition::Right);
 				s->onLed(SensorPosition::FRight);
-				break;
-			case 1:
+				for(int i=0; i<1000; ++i);
 				s->setBrightValue(SensorPosition::FLeft);
 				s->setBrightValue(SensorPosition::Left);
 				s->setBrightValue(SensorPosition::Right);
 				s->setBrightValue(SensorPosition::FRight);
-				break;
-			case 2:
 				s->offLed(SensorPosition::FLeft);
 				s->offLed(SensorPosition::Left);
 				s->offLed(SensorPosition::Right);
 				s->offLed(SensorPosition::FRight);
-				break;
-			case 3:
+				for(int i=0; i<1000; ++i);
 				s->setDarkValue(SensorPosition::FLeft);
 				s->setDarkValue(SensorPosition::Left);
 				s->setDarkValue(SensorPosition::Right);
 				s->setDarkValue(SensorPosition::FRight);
 				s->calcValue();
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
 				break;
 			}
 			if(++c > 3) c = 0;

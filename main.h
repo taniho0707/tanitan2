@@ -14,6 +14,7 @@
 #include "MotorControl.h"
 #include "SlalomParams.h"
 #include "VelocityControl.h"
+#include "MotorCollection.h"
 
 #include "WallSensor.h"
 

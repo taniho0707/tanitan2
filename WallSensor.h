@@ -63,6 +63,7 @@ public:
 	void calcValue();
 
 	uint16_t getValue(SensorPosition);
+	uint16_t getDiffValue(SensorPosition);
 	uint16_t getLastValue(SensorPosition);
 	bool isExistWall(SensorPosition);
 
