@@ -19,8 +19,6 @@ void MethodAdachi::setMap(Map& m){
 }
 
 void MethodAdachi::renewFootmap(){
-	static ComPc* compc = ComPc::getInstance();
-	
 	std::pair<int8_t, int8_t> buf;
 	std::pair<int8_t, int8_t> tmp;
 

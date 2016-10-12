@@ -10,8 +10,6 @@
 #include "Walldata.h"
 #include "Footmap.h"
 
-#include "ComPc.h"
-
 class MethodAdachi{
 private:
 
@@ -24,7 +22,7 @@ public:
 	Footmap fm;
 
 	Map map;
-	
+
 	MethodAdachi();
 
 	void setGoal(int8_t x, int8_t y);
