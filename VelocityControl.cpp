@@ -166,8 +166,8 @@ bool VelocityControl::runSlalom(
 
 	if(!is_started){
 		mc->setIntegralEncoder(0.0f);
-		is_started = false;
 	}
+	is_started = false;
 	return true;
 }
 

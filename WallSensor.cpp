@@ -267,7 +267,7 @@ void WallSensor::interrupt(){
 uint16_t WallSensor::getValue(SensorPosition pos){
 	return current_value[static_cast<uint8_t>(pos)];
 }
-uint16_t WallSensor::getDiffValue(SensorPosition pos){
+int16_t WallSensor::getDiffValue(SensorPosition pos){
 	return current_value[static_cast<uint8_t>(pos)] - ref_straight_value[static_cast<uint8_t>(pos)];
 }
 uint16_t WallSensor::getLastValue(SensorPosition pos){
@@ -275,8 +275,13 @@ uint16_t WallSensor::getLastValue(SensorPosition pos){
 }
 
 bool WallSensor::isExistWall(SensorPosition pos){
-	if(current_value[static_cast<uint8_t>(pos)] > thr_straight_value[static_cast<uint8_t>(pos)]) return true;
-	else return false;
+	if(pos == SensorPosition::Left || pos == SensorPosition::Right)
+		if(current_value[static_cast<uint8_t>(pos)] > thr_straight_value[static_cast<uint8_t>(pos)]) return true;
+		else return false;
+	else
+		if(current_value[static_cast<uint8_t>(SensorPosition::FLeft)] > thr_straight_value[static_cast<uint8_t>(SensorPosition::FLeft)]
+		   || current_value[static_cast<uint8_t>(SensorPosition::FRight)] > thr_straight_value[static_cast<uint8_t>(SensorPosition::FRight)]) return true;
+		else return false;
 }
 
 Walldata WallSensor::getWall(){
