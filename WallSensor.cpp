@@ -5,16 +5,16 @@ using namespace std;
 
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
-	VAL_REF_FLEFT(226),
-	VAL_REF_LEFT(85),
-	VAL_REF_RIGHT(80),
-	VAL_REF_FRIGHT(315),
+	VAL_REF_FLEFT(150),
+	VAL_REF_LEFT(60),
+	VAL_REF_RIGHT(60),
+	VAL_REF_FRIGHT(200),
 	VAL_THR_FLEFT(8),
 	VAL_THR_LEFT(20),
 	VAL_THR_RIGHT(20),
-	VAL_THR_FRIGHT(8),
-	VAL_THR_CONTROL_LEFT(72),
-	VAL_THR_CONTROL_RIGHT(70),
+	VAL_THR_FRIGHT(15),
+	VAL_THR_CONTROL_LEFT(50),
+	VAL_THR_CONTROL_RIGHT(50),
 	THR_WALL_DISAPPEAR(1)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -336,7 +336,7 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->onLed(SensorPosition::Left);
 				s->onLed(SensorPosition::Right);
 				s->onLed(SensorPosition::FRight);
-				for(int i=0; i<1000; ++i);
+				for(int i=0; i<700; ++i);
 				s->setBrightValue(SensorPosition::FLeft);
 				s->setBrightValue(SensorPosition::Left);
 				s->setBrightValue(SensorPosition::Right);
@@ -345,7 +345,7 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->offLed(SensorPosition::Left);
 				s->offLed(SensorPosition::Right);
 				s->offLed(SensorPosition::FRight);
-				for(int i=0; i<1000; ++i);
+				for(int i=0; i<700; ++i);
 				s->setDarkValue(SensorPosition::FLeft);
 				s->setDarkValue(SensorPosition::Left);
 				s->setDarkValue(SensorPosition::Right);
