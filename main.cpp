@@ -249,19 +249,17 @@ int main(void){
 	padachi.setMap(map);
 	path = padachi.getPath(PathType::SMALL);
 
-	// while(true){
-	// 	static int i=0;
-	// 	static Motion motion = path.getMotion(i);
-	// 	if(motion.type == RunType::PIVOTTURN){
-	// 		compc->printf("PIVOT\n");
-	// 		break;
-	// 	} else if(motion.type == RunType::TRAPACCEL){
-	// 		compc->printf("TRAPEZOID\n");
-	// 	} else {
-	// 		compc->printf("SLALOM\n");
-	// 	}
-	// 	++i;
-	// }
+	for(auto i=0; i<100; ++i){
+		auto tmp = path.getMotion(i);
+		if(tmp.type == RunType::TRAPACCEL)
+			compc->printf("TRAPEZOID        :%2d\n", tmp.length);
+		else if(tmp.type == RunType::PIVOTTURN)
+			compc->printf("PIVOTTURN        :%2d\n", tmp.length);
+		else if(tmp.type == RunType::SLALOM90SML_RIGHT)
+			compc->printf("SLALOM90SML_RIGHT:%2d\n", tmp.length);
+		else if(tmp.type == RunType::SLALOM90SML_LEFT)
+			compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
+	}
 
 	motorcontrol->stay();
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
@@ -278,7 +276,7 @@ int main(void){
 		}
 
 		if(motion.type == RunType::TRAPACCEL){
-			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
+			vc->runTrapAccel(0.25f, 1.0f, 0.25f, 0.045f*motion.length, 2.0f);
 		} else {
 			vc->runSlalom(motion.type, 0.25f);
 		}

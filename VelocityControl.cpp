@@ -78,8 +78,13 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		v = reg_end_vel;
 		end_flag = true;
 	} else if(x0 >= x1+x2){
-		if(v > 0.01f) v -= reg_accel/1000.0f;
-		else v = 0.01f;
+		if(reg_end_vel == 0.0f){
+			if(v > 0.01f) v -= reg_accel/1000.0f;
+			else v = 0.01f;
+		} else {
+			if(v > reg_end_vel) v -= reg_accel/1000.0f;
+			else v = reg_end_vel;
+		}
 	} else {
 		v = reg_max_vel;
 	}
