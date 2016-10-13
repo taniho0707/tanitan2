@@ -102,6 +102,8 @@ public:
 	 */
 	bool hasReached(int8_t, int8_t);
 
+	bool hasWatched(int8_t, int8_t, MazeAngle);
+
 	void copyFrom(Map&);
 
 

@@ -117,6 +117,7 @@ void Map::setReached(int8_t x, int8_t y){
 }
 
 bool Map::hasReached(int8_t x, int8_t y){
+	if(x < 0 || x > 31 || y < 0 || y > 31) return true;
 	if(reached[y] & (0x80000000 >> x)) return true;
 	else if(
 			(reached[y] & (0x80000000 >> (x+1)))
@@ -125,6 +126,23 @@ bool Map::hasReached(int8_t x, int8_t y){
 			&& (reached[(y==0)?(y+1):(y-1)] & (0x80000000 >> x))
 			) return true;
 	else return false;
+}
+
+bool Map::hasWatched(int8_t x, int8_t y, MazeAngle angle){
+	switch(angle){
+	case MazeAngle::NORTH:
+		return (hasReached(x, y) | hasReached(x, y+1));
+		break;
+	case MazeAngle::EAST:
+		return (hasReached(x, y) | hasReached(x+1, y));
+		break;
+	case MazeAngle::SOUTH:
+		return (hasReached(x, y) | hasReached(x, y-1));
+		break;
+	case MazeAngle::WEST:
+		return (hasReached(x, y) | hasReached(x-1, y));
+		break;
+	}
 }
 
 void Map::copyFrom(Map& m){

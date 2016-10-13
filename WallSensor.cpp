@@ -5,10 +5,10 @@ using namespace std;
 
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
-	VAL_REF_FLEFT(150),
+	VAL_REF_FLEFT(160),
 	VAL_REF_LEFT(60),
 	VAL_REF_RIGHT(60),
-	VAL_REF_FRIGHT(200),
+	VAL_REF_FRIGHT(210),
 	VAL_THR_FLEFT(8),
 	VAL_THR_LEFT(20),
 	VAL_THR_RIGHT(20),

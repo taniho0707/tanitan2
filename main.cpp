@@ -123,8 +123,32 @@ int main(void){
 	MethodAdachi adachi;
 	Walldata walldata;
 
-	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+	Path path(PathType::SMALL);
+	PathAdachi padachi;
+
+	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+	MotorControl::getInstance()->disableWallControl();
+	collection->collectionByFrontDuringStop();// front correction 1.5s
+	led->flickStop(LedNumbers::FRONT);
+	led->on(LedNumbers::FRONT);
+
+	vc->runPivotTurn(360, 90, 1000);
 	while(vc->isRunning());
+
+	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+	MotorControl::getInstance()->disableWallControl();
+	collection->collectionByFrontDuringStop();// front correction 1.5s
+	led->flickStop(LedNumbers::FRONT);
+	led->on(LedNumbers::FRONT);
+
+	vc->runPivotTurn(360, 90, 1000);
+	while(vc->isRunning());
+
+	Timer::wait_ms(500);
+
+	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
+	while(vc->isRunning());
+	map.setReached(0, 0);
 	// vc->startTrapAccel(0.25f, 0.25f, 0.09f, 2.0f);
 
 	using namespace slalomparams;
@@ -144,6 +168,7 @@ int main(void){
 		led->off(LedNumbers::FRONT);
 		walldata = wall->getWall();
 		map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
+		map.setReached(pos.getPositionX(), pos.getPositionY());
 		adachi.setMap(map);
 		adachi.renewFootmap();
 		slalomparams::RunType runtype = adachi.getNextMotion(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
@@ -162,10 +187,24 @@ int main(void){
 				led->flickStop(LedNumbers::FRONT);
 				led->on(LedNumbers::FRONT);
 			}
-			vc->runPivotTurn(360, 180, 1000);
-			while(vc->isRunning());
-			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-			while(vc->isRunning());
+			// if(wall->isExistWall(SensorPosition::Right)){
+			// 	vc->runPivotTurn(360, 90, 1000);
+			// 	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			// 	MotorControl::getInstance()->disableWallControl();
+			// 	collection->collectionByFrontDuringStop();// front correction 1.5s
+			// 	led->flickStop(LedNumbers::FRONT);
+			// 	led->on(LedNumbers::FRONT);
+				
+			// 	vc->runPivotTurn(360, 90, 1000);
+			// 	while(vc->isRunning());
+			// 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
+			// 	while(vc->isRunning());
+			// } else {
+				vc->runPivotTurn(360, 180, 1000);
+				while(vc->isRunning());
+				vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
+				while(vc->isRunning());
+			// }
 		} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
 			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
 			while(vc->isRunning());
@@ -183,8 +222,12 @@ int main(void){
 
 		if(pos.getPositionX() == 8 && pos.getPositionY() == 0){
 		// if(pos.getPositionX() == 11 && pos.getPositionY() == 11){
+			walldata = wall->getWall();
+			map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
+			map.setReached(pos.getPositionX(), pos.getPositionY());
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
+			map.setReached(pos.getPositionX(), pos.getPositionY());
 			break;
 		}
 	}
@@ -194,8 +237,58 @@ int main(void){
 
 	while(!Switch::isPushing(SwitchNumbers::RIGHT));
 
+
+	// ここから最短
+	led->flickSync(LedNumbers::FRONT, 1.0f, 2000);
+	led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+
 	adachi.renewFootmap();
 	footmap = adachi.getFootmap();
+
+	padachi.setGoal(8, 0);
+	padachi.setMap(map);
+	path = padachi.getPath(PathType::SMALL);
+
+	// while(true){
+	// 	static int i=0;
+	// 	static Motion motion = path.getMotion(i);
+	// 	if(motion.type == RunType::PIVOTTURN){
+	// 		compc->printf("PIVOT\n");
+	// 		break;
+	// 	} else if(motion.type == RunType::TRAPACCEL){
+	// 		compc->printf("TRAPEZOID\n");
+	// 	} else {
+	// 		compc->printf("SLALOM\n");
+	// 	}
+	// 	++i;
+	// }
+
+	motorcontrol->stay();
+	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+	while(vc->isRunning());
+
+	struct Motion motion;
+	int i=1;
+	while(true){
+		motion = path.getMotion(i);
+		if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			break;
+		}
+
+		if(motion.type == RunType::TRAPACCEL){
+			vc->runTrapAccel(0.25f, 0.25f, 0.25f, 0.09f, 2.0f);
+		} else {
+			vc->runSlalom(motion.type, 0.25f);
+		}
+		while(vc->isRunning());
+
+		++i;
+	}
+
+	led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
+	while(!Switch::isPushing(SwitchNumbers::RIGHT));
 
 	for(int i=0; i<32; ++i) compc->printf("+----");
 	compc->printf("+\n");

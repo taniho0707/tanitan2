@@ -31,6 +31,9 @@
 
 #include "MethodAdachi.h"
 
+#include "Path.h"
+#include "PathAdachi.h"
+
 #include "Datalog.h"
 
 
