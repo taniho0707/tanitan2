@@ -261,27 +261,32 @@ int main(void){
 			compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
 	}
 
+	led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
+	log->cleanFlash();
+	led->flickStop(LedNumbers::LEFT3);
+
 	motorcontrol->stay();
-	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
-	while(vc->isRunning());
 
 	struct Motion motion;
-	int i=1;
+	int i=0;
 	while(true){
 		motion = path.getMotion(i);
-		if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
-			while(vc->isRunning());
-			break;
-		}
-
-		if(motion.type == RunType::TRAPACCEL){
-			vc->runTrapAccel(0.25f, 1.0f, 0.25f, 0.045f*motion.length, 2.0f);
+		if(i == 0){
+			vc->runTrapAccel(0.0f, 2.0f, 0.25f, 0.045f*(motion.length-1), 5.0f);
 		} else {
-			vc->runSlalom(motion.type, 0.25f);
+			if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+				vc->runTrapAccel(0.25f, 2.0f, 0.0f, 0.045f*(motion.length-1), 5.0f);
+				while(vc->isRunning());
+				break;
+			}
+			
+			if(motion.type == RunType::TRAPACCEL){
+				vc->runTrapAccel(0.25f, 2.0f, 0.25f, 0.045f*motion.length, 5.0f);
+			} else {
+				vc->runSlalom(motion.type, 0.25f);
+			}
 		}
 		while(vc->isRunning());
-
 		++i;
 	}
 

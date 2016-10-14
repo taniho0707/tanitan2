@@ -32,6 +32,7 @@ bool Datalog::cleanFlash(){
 	eraseSector(FLASH_Sector_9);
 	eraseSector(FLASH_Sector_10);
 	eraseSector(FLASH_Sector_11);
+	pos = 0;
 }
 
 

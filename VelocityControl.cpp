@@ -53,28 +53,26 @@ void VelocityControl::runTrapAccel(
 	reg_type = RunType::TRAPACCEL;
 	reg_end_vel = end_vel;
 	reg_distance = distance;
-	x1 = reg_start_vel*((reg_max_vel-reg_start_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_start_vel)/reg_accel);
-	x3 = reg_max_vel*((reg_max_vel-reg_end_vel)/reg_accel) + reg_accel/2*((reg_max_vel-reg_start_vel)/reg_accel)*((reg_max_vel-reg_end_vel)/reg_accel);
-	x2 = reg_distance - x1 - x3;
-	if(x2 < 0){
-		t1 = static_cast<int32_t>(1000.0f * sqrt(reg_distance / reg_accel));
-		t2 = t1;
-		t3 = 2 * t1;
-		reg_max_vel = reg_accel * t1 / 1000.0f;
-	} else {
-		t1 = static_cast<int32_t>(1000.0f * (reg_max_vel - reg_start_vel) / reg_accel);
-		t2 = t1 + static_cast<int32_t>(1000.0f * (x2/reg_max_vel));
-		t3 = t2 + static_cast<int32_t>(1000.0f * (reg_max_vel - reg_end_vel) / reg_accel);
+
+	float x_ad = (2.0f*reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel-reg_end_vel*reg_end_vel)/(2*reg_accel);
+	if(x_ad > reg_distance){
+		x1 = (reg_distance + (reg_end_vel*reg_end_vel - reg_start_vel*reg_start_vel)/reg_accel)/2.0f;
+		x2 = x1;
+		x3 = reg_distance - x1;
+		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
 	}
+	x1 = (reg_max_vel*reg_max_vel - reg_start_vel*reg_start_vel)/(2.0f * reg_accel);
+	x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
+	x2 = reg_distance - x1 - x3;
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
 	int32_t t0 = t - time;
 	float x0 = mc->getIntegralEncoder();
 
-	if(t0 < t1){
+	if(x0 < x1){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
-	} else if(x0 >= reg_distance){
+	} else if(x0 >= (x1 + x2 + x3)){
 		v = reg_end_vel;
 		end_flag = true;
 	} else if(x0 >= x1+x2){
