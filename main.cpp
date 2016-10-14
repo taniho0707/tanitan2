@@ -126,30 +126,12 @@ int main(void){
 	Path path(PathType::SMALL);
 	PathAdachi padachi;
 
-	// led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-	// MotorControl::getInstance()->disableWallControl();
-	// collection->collectionByFrontDuringStop();// front correction 1.5s
-	// led->flickStop(LedNumbers::FRONT);
-	// led->on(LedNumbers::FRONT);
-
-	// vc->runPivotTurn(360, 90, 1000);
-	// while(vc->isRunning());
-
-	// led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-	// MotorControl::getInstance()->disableWallControl();
-	// collection->collectionByFrontDuringStop();// front correction 1.5s
-	// led->flickStop(LedNumbers::FRONT);
-	// led->on(LedNumbers::FRONT);
-
-	// vc->runPivotTurn(360, 90, 1000);
-	// while(vc->isRunning());
-
 	Timer::wait_ms(500);
 
 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
 	while(vc->isRunning());
 	map.setReached(0, 0);
-	// vc->startTrapAccel(0.25f, 0.25f, 0.09f, 2.0f);
+	// vc->startTrapAccel(0.0f, 0.25f, 0.045f, 2.0f);
 
 	using namespace slalomparams;
 
@@ -160,6 +142,7 @@ int main(void){
 	// 	motorcontrol->disableWallControl();
 	// 	while(vc->isRunning());
 	// }
+
 	adachi.setGoal(8, 0);
 	// adachi.setGoal(11, 11);
 
@@ -187,24 +170,10 @@ int main(void){
 				led->flickStop(LedNumbers::FRONT);
 				led->on(LedNumbers::FRONT);
 			}
-			// if(wall->isExistWall(SensorPosition::Right)){
-			// 	vc->runPivotTurn(360, 90, 1000);
-			// 	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-			// 	MotorControl::getInstance()->disableWallControl();
-			// 	collection->collectionByFrontDuringStop();// front correction 1.5s
-			// 	led->flickStop(LedNumbers::FRONT);
-			// 	led->on(LedNumbers::FRONT);
-				
-			// 	vc->runPivotTurn(360, 90, 1000);
-			// 	while(vc->isRunning());
-			// 	vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
-			// 	while(vc->isRunning());
-			// } else {
-				vc->runPivotTurn(360, 180, 1000);
-				while(vc->isRunning());
-				vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
-				while(vc->isRunning());
-			// }
+			vc->runPivotTurn(360, 180, 1000);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
+			while(vc->isRunning());
 		} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
 			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.25f);
 			while(vc->isRunning());
@@ -220,18 +189,38 @@ int main(void){
 		pos.setNextPosition(runtype);
 		vc->startTrapAccel(0.25f, 0.25f, 0.09f, 2.0f);
 
-		if(pos.getPositionX() == 8 && pos.getPositionY() == 0){
+		static bool is_first_goal = true;
+		if(pos.getPositionX() == 8 && pos.getPositionY() == 0 && is_first_goal){
 		// if(pos.getPositionX() == 11 && pos.getPositionY() == 11){
+			is_first_goal = false;
 			walldata = wall->getWall();
 			map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
 			map.setReached(pos.getPositionX(), pos.getPositionY());
+			// vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
+			// while(vc->isRunning());
+			// motorcontrol->stay();
+			// motorcontrol->disableWallControl(); //
+			// break;
+
+			adachi.setGoal(0, 0);
+			led->on(LedNumbers::LEFT3);
+			// adachi.setMap(map);
+			// adachi.renewFootmap();
+			// led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
+			// led->on(LedNumbers::FRONT);
+			// vc->runPivotTurn(360, 180, 1000);
+			// vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.045f, 2.0f);
+			// pos.setNextPosition(RunType::PIVOTTURN);
+		} else if(pos.getPositionX() == 0 && pos.getPositionY() == 0){
 			vc->runTrapAccel(0.25f, 0.25f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
-			map.setReached(pos.getPositionX(), pos.getPositionY());
+			motorcontrol->disableWallControl(); //
 			break;
 		}
 	}
 	adachi.setMap(map);
+	adachi.setGoal(8, 0);
+	// adachi.setGoal(11, 11);
 	motor->disable();
 	led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 
