@@ -126,23 +126,23 @@ int main(void){
 	Path path(PathType::SMALL);
 	PathAdachi padachi;
 
-	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-	MotorControl::getInstance()->disableWallControl();
-	collection->collectionByFrontDuringStop();// front correction 1.5s
-	led->flickStop(LedNumbers::FRONT);
-	led->on(LedNumbers::FRONT);
+	// led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+	// MotorControl::getInstance()->disableWallControl();
+	// collection->collectionByFrontDuringStop();// front correction 1.5s
+	// led->flickStop(LedNumbers::FRONT);
+	// led->on(LedNumbers::FRONT);
 
-	vc->runPivotTurn(360, 90, 1000);
-	while(vc->isRunning());
+	// vc->runPivotTurn(360, 90, 1000);
+	// while(vc->isRunning());
 
-	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-	MotorControl::getInstance()->disableWallControl();
-	collection->collectionByFrontDuringStop();// front correction 1.5s
-	led->flickStop(LedNumbers::FRONT);
-	led->on(LedNumbers::FRONT);
+	// led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+	// MotorControl::getInstance()->disableWallControl();
+	// collection->collectionByFrontDuringStop();// front correction 1.5s
+	// led->flickStop(LedNumbers::FRONT);
+	// led->on(LedNumbers::FRONT);
 
-	vc->runPivotTurn(360, 90, 1000);
-	while(vc->isRunning());
+	// vc->runPivotTurn(360, 90, 1000);
+	// while(vc->isRunning());
 
 	Timer::wait_ms(500);
 
@@ -272,16 +272,16 @@ int main(void){
 	while(true){
 		motion = path.getMotion(i);
 		if(i == 0){
-			vc->runTrapAccel(0.0f, 2.0f, 0.25f, 0.045f*(motion.length-1), 5.0f);
+			vc->runTrapAccel(0.0f, 3.0f, 0.25f, 0.045f*(motion.length-1), 2.0f);
 		} else {
 			if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-				vc->runTrapAccel(0.25f, 2.0f, 0.0f, 0.045f*(motion.length-1), 5.0f);
+				vc->runTrapAccel(0.25f, 3.0f, 0.0f, 0.045f*(motion.length-1), 2.0f);
 				while(vc->isRunning());
 				break;
 			}
 			
 			if(motion.type == RunType::TRAPACCEL){
-				vc->runTrapAccel(0.25f, 2.0f, 0.25f, 0.045f*motion.length, 5.0f);
+				vc->runTrapAccel(0.25f, 3.0f, 0.25f, 0.045f*motion.length, 2.0f);
 			} else {
 				vc->runSlalom(motion.type, 0.25f);
 			}

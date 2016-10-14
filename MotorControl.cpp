@@ -6,7 +6,7 @@
 
 MotorControl::MotorControl() : 
 	GAIN_LIN_P(900),
-	GAIN_LIN_I(3),
+	GAIN_LIN_I(4),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),

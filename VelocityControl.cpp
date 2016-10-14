@@ -57,13 +57,14 @@ void VelocityControl::runTrapAccel(
 	float x_ad = (2.0f*reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel-reg_end_vel*reg_end_vel)/(2*reg_accel);
 	if(x_ad > reg_distance){
 		x1 = (reg_distance + (reg_end_vel*reg_end_vel - reg_start_vel*reg_start_vel)/reg_accel)/2.0f;
-		x2 = x1;
+		x2 = 0.0f;
 		x3 = reg_distance - x1;
 		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
+	} else {
+		x1 = (reg_max_vel*reg_max_vel - reg_start_vel*reg_start_vel)/(2.0f * reg_accel);
+		x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
+		x2 = reg_distance - x1 - x3;
 	}
-	x1 = (reg_max_vel*reg_max_vel - reg_start_vel*reg_start_vel)/(2.0f * reg_accel);
-	x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
-	x2 = reg_distance - x1 - x3;
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
