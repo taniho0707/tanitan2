@@ -1,15 +1,14 @@
 /**
  * @file Mram.h
  */
-
-#ifndef INCLUDED_MRAM_H
-#define INCLUDED_MRAM_H
+#pragma once
 
 #include "stm32f4xx.h"
 
 #include <vector>
 #include "Spi.h"
 
+#include "Map.h"
 
 enum class MramCommands : unsigned char {
 	WRSR = 0x01,
@@ -40,6 +39,8 @@ public:
 
 	int writeData(const std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num);
 	int readData(std::vector<uint8_t> &data, const uint16_t addr, const uint8_t num);
-};
 
-#endif
+	// num = (0 .. 9);
+	bool saveMap(const Map& map, const int num);
+	bool loadMap(Map& map, const int num);
+};

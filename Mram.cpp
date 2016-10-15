@@ -83,6 +83,33 @@ int Mram::readData(std::vector<uint8_t> &data, const uint16_t addr, const uint8_
 	return rwMultiByte(data, writedata, num, 3);
 }
 
+bool Mram::saveMap(const Map& map, const int num){
+	uint16_t baseaddr = 1000 + 376 * num; // 1 map is 376 byte
+	std::vector<uint8_t> v;
+	v.assign(&map.column[0], &map.column[30]);
+	writeData(v, baseaddr, 124);
+	v.assign(&map.row[0], &map.row[30]);
+	writeData(v, baseaddr+124, 124);
+	v.assign(&map.reached[0], &map.reached[31]);
+	writeData(v, baseaddr+248, 128);
+	return true;
+}
+
+bool Mram::loadMap(Map& map, const int num){
+	uint16_t baseaddr = 1000 + 376 * num;
+	std::vector<uint8_t> v;
+	readData(v, baseaddr, 124);
+	for(auto i=0; i<31; ++i)
+		map.column[i] = v.at(i);
+	readData(v, baseaddr+124, 124);
+	for(auto i=0; i<31; ++i)
+		map.row[i] = v.at(i);
+	readData(v, baseaddr+248, 128);
+	for(auto i=0; i<32; ++i)
+		map.reached[i] = v.at(i);
+	return true;
+}
+
 
 Mram *Mram::getInstance(){
 	static Mram instance(SPI2, GPIOB, GPIO_Pin_12);
