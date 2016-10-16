@@ -85,28 +85,43 @@ int Mram::readData(std::vector<uint8_t> &data, const uint16_t addr, const uint8_
 
 bool Mram::saveMap(const Map& map, const int num){
 	uint16_t baseaddr = 1000 + 376 * num; // 1 map is 376 byte
-	std::vector<uint8_t> v;
-	v.assign(&map.column[0], &map.column[30]);
+	std::vector<uint8_t> v(128);
+	for(int i=0; i<31; ++i){
+		v.at(4*i  ) = (map.column[i] & 0xFF000000) >> 24;
+		v.at(4*i+1) = (map.column[i] & 0x00FF0000) >> 16;
+		v.at(4*i+2) = (map.column[i] & 0x0000FF00) >> 8;
+		v.at(4*i+3) = map.column[i] & 0x000000FF;
+	}
 	writeData(v, baseaddr, 124);
-	v.assign(&map.row[0], &map.row[30]);
+	for(int i=0; i<31; ++i){
+		v.at(4*i  ) = (map.row[i] & 0xFF000000) >> 24;
+		v.at(4*i+1) = (map.row[i] & 0x00FF0000) >> 16;
+		v.at(4*i+2) = (map.row[i] & 0x0000FF00) >> 8;
+		v.at(4*i+3) = map.row[i] & 0x000000FF;
+	}
 	writeData(v, baseaddr+124, 124);
-	v.assign(&map.reached[0], &map.reached[31]);
+	for(int i=0; i<32; ++i){
+		v.at(4*i  ) = (map.reached[i] & 0xFF000000) >> 24;
+		v.at(4*i+1) = (map.reached[i] & 0x00FF0000) >> 16;
+		v.at(4*i+2) = (map.reached[i] & 0x0000FF00) >> 8;
+		v.at(4*i+3) = map.reached[i] & 0x000000FF;
+	}
 	writeData(v, baseaddr+248, 128);
 	return true;
 }
 
 bool Mram::loadMap(Map& map, const int num){
 	uint16_t baseaddr = 1000 + 376 * num;
-	std::vector<uint8_t> v;
+	std::vector<uint8_t> v(128);
 	readData(v, baseaddr, 124);
 	for(auto i=0; i<31; ++i)
-		map.column[i] = v.at(i);
+		map.column[i] = ((static_cast<uint32_t>(v[4*i]) << 24) | (static_cast<uint32_t>(v[4*i+1]) << 16) | (static_cast<uint32_t>(v[4*i+2]) << 8) | (static_cast<uint32_t>(v[4*i+3])));
 	readData(v, baseaddr+124, 124);
 	for(auto i=0; i<31; ++i)
-		map.row[i] = v.at(i);
+		map.row[i] = ((static_cast<uint32_t>(v[4*i]) << 24) | (static_cast<uint32_t>(v[4*i+1]) << 16) | (static_cast<uint32_t>(v[4*i+2]) << 8) | (static_cast<uint32_t>(v[4*i+3])));
 	readData(v, baseaddr+248, 128);
 	for(auto i=0; i<32; ++i)
-		map.reached[i] = v.at(i);
+		map.reached[i] = ((static_cast<uint32_t>(v[4*i]) << 24) | (static_cast<uint32_t>(v[4*i+1]) << 16) | (static_cast<uint32_t>(v[4*i+2]) << 8) | (static_cast<uint32_t>(v[4*i+3])));
 	return true;
 }
 

@@ -7,14 +7,14 @@ using namespace std;
 WallSensor::WallSensor() :
 	VAL_REF_FLEFT(160),
 	VAL_REF_LEFT(60),
-	VAL_REF_RIGHT(60),
+	VAL_REF_RIGHT(70),
 	VAL_REF_FRIGHT(210),
 	VAL_THR_FLEFT(8),
-	VAL_THR_LEFT(20),
-	VAL_THR_RIGHT(20),
-	VAL_THR_FRIGHT(15),
-	VAL_THR_CONTROL_LEFT(50),
-	VAL_THR_CONTROL_RIGHT(50),
+	VAL_THR_LEFT(18),
+	VAL_THR_RIGHT(12),
+	VAL_THR_FRIGHT(8),
+	VAL_THR_CONTROL_LEFT(80),
+	VAL_THR_CONTROL_RIGHT(90),
 	THR_WALL_DISAPPEAR(1)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -299,11 +299,11 @@ int16_t WallSensor::getCorrection(uint16_t max){
 
 	if(current_value[static_cast<uint8_t>(SensorPosition::FLeft)] > VAL_THR_CONTROL_LEFT && current_value[static_cast<uint8_t>(SensorPosition::FRight)] > VAL_THR_CONTROL_RIGHT) return 0;
 
-	if(!isExistWall(SensorPosition::Left) || (getLastValue(SensorPosition::Left)-getValue(SensorPosition::Left) > THR_WALL_DISAPPEAR)){
+	if(!isExistWall(SensorPosition::Left) || ((static_cast<int16_t>(getLastValue(SensorPosition::Left))-static_cast<int16_t>(getValue(SensorPosition::Left))) > THR_WALL_DISAPPEAR)){
 		tmpL = 0;
 		is_singlewall = true;
 	}
-	if(!isExistWall(SensorPosition::Right) || (getLastValue(SensorPosition::Right)-getValue(SensorPosition::Right) > THR_WALL_DISAPPEAR)){
+	if(!isExistWall(SensorPosition::Right) || ((static_cast<int16_t>(getLastValue(SensorPosition::Right))-static_cast<int16_t>(getValue(SensorPosition::Right))) > THR_WALL_DISAPPEAR)){
 		tmpR = 0;
 		is_singlewall = true;
 	}

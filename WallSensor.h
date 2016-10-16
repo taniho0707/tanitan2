@@ -29,8 +29,8 @@ private:
 	const uint16_t VAL_THR_RIGHT;
 	const uint16_t VAL_THR_FRIGHT;
 	const int16_t THR_WALL_DISAPPEAR;
-	const uint16_t VAL_THR_CONTROL_LEFT;
-	const uint16_t VAL_THR_CONTROL_RIGHT;
+	const int16_t VAL_THR_CONTROL_LEFT;
+	const int16_t VAL_THR_CONTROL_RIGHT;
 	
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
