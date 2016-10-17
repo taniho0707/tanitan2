@@ -31,12 +31,16 @@ private:
 	const int16_t THR_WALL_DISAPPEAR;
 	const int16_t VAL_THR_CONTROL_LEFT;
 	const int16_t VAL_THR_CONTROL_RIGHT;
-	
+
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
 	bool is_working;
 	array<uint16_t, 4> ref_straight_value;
 	array<uint16_t, 4> thr_straight_value;
+
+	// 壁切れ用
+	bool had_gap[2];
+	bool is_waiting_gap[2];
 
 	WallSensor();
 
@@ -68,6 +72,9 @@ public:
 	bool isExistWall(SensorPosition);
 
 	Walldata getWall();
+
+	bool hadGap(SensorPosition);
+	void checkGap();
 
 	int16_t getCorrection(uint16_t max);
 

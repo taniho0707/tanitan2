@@ -50,6 +50,10 @@ float MotorControl::getIntegralEncoder(){
 	return cur_lin_x;
 }
 
+float MotorControl::getDistanceFromGap(){
+	return dist_from_gap;
+}
+
 void MotorControl::controlX(){
 	
 }
@@ -113,6 +117,14 @@ void MotorControl::controlVel(){
 	integral_lin_encoder += tar_vel_rev;
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
+	// 壁切れ用の計算
+	dist_from_gap += 0.001f * cur_lin_x;
+	led->off(LedNumbers::LEFT2);
+	if(wall->hadGap(SensorPosition::Left) || wall->hadGap(SensorPosition::Right)){
+		dist_from_gap = 0.0f;
+		led->on(LedNumbers::LEFT2);
+	}
+
 	// モーター出力
 	tar_motor_r_power = static_cast<int16_t>(tar_motor_lin_power - tar_motor_rad_power);
 	tar_motor_l_power = static_cast<int16_t>(tar_motor_lin_power + tar_motor_rad_power);
@@ -127,9 +139,9 @@ void MotorControl::controlVel(){
 	log->writeFloat(gyro->getGyroYaw());
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(tar_motor_rad_power);
-	log->writeFloat(wall->getValue(SensorPosition::FLeft));
-	log->writeFloat(wall->getValue(SensorPosition::FRight));
-	log->writeFloat(wall->getCorrection(10000));
+	log->writeFloat(wall->getValue(SensorPosition::Left));
+	log->writeFloat(wall->getValue(SensorPosition::Right));
+	log->writeFloat(getDistanceFromGap());
 }
 
 

@@ -88,6 +88,11 @@ WallSensor::WallSensor() :
 	ref_straight_value[1] = VAL_REF_LEFT;
 	ref_straight_value[2] = VAL_REF_RIGHT;
 	ref_straight_value[3] = VAL_REF_FRIGHT;
+
+	had_gap[0] = false;
+	had_gap[1] = false;
+	is_waiting_gap[0] = false;
+	is_waiting_gap[1] = false;
 }
 
 bool WallSensor::isWorking(){
@@ -292,6 +297,35 @@ Walldata WallSensor::getWall(){
 	return w;
 }
 
+void WallSensor::checkGap(){
+	if(!had_gap[0]){
+		if(is_waiting_gap[0] && isExistWall(SensorPosition::Left)==false){
+			is_waiting_gap[0] = false;
+			had_gap[0] = true;
+		} else if(isExistWall(SensorPosition::Left)){
+			is_waiting_gap[0] = true;
+		}
+	}
+	if(!had_gap[1]){
+		if(is_waiting_gap[1] && isExistWall(SensorPosition::Right)==false){
+			is_waiting_gap[1] = false;
+			had_gap[1] = true;
+		} else if(isExistWall(SensorPosition::Right)){
+			is_waiting_gap[1] = true;
+		}
+	}
+}
+
+bool WallSensor::hadGap(SensorPosition sp){
+	uint8_t it = (sp==SensorPosition::Left ? 0 : 1);
+	if(had_gap[it]){
+		had_gap[it] = false;
+		return true;
+	} else {
+		return false;
+	}
+}
+
 int16_t WallSensor::getCorrection(uint16_t max){
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
@@ -365,6 +399,8 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				break;
 			}
 			if(++c > 3) c = 0;
+
+			s->checkGap();
 		}
 	}
 }

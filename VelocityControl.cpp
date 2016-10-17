@@ -4,7 +4,10 @@
 
 using namespace slalomparams;
 
-VelocityControl::VelocityControl(){
+VelocityControl::VelocityControl() :
+	DIST_GAP_FROM_R(0.04),
+	DIST_GAP_FROM_L(0.04)
+{
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
 	// gyro = Gyro::getInstance();
@@ -70,6 +73,10 @@ void VelocityControl::runTrapAccel(
 void VelocityControl::calcTrapAccel(int32_t t){
 	int32_t t0 = t - time;
 	float x0 = mc->getIntegralEncoder();
+
+	if(mc->getDistanceFromGap() == 0.0f && reg_distance == 0.09){
+		mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
+	}
 
 	if(x0 < x1){
 		v = reg_start_vel + reg_accel*t0/1000.0f;

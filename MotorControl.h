@@ -12,6 +12,7 @@
 #include "Motor.h"
 #include "Gyro.h"
 #include "Led.h"
+#include "Speaker.h"
 
 #include "Datalog.h"
 
@@ -46,6 +47,8 @@ private:
 	float tar_lin_vel;
 	float tar_rad_vel;
 
+	float dist_from_gap;
+
 	uint16_t enabled_wall_control;
 
 	bool is_failsafe;
@@ -58,6 +61,8 @@ public:
 	void setIntegralEncoder(float);
 	float getIntegralEncoder();
 
+	float getDistanceFromGap();
+
 	void setVelocity(float);
 	void setRadVelocity(float);
 
@@ -67,6 +72,6 @@ public:
 	void stay();
 
 	void interrupt();
-	
+
 	static MotorControl *getInstance();
 };

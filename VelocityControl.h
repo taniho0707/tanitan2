@@ -21,6 +21,9 @@ private:
 	Led* led = Led::getInstance();
 	/* Map map; */
 
+	const float DIST_GAP_FROM_R;
+	const float DIST_GAP_FROM_L;
+
 	int32_t time;
 	bool end_flag;
 	bool is_started;

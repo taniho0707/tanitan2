@@ -163,7 +163,7 @@ int main(void){
 				led->flickStop(LedNumbers::LEFT3);
 				led->off(LedNumbers::FRONT);
 			}
-			adachi.setGoal(11, 11);
+			adachi.setGoal(GOAL_X, GOAL_Y);
 			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
 			while(vc->isRunning());
 			map.setReached(0, 0);
@@ -213,7 +213,7 @@ int main(void){
 				
 				static bool is_first_goal = true;
 				// if(pos.getPositionX() == 8 && pos.getPositionY() == 0 && is_first_goal){
-				if(pos.getPositionX() == 11 && pos.getPositionY() == 11 && is_first_goal){
+				if(pos.getPositionX() == GOAL_X && pos.getPositionY() == GOAL_Y && is_first_goal){
 					is_first_goal = false;
 					walldata = wall->getWall();
 					map.addWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
@@ -229,7 +229,7 @@ int main(void){
 			}
 			adachi.setMap(map);
 			// adachi.setGoal(8, 0);
-			adachi.setGoal(11, 11);
+			adachi.setGoal(GOAL_X, GOAL_Y);
 			motor->disable();
 			mram->saveMap(map, num_map);
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
@@ -245,7 +245,7 @@ int main(void){
 				param_accel = 4.0f;
 			}
 			adachi.setMap(map);
-			adachi.setGoal(11, 11);
+			adachi.setGoal(GOAL_X, GOAL_Y);
 			led->flickSync(LedNumbers::FRONT, 1.0f, 2000);
 			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
