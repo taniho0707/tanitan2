@@ -5,8 +5,8 @@
 using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
-	DIST_GAP_FROM_R(0.04),
-	DIST_GAP_FROM_L(0.04)
+	DIST_GAP_FROM_R(0.03),
+	DIST_GAP_FROM_L(0.03)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -15,6 +15,7 @@ VelocityControl::VelocityControl() :
 	time = Timer::getTime();
 	end_flag = true;
 	is_started = false;
+	enabled_wallgap = true;
 
 	target_linvel = 0.0f;
 	target_radvel = 0.0f;
@@ -23,6 +24,13 @@ VelocityControl::VelocityControl() :
 bool VelocityControl::isRunning(){
 	if(end_flag) return false;
 	else return true;
+}
+
+void VelocityControl::enableWallgap(){
+	enabled_wallgap = true;
+}
+void VelocityControl::disableWallgap(){
+	enabled_wallgap = false;
 }
 
 void VelocityControl::startTrapAccel(
@@ -75,7 +83,8 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	float x0 = mc->getIntegralEncoder();
 
 	led->off(LedNumbers::LEFT2);
-	if(mc->getDistanceFromGap() < 0.001f && reg_distance < 0.091f && reg_distance > 0.089f){
+	if(enabled_wallgap && mc->getDistanceFromGap() < 0.001f && reg_max_vel < 0.31f
+	   && ((reg_distance < 0.091f && reg_distance > 0.089f) || (reg_distance < 0.046f && reg_distance > 0.044f))){
 		mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
 		led->on(LedNumbers::LEFT2);
 	}

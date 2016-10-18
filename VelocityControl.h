@@ -28,6 +28,8 @@ private:
 	bool end_flag;
 	bool is_started;
 
+	bool enabled_wallgap;
+
 	enum slalomparams::RunType reg_type;
 
 	// for Trapezoid and Pivot ( and Slalom)
@@ -60,6 +62,9 @@ public:
 	void setRadVel();
 
 	bool isRunning();
+
+	void enableWallgap();
+	void disableWallgap();
 
 	// 加速もしくは等速のみ
 	// 指定距離が来た場合走り続けるため，オーバーランの可能性あり
