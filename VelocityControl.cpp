@@ -74,8 +74,10 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	int32_t t0 = t - time;
 	float x0 = mc->getIntegralEncoder();
 
-	if(mc->getDistanceFromGap() == 0.0f && reg_distance == 0.09){
+	led->off(LedNumbers::LEFT2);
+	if(mc->getDistanceFromGap() < 0.001f && reg_distance < 0.091f && reg_distance > 0.089f){
 		mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
+		led->on(LedNumbers::LEFT2);
 	}
 
 	if(x0 < x1){

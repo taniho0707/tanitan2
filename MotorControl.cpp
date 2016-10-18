@@ -118,11 +118,9 @@ void MotorControl::controlVel(){
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 
 	// 壁切れ用の計算
-	dist_from_gap += 0.001f * cur_lin_x;
-	led->off(LedNumbers::LEFT2);
+	dist_from_gap += 0.001f * cur_lin_vel;
 	if(wall->hadGap(SensorPosition::Left) || wall->hadGap(SensorPosition::Right)){
 		dist_from_gap = 0.0f;
-		led->on(LedNumbers::LEFT2);
 	}
 
 	// モーター出力
@@ -138,17 +136,17 @@ void MotorControl::controlVel(){
 	log->writeFloat(cur_lin_x);
 	log->writeFloat(gyro->getGyroYaw());
 	log->writeFloat(tar_rad_vel);
-	log->writeFloat(tar_motor_rad_power);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
+	log->writeFloat(getIntegralEncoder());
 	log->writeFloat(getDistanceFromGap());
 }
 
 
 void MotorControl::interrupt(){
 	if(motor->isEnabled()){
-		controlVel();
 		calcIntegral();
+		controlVel();
 	}
 }
 

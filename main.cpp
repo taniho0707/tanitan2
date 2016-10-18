@@ -88,9 +88,9 @@ int main(void){
 	*compc << "\tErace Sector8-11 done.\n";
 	led->flickStop(LedNumbers::LEFT3);
 
-	Speaker::playSound(1175, 300, true);
-	Timer::wait_ms(150);
-	Speaker::playSound(1175, 300, true);
+	Speaker::playSound(1175, 100, true);
+	Timer::wait_ms(50);
+	Speaker::playSound(1175, 100, true);
 
 	int mode = 0;
 	while(mode == 0){
@@ -103,11 +103,11 @@ int main(void){
 	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight))
 		mode += 2;
 
-	Speaker::playSound(1175, 300, true);
-	Timer::wait_ms(150);
-	Speaker::playSound(1175, 300, true);
-	Timer::wait_ms(150);
-	Speaker::playSound(1175, 300, true);
+	Speaker::playSound(1175, 100, true);
+	Timer::wait_ms(50);
+	Speaker::playSound(1175, 100, true);
+	Timer::wait_ms(50);
+	Speaker::playSound(1175, 100, true);
 	Timer::wait_ms(1000);
 
 	while(true){
@@ -148,7 +148,6 @@ int main(void){
 		
 		Speaker::playSound(1175, 300, true);
 		Timer::wait_ms(500);
-		motorcontrol->stay();
 		// ここまで共通部分
 
 		int num_map = 0;
@@ -164,6 +163,7 @@ int main(void){
 				led->off(LedNumbers::FRONT);
 			}
 			adachi.setGoal(GOAL_X, GOAL_Y);
+			motorcontrol->stay();
 			vc->runTrapAccel(0.0f, 0.25f, 0.25f, 0.035f, 2.0f);
 			while(vc->isRunning());
 			map.setReached(0, 0);
@@ -228,7 +228,6 @@ int main(void){
 				}
 			}
 			adachi.setMap(map);
-			// adachi.setGoal(8, 0);
 			adachi.setGoal(GOAL_X, GOAL_Y);
 			motor->disable();
 			mram->saveMap(map, num_map);
@@ -244,18 +243,12 @@ int main(void){
 			} else { //最短早い
 				param_accel = 4.0f;
 			}
-			adachi.setMap(map);
-			adachi.setGoal(GOAL_X, GOAL_Y);
-			led->flickSync(LedNumbers::FRONT, 1.0f, 2000);
-			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
-			adachi.renewFootmap();
-			footmap = adachi.getFootmap();
-			
-			// padachi.setGoal(8, 0);
-			padachi.setGoal(11, 11);
+			padachi.setGoal(GOAL_X, GOAL_Y);
 			padachi.setMap(map);
 			path = padachi.getPath(PathType::SMALL);
+			
+			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
 			// for(auto i=0; i<100; ++i){
 			// 	auto tmp = path.getMotion(i);
@@ -268,10 +261,6 @@ int main(void){
 			// 	else if(tmp.type == RunType::SLALOM90SML_LEFT)
 			// 		compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
 			// }
-			
-			led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
-			log->cleanFlash();
-			led->flickStop(LedNumbers::LEFT3);
 			
 			motorcontrol->stay();
 			
