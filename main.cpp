@@ -212,8 +212,9 @@ int main(void){
 					vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::PIVOTTURN){
-					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.035f, 2.0f);
 					while(vc->isRunning());
+					bool flag = (wall->isExistWall(SensorPosition::Right) ? true : false);
 					if(wall->isExistWall(SensorPosition::FLeft)){
 						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
 						MotorControl::getInstance()->disableWallControl();
@@ -221,9 +222,21 @@ int main(void){
 						led->flickStop(LedNumbers::FRONT);
 						led->on(LedNumbers::FRONT);
 					}
+					if(flag){
+						vc->runPivotTurn(360, 90, 1000);
+						while(vc->isRunning());
+						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+						MotorControl::getInstance()->disableWallControl();
+						collection->collectionByFrontDuringStop();// front correction 1.5s
+						led->flickStop(LedNumbers::FRONT);
+						led->on(LedNumbers::FRONT);
+						vc->runPivotTurn(360, 90, 1000);
+						while(vc->isRunning());
+					} else {
+						vc->runPivotTurn(360, 183, 1000);
+						while(vc->isRunning());
+					}
 					mram->saveMap(map, num_map);
-					vc->runPivotTurn(360, 183, 1000);
-					while(vc->isRunning());
 					vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){

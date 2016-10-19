@@ -83,8 +83,14 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	float x0 = mc->getIntegralEncoder();
 
 	led->off(LedNumbers::LEFT2);
-	if(enabled_wallgap && mc->getDistanceFromGap() < 0.001f && reg_max_vel < 0.31f
-	   && ((reg_distance < 0.091f && reg_distance > 0.089f) || (reg_distance < 0.046f && reg_distance > 0.044f))){
+	if(
+		enabled_wallgap
+		&& mc->getDistanceFromGap() < 0.001f
+		&& reg_max_vel < 0.31f
+		&& x0 > 0.01f
+		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
+			|| (reg_distance < 0.046f && reg_distance > 0.044f))
+		){
 		mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
 		led->on(LedNumbers::LEFT2);
 	}

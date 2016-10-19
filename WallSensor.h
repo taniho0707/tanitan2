@@ -31,12 +31,16 @@ private:
 	const int16_t THR_WALL_DISAPPEAR;
 	const int16_t VAL_THR_CONTROL_LEFT;
 	const int16_t VAL_THR_CONTROL_RIGHT;
+	const uint16_t VAL_THR_GAP_LEFT;
+	const uint16_t VAL_THR_GAP_RIGHT;
 
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
 	bool is_working;
 	array<uint16_t, 4> ref_straight_value;
 	array<uint16_t, 4> thr_straight_value;
+
+	array< array<float, 4>, 4 > log_value;
 
 	// 壁切れ用
 	bool had_gap[2];
@@ -64,7 +68,8 @@ public:
 
 	void setBrightValue(SensorPosition);
 	void setDarkValue(SensorPosition);
-	void calcValue();
+	void calcValue(uint8_t num);
+	void setAvgValue();
 
 	uint16_t getValue(SensorPosition);
 	int16_t getDiffValue(SensorPosition);

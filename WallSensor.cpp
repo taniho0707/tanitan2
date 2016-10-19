@@ -5,16 +5,18 @@ using namespace std;
 
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
-	VAL_REF_FLEFT(180),
+	VAL_REF_FLEFT(250),
 	VAL_REF_LEFT(68),
 	VAL_REF_RIGHT(66),
-	VAL_REF_FRIGHT(229),
-	VAL_THR_FLEFT(10),
+	VAL_REF_FRIGHT(270),
+	VAL_THR_FLEFT(8),
 	VAL_THR_LEFT(15),
-	VAL_THR_RIGHT(20),
+	VAL_THR_RIGHT(24),
 	VAL_THR_FRIGHT(8),
 	VAL_THR_CONTROL_LEFT(70),
 	VAL_THR_CONTROL_RIGHT(70),
+	VAL_THR_GAP_LEFT(40),
+	VAL_THR_GAP_RIGHT(40),
 	THR_WALL_DISAPPEAR(1)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -196,13 +198,42 @@ void WallSensor::setDarkValue(SensorPosition pos){
 	dark_value[static_cast<uint8_t>(pos)] = ADC_GetConversionValue(ADC1);
 }
 
-void WallSensor::calcValue(){
+void WallSensor::calcValue(uint8_t num){
 	for(int i=0; i<4; ++i){
-		last_value[i] = current_value[i];
-		current_value[i] = bright_value[i] - dark_value[i];
+		log_value.at(num).at(i) = bright_value.at(i) - dark_value.at(i);
 	}
-	buf.push(current_value);
 	return;
+}
+
+void WallSensor::setAvgValue(){
+	pair<uint16_t, uint16_t> max;
+	pair<uint16_t, uint16_t> min;
+	for(int i=0; i<4; ++i){
+		max.first = 0;
+		min.first = 1023;
+		last_value.at(i) = current_value.at(i);
+		for(int j=0; j<4; ++j){
+			if(log_value.at(j).at(i) > max.first){
+				max.first = log_value.at(j).at(i);
+				max.second = j;
+			}
+			if(log_value.at(j).at(i) < min.first){
+				min.first = log_value.at(j).at(i);
+				min.second = j;
+			}
+		}
+		current_value.at(i) = [&]{
+			uint16_t ret = 0;
+			uint8_t n = (max.second == min.second ? 3 : 2);
+			for(int k=0; k<4; ++k){
+				if(k != max.second && k != min.second){
+					ret += log_value.at(k).at(i);
+				}
+			}
+			return (ret /= n);
+		}();
+	}
+	// buf.push(current_value);
 }
 
 
@@ -299,18 +330,20 @@ Walldata WallSensor::getWall(){
 
 void WallSensor::checkGap(){
 	if(!had_gap[0]){
-		if(is_waiting_gap[0] && isExistWall(SensorPosition::Left)==false){
+		if(is_waiting_gap[0]
+		   && isExistWall(SensorPosition::Left) == false){
 			is_waiting_gap[0] = false;
 			had_gap[0] = true;
-		} else if(isExistWall(SensorPosition::Left)){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_LEFT){
 			is_waiting_gap[0] = true;
 		}
 	}
 	if(!had_gap[1]){
-		if(is_waiting_gap[1] && isExistWall(SensorPosition::Right)==false){
+		if(is_waiting_gap[1]
+		   && isExistWall(SensorPosition::Right) == false){
 			is_waiting_gap[1] = false;
 			had_gap[1] = true;
-		} else if(isExistWall(SensorPosition::Right)){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_RIGHT){
 			is_waiting_gap[1] = true;
 		}
 	}
@@ -363,6 +396,7 @@ WallSensor *WallSensor::getInstance(){
 void TIM1_BRK_TIM9_IRQHandler(void){
 	static WallSensor* s = WallSensor::getInstance();
 	static uint8_t c = 0;
+	static uint8_t d = 0;
 
 	if(TIM_GetITStatus(TIM9, TIM_IT_Update) != RESET){
 		TIM_ClearITPendingBit(TIM9, TIM_IT_Update);
@@ -389,18 +423,19 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->setDarkValue(SensorPosition::Left);
 				s->setDarkValue(SensorPosition::Right);
 				s->setDarkValue(SensorPosition::FRight);
-				s->calcValue();
+				s->calcValue(d);
+				if(++d > 3) d = 0;
 				break;
 			case 1:
 				break;
 			case 2:
 				break;
 			case 3:
+				s->setAvgValue();
+				s->checkGap();
 				break;
 			}
 			if(++c > 3) c = 0;
-
-			s->checkGap();
 		}
 	}
 }
