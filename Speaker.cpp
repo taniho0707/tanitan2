@@ -214,5 +214,19 @@ void Speaker::playMusic(MusicNumber n){
 		playSound(1661, 30, true);
 		playSound(1174, 30, true);
 		break;
+	case MusicNumber::KANSAIDENKIHOANKYOUKAI:
+		playSound(494, 360, true); //kan
+		playSound(392, 240, true); //sa
+		playSound(370, 120, true); //i
+		Timer::wait_ms(240);
+		playSound(494, 120, true); //de
+		playSound(392, 240, true); //n
+		playSound(370, 120, true); //ki
+		playSound(494, 360, true); //ho
+		playSound(554, 240, true); //a
+		playSound(494, 120, true); //n
+		playSound(554, 360, true); //kyou
+		playSound(554, 360, true); //kai
+		break;
 	}
 }
