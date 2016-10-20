@@ -87,3 +87,132 @@ void Speaker::playSound(int freq, int length, bool sync){
 	}
 }
 
+void Speaker::playMusic(MusicNumber n){
+	switch(n){
+	case MusicNumber::KIRBY3_CURSOR:
+		playSound(1568, 50, true);
+		break;
+	case MusicNumber::KIRBY3_POWERON:
+		playSound(880, 100, true);
+		playSound(1175, 200, true);
+		break;
+	case MusicNumber::KIRBY3_SELECT:
+		playSound(1174, 30, true);
+		playSound(1661, 30, true);
+		playSound(2093, 30, true);
+		break;
+	case MusicNumber::KIRBY64_BEGINNER_1:
+		playSound(440, 160, true);
+		Timer::wait_ms(80);
+		playSound(440, 80, true);
+		playSound(587, 80, true);
+		Timer::wait_ms(80);
+		playSound(740, 160, true);
+		Timer::wait_ms(160);
+		playSound(587, 160, true);
+		playSound(659, 160, true);
+		playSound(740, 160, true);
+		playSound(784, 160, true);
+		Timer::wait_ms(80);
+		playSound(740, 80, true);
+		Timer::wait_ms(160);
+		playSound(587, 160, true);
+		playSound(659, 80, true);
+		break;
+	case MusicNumber::KIRBY64_BEGINNER_2:
+		playSound(988, 160, true);
+		Timer::wait_ms(80);
+		playSound(988, 80, true);
+		playSound(1109, 160, true);
+		playSound(1175, 160, true);
+		Timer::wait_ms(160);
+		playSound(1109, 160, true);
+		playSound(988, 160, true);
+		playSound(1175, 160, true);
+		playSound(880, 160, true);
+		Timer::wait_ms(80);
+		playSound(880, 60, true);
+		Timer::wait_ms(20);
+		playSound(880, 160, true);
+		playSound(988, 160, true);
+		playSound(880, 320, true);		
+		break;
+	case MusicNumber::KIRBY64_POPSTAR_1:
+		
+		break;
+	case MusicNumber::KIRBY64_POPSTAR_2:
+		
+		break;
+	case MusicNumber::KIRBY_CLEAR_LONG:
+		
+		break;
+	case MusicNumber::KIRBY_CLEAR_SHORT:
+		
+		break;
+	case MusicNumber::KIRBY3_COLLECT:
+		
+		break;
+	case MusicNumber::KIRBY_DYING:
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		Timer::wait_ms(100);
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		Timer::wait_ms(100);
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		Timer::wait_ms(30);
+		playSound(1975, 50, true);
+		break;
+	case MusicNumber::KIRBY_1UP:
+		
+		break;
+	case MusicNumber::KIRBY_DIE:
+		
+		break;
+	case MusicNumber::KIRBY_GOURMETRACE:
+		
+		break;
+	case MusicNumber::OIRABOKODAZE1:
+		playSound(466, 600, true);
+		playSound(554, 300, true);
+		playSound(622, 300, true);
+		playSound(698, 450, true);
+		playSound(740, 150, true);
+		playSound(698, 300, true);
+		playSound(554, 300, true);
+		playSound(622, 450, true);
+		playSound(698, 150, true);
+		playSound(622, 300, true);
+		playSound(554, 300, true);
+		playSound(523, 270, true); Timer::wait_ms(30);
+		playSound(523, 300, true);
+		playSound(415, 550, true);
+		Timer::wait_ms(50);
+		playSound(466, 600, true);
+		playSound(554, 300, true);
+		playSound(622, 300, true);
+		playSound(698, 450, true);
+		playSound(740, 150, true);
+		playSound(698, 300, true);
+		playSound(554, 300, true);
+		playSound(622, 300, true); Timer::wait_ms(150);
+		playSound(622, 150, true);
+		playSound(554, 300, true);
+		playSound(554, 300, true);
+		playSound(466, 600, true);
+		break;
+	case MusicNumber::KIRBY3_ORIG_DESELECT:
+		playSound(2093, 30, true);
+		playSound(1661, 30, true);
+		playSound(1174, 30, true);
+		break;
+	}
+}

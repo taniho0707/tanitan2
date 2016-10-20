@@ -10,8 +10,6 @@ int main(void){
 	Switch::init();
 	Speaker::init();
 
-	Timer::wait_ms(500);
-
 	Led *led = Led::getInstance();
 	led->on(LedNumbers::RIGHT);
 	led->on(LedNumbers::LEFT1);
@@ -19,9 +17,8 @@ int main(void){
 	led->on(LedNumbers::LEFT3);
 	led->on(LedNumbers::TOP1);
 	led->on(LedNumbers::TOP2);
-	led->flickSync(LedNumbers::FRONT, 2.0f, 1000);
-	Speaker::playSound(880, 100, true);
-	Speaker::playSound(1175, 300, true);
+	led->flickAsync(LedNumbers::FRONT, 2.0f, 1000);
+	Speaker::playMusic(MusicNumber::KIRBY3_POWERON);
 	led->off(LedNumbers::RIGHT);
 	led->off(LedNumbers::LEFT1);
 	led->off(LedNumbers::LEFT2);
@@ -92,33 +89,82 @@ int main(void){
 			}
 			compc->printf("+\n");
 		}
+		gyro->whoami();
 		while(true){
-			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d [%3d]\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight), wall->getCorrection(10000));
+			compc->printf("FL:%4d, L:%4d, R:%4d, FR:%4d [%3d], Gx:%6d, Gy:%6d, Gz:%6d, Ax:%6d, Ay:%6d, Az:%6d\n", wall->getValue(SensorPosition::FLeft), wall->getValue(SensorPosition::Left), wall->getValue(SensorPosition::Right), wall->getValue(SensorPosition::FRight), wall->getCorrection(10000), gyro->readGyroX(), gyro->readGyroY(), gyro->readGyroZ(), gyro->readAccelX(), gyro->readAccelY(), gyro->readAccelZ());
 			Timer::wait_ms(100);
 		}
 	}
 
-	*compc << "* Flash\n";
-	led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
-	float log_ret = 12.34f;
-	log->cleanFlash();
-	*compc << "\tErace Sector8-11 done.\n";
-	led->flickStop(LedNumbers::LEFT3);
-
-	Speaker::playSound(1175, 100, true);
-	Timer::wait_ms(50);
-	Speaker::playSound(1175, 100, true);
-
-	int mode = 0;
-	while(mode == 0){
-		if(Switch::isPushing(SwitchNumbers::RIGHT)){
-			mode = 1;
-		} else if(Switch::isPushing(SwitchNumbers::LEFT)){
-			mode = 2;
-		}
+	Timer::wait_ms(5);
+	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight)){
+		*compc << "* Flash\n";
+		led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
+		Speaker::playMusic(MusicNumber::OIRABOKODAZE1);
+		float log_ret = 12.34f;
+		log->cleanFlash();
+		*compc << "\tErace Sector8-11 done.\n";
+		led->flickStop(LedNumbers::LEFT3);
 	}
-	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight))
-		mode += 2;
+
+	bool ret_bool = gyro->whoami();
+
+	Speaker::playSound(1175, 50, true);
+	Timer::wait_ms(20);
+	Speaker::playSound(1175, 50, true);
+	Timer::wait_ms(20);
+
+	int mode = 0, submode = 0;
+	const int16_t mode_min = -2;
+	const int16_t mode_max = 5;
+	while(true){
+		static uint16_t stable_time1 = 0, stable_time2 = 0;
+		static int16_t ax, ay, az, gx, gy, gz;
+		ax = gyro->readAccelX();
+		ay = gyro->readAccelY();
+		az = gyro->readAccelZ();
+		gx = gyro->readGyroX();
+		gy = gyro->readGyroY();
+		gz = gyro->readGyroZ();
+
+		compc->printf("Gx:%6d, Gy:%6d, Gz:%6d, Ax:%6d, Ay:%6d, Az:%6d\n", gx, gy, gz, ax, ay, az);
+
+		if(Switch::isPushing(SwitchNumbers::RIGHT)){
+			mode = 6; break;
+		} else if(Switch::isPushing(SwitchNumbers::LEFT)){
+			mode = 7; break;
+		}
+
+		if(abs(gx) > 20000){
+			int32_t ad = 0;
+			if(gx > 0){
+				ad = -1;
+			} else {
+				ad = 1;
+			}
+			if(ad == -1 && mode != mode_min){
+				Speaker::playMusic(MusicNumber::KIRBY3_ORIG_DESELECT);
+				-- mode;
+			} else if(ad == 1 && mode != mode_max){
+				Speaker::playMusic(MusicNumber::KIRBY3_SELECT);
+				++ mode;
+			} else {
+				Speaker::playMusic(MusicNumber::KIRBY_DYING);
+			}
+			Timer::wait_ms(300);
+		}
+
+		if(ay < -500 || ay > 50 || az < -17000 || az > -16000 || abs(gx) > 150 || abs(gy) > 150 || abs(gz) > 150) stable_time1 = 0;
+		if(az < 0 || wall->isExistWall(SensorPosition::FRight)==false || wall->isExistWall(SensorPosition::FLeft)==false) stable_time2 = 0;
+
+		if(stable_time1++ > 100 || stable_time2++ > 150){
+			/// @todo モード自動選択ルーチンはここにいれる
+			break;
+		}
+		Timer::wait_ms(10);
+	}
+	if((mode == 6 || mode == 7) && wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight))
+		submode = 1;
 
 	Speaker::playSound(1175, 100, true);
 	Timer::wait_ms(50);
@@ -150,7 +196,6 @@ int main(void){
 		
 		compc->printf("* Gyro\n");
 		uint8_t ret = 0x00;
-		bool ret_bool = gyro->whoami();
 		if(ret_bool){
 			*compc << "\tSuccess WHO_AM_I from gyro\n";
 			led->flickSync(LedNumbers::LEFT1, 2.0f, 1000);
@@ -182,8 +227,8 @@ int main(void){
 
 		int num_map = 0;
 
-		if(mode % 2 == 1){
-			if(mode == 1){ //探索新規(壁なし)
+		if(mode == 6){
+			if(submode == 0){ //探索新規(壁なし)
 				
 			} else { //探索上書き(壁あり)
 				led->on(LedNumbers::FRONT);
@@ -277,11 +322,11 @@ int main(void){
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 			
 			while(!Switch::isPushing(SwitchNumbers::RIGHT));
-			mode = 2;
+			mode = 7;
 		} else {
 			float param_accel;
 			mram->loadMap(map, num_map);
-			if(mode == 2){ //最短遅い
+			if(submode == 0){ //最短遅い
 				param_accel = 2.0f;
 			} else { //最短早い
 				param_accel = 4.0f;
