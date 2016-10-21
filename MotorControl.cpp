@@ -11,7 +11,7 @@ MotorControl::MotorControl() :
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
 	GAIN_RAD_D(0.0f),
-	GAIN_WALL_P(3.0f),
+	GAIN_WALL_P(2.0f),
 	GAIN_WALL_I(0.0f),
 	GAIN_WALL_D(0.0f),
 	TREAD(380.0f)
@@ -110,8 +110,6 @@ void MotorControl::controlVel(){
 	integral_rad_gyro += tar_rad_rev;
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
-	lastwall = wall->getCorrection(10000);
-
 	// linear成分の計算
 	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2 + gyro->getAccelFront() * 0.0005);
 	integral_lin_encoder += tar_vel_rev;
@@ -138,8 +136,12 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	log->writeFloat(getIntegralEncoder());
-	log->writeFloat(getDistanceFromGap());
+	log->writeFloat(wall->getCorrection(10000));
+	log->writeFloat(wall->getCorrection(10000)-lastwall);
+	// log->writeFloat(getIntegralEncoder());
+	// log->writeFloat(getDistanceFromGap());
+
+	lastwall = wall->getCorrection(10000);
 }
 
 

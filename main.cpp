@@ -238,7 +238,17 @@ int main(void){
 
 		if(mode == 1){
 			motorcontrol->stay();
-			vc->runTrapAccel(0.0f, 0.3f, 0.0f, 0.45f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			motorcontrol->stay();
 			while(true);

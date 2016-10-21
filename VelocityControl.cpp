@@ -95,6 +95,15 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		led->on(LedNumbers::LEFT2);
 	}
 
+	auto kabekire = reg_distance - DIST_GAP_FROM_L;
+	if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.005)){
+		mc->disableWallControl();
+		led->on(LedNumbers::LEFT3);
+	} else {
+		mc->enableWallControl();
+		led->off(LedNumbers::LEFT3);
+	}
+
 	if(x0 < x1 && target_linvel < reg_max_vel){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
 	} else if(x0 >= (x1 + x2 + x3)){
