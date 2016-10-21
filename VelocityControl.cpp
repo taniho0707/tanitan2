@@ -5,8 +5,8 @@
 using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
-	DIST_GAP_FROM_R(0.03),
-	DIST_GAP_FROM_L(0.03)
+	DIST_GAP_FROM_R(0.036),
+	DIST_GAP_FROM_L(0.036)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -95,7 +95,7 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		led->on(LedNumbers::LEFT2);
 	}
 
-	if(x0 < x1){
+	if(x0 < x1 && target_linvel < reg_max_vel){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
 	} else if(x0 >= (x1 + x2 + x3)){
 		v = reg_end_vel;

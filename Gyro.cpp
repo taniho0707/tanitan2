@@ -5,7 +5,8 @@
 
 Gyro::Gyro(SPI_TypeDef *spi, GPIO_TypeDef *gpio, uint16_t gpiopin) :
 	Spi(spi, gpio, gpiopin),
-	lsb2dps(0.035),
+	lsb2dps(0.0348),
+	// lsb2dps(0.035),
 	lsb2mps(0.000049762),
 	zero_gyroz(0.0),
 	zero_accelx(0.0)
