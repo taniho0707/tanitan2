@@ -39,14 +39,14 @@ void Map::addWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall){
 	return;
 }
 
-// void Map::setWall(int8_t x, int8_t y, MouseAngle angle, Walldata wall){
-// 	Walldata tmp = Walldata::rotateWallToAbsolute(wall, angle);
-// 	setSingleWall(x, y, MazeAngle::NORTH, tmp.isExistWall(E_DirFront));
-// 	setSingleWall(x, y, MazeAngle::EAST,  tmp.isExistWall(E_DirRight));
-// 	setSingleWall(x, y, MazeAngle::SOUTH, tmp.isExistWall(E_DirBack));
-// 	setSingleWall(x, y, MazeAngle::WEST,  tmp.isExistWall(E_DirLeft));
-// 	return;
-// }
+void Map::setWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall){
+	Walldata tmp = Walldata::rotateWallToAbsolute(wall, angle);
+	setSingleWall(x, y, MazeAngle::NORTH, tmp.isExistWall(MouseAngle::FRONT));
+	setSingleWall(x, y, MazeAngle::EAST,  tmp.isExistWall(MouseAngle::RIGHT));
+	setSingleWall(x, y, MazeAngle::SOUTH, tmp.isExistWall(MouseAngle::BACK));
+	setSingleWall(x, y, MazeAngle::WEST,  tmp.isExistWall(MouseAngle::LEFT));
+	return;
+}
 
 void Map::addSingleWall(int8_t x, int8_t y, MazeAngle angle){
 	if((x == 0 && angle == MazeAngle::WEST)
@@ -64,19 +64,25 @@ void Map::addSingleWall(int8_t x, int8_t y, MazeAngle angle){
 	}
 }
 
-// void Map::setSingleWall(int8_t x, int8_t y, MouseAngle angle, int wall){
-// 	// if((x == 0 && angle == E_AngleLeft)
-// 	// 		|| (x == 15 && angle == E_AngleRight)
-// 	// 		|| (y == 0 && angle == E_AngleDown)
-// 	// 		|| (y == 15 && angle == E_AngleUp)) return;
-// 	// int tmpx = (angle == 3) ? x-1 : x;
-// 	// int tmpy = (angle == 2) ? y-1 : y;
-// 	// if(angle % 2){
-// 	// 	row[tmpy] |= (32768 >> tmpx);
-// 	// } else {
-// 	// 	column[tmpy] |= (32768 >> tmpx);
-// 	// }
-// }
+void Map::setSingleWall(int8_t x, int8_t y, MazeAngle angle, bool wall){
+	if((x == 0 && angle == MazeAngle::WEST)
+	   || (x == 31 && angle == MazeAngle::EAST)
+	   || (y == 0 && angle == MazeAngle::SOUTH)
+	   || (y == 31 && angle == MazeAngle::NORTH)) return;
+	if(wall){
+		addSingleWall(x, y, angle);
+	} else {
+		if(angle == MazeAngle::NORTH){
+			row[y] &= ~(0x80000000 >> x);
+		} else if(angle == MazeAngle::EAST){
+			column[x] &= ~(0x80000000 >> y);
+		} else if(angle == MazeAngle::SOUTH){
+			row[y-1] &= ~(0x80000000 >> x);
+		} else if(angle == MazeAngle::WEST){
+			column[x-1] &= ~(0x80000000 >> y);
+		}
+	}
+}
 
 Walldata Map::getWalldata(int8_t x, int8_t y){
 	Walldata wall;

@@ -47,14 +47,14 @@ public:
 	 */
 	void addWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall);
 
-	/* /\** */
-	/*  * @brief 壁を設定します */
-	/*  * @param x 壁を追加する区画のx座標 */
-	/*  * @param y 壁を追加する区画のy座標 */
-	/*  * @param angle 今自分が向いている絶対方向 */
-	/*  * @param wall 今見えている壁情報 */
-	/*  *\/ */
-	/* void setWall(int x, int y, MouseAngle angle, Walldata wall); */
+	/**
+	 * @brief 壁を設定します
+	 * @param x 壁を追加する区画のx座標
+	 * @param y 壁を追加する区画のy座標
+	 * @param angle 今自分が向いている絶対方向
+	 * @param wall 今見えている壁情報
+	 */
+	void setWall(int8_t x, int8_t y, MazeAngle angle, Walldata wall);
 
 	/**
 	 * @brief 壁を追加します。絶対方向でのみ指定が可能です。
@@ -64,15 +64,15 @@ public:
 	 */
 	void addSingleWall(int8_t x, int8_t y, MazeAngle angle);
 
-	/* /\** */
-	/*  * @brief 壁を設定します。絶対方向でのみ指定が可能です。 */
-	/*  * @param x 壁を追加する区画のx座標 */
-	/*  * @param y 壁を追加する区画のy座標 */
-	/*  * @param angle 今自分が向いている絶対方向 */
-	/*  * @param wall 今見えている壁情報 */
-	/*  * @bug まだaddSingleWallと同じ関数 */
-	/*  *\/ */
-	/* void setSingleWall(int x, int y, MouseAngle angle, Walldata wall); */
+	/**
+	 * @brief 壁を設定します。絶対方向でのみ指定が可能です。
+	 * @param x 壁を追加する区画のx座標
+	 * @param y 壁を追加する区画のy座標
+	 * @param angle 今自分が向いている絶対方向
+	 * @param wall 今見えている壁情報
+	 * @bug まだaddSingleWallと同じ関数
+	 */
+	void setSingleWall(int8_t x, int8_t y, MazeAngle angle, bool wall);
 
 	Walldata getWalldata(int8_t x, int8_t y);
 
