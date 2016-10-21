@@ -1,7 +1,6 @@
 /*
  * @file Path.h
  */
-
 #pragma once
 
 #include <vector>
@@ -24,7 +23,9 @@ private:
 	std::vector<Motion> path;
 
 	Motion goalmotion;
-	
+
+	PathType pathtype;
+
 public:
 	Path(PathType);
 
