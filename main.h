@@ -37,8 +37,5 @@
 #include "Datalog.h"
 
 
-const uint16_t GOAL_X = 1;
-const uint16_t GOAL_Y = 0;
-
 int main();
 

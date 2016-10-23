@@ -3,6 +3,10 @@
  */
 #include "main.h"
 
+constexpr uint16_t GOAL_X = 11;
+constexpr uint16_t GOAL_Y = 11;
+
+
 int main(void){
 	SystemInit();
 	SysTick_Config(SystemCoreClock / 1000);
@@ -42,7 +46,7 @@ int main(void){
 
 	*compc << "* MRAM\n";
 	mram->writeEnable();
-	std::vector<uint8_t> mram_ret(124);
+	std::vector<uint8_t> mram_ret(1);
 	// mram_ret[0] = 0xAB;
 	// mram->writeData(mram_ret, 0x0000, 1);
 	// mram_ret[0] = 0xFF;
@@ -73,7 +77,13 @@ int main(void){
 	wall->start();
 	if(Switch::isPushing(SwitchNumbers::LEFT)){
 		Map map;
-		mram->loadMap(map, 0);
+		// 最新迷路番号を読み出す
+		mram->readData(mram_ret, 0x0001, 1);
+		if(mram_ret.at(0) < 2)
+			mram->loadMap(map, 0);
+		else
+			mram->loadMap(map, (mram_ret.at(0) - 2) % 10);
+		compc->printf("%d\n", (mram_ret.at(0) < 2 ? 0 : mram_ret.at(0)-2));
 		for(int i=0; i<32; ++i) compc->printf("+----");
 		compc->printf("+\n");
 		for(int j=0; j<32; ++j){
@@ -183,6 +193,19 @@ int main(void){
 		Timer::wait_ms(1000);
 	}
 
+	if(mode == -1){
+		
+	} else if(mode == -2){
+		Map blankmap;
+		mram_ret.at(0) = 0x00;
+		mram->writeData(mram_ret, 0x0001, 1);
+		for(int i=0; i<10; ++i){
+			mram->saveMap(blankmap, i);
+		}
+		Speaker::playMusic(MusicNumber::KANSAIDENKIHOANKYOUKAI);
+		while(true);
+	}
+
 	while(true){
 		using namespace slalomparams;
 
@@ -203,7 +226,7 @@ int main(void){
 		
 		Path path(PathType::SMALL);
 		PathAdachi padachi;
-		
+
 		compc->printf("* Gyro\n");
 		uint8_t ret = 0x00;
 		if(ret_bool){
@@ -234,7 +257,7 @@ int main(void){
 		// 	while(vc->isRunning());
 		// }
 
-		int num_map = 0;
+		uint8_t num_map = 0;
 
 		if(mode == 1){
 			motorcontrol->stay();
@@ -298,15 +321,26 @@ int main(void){
 			
 		} else if(mode == 6){
 			if(submode == 0){ //探索新規(壁なし)
-				
+				mram_ret.at(0) = 0;
+				mram->writeData(mram_ret, 0x0001, 1);
 			} else { //探索上書き(壁あり)
 				led->on(LedNumbers::FRONT);
 				led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
+				mram->readData(mram_ret, 0x0001, 1);
+				if(mram_ret.at(0) < 2)
+					num_map = 0;
+				else
+					num_map = (mram_ret.at(0) - 2) % 10;
 				mram->loadMap(map, num_map);
 				led->flickStop(LedNumbers::LEFT3);
 				led->off(LedNumbers::FRONT);
 			}
 			adachi.setGoal(GOAL_X, GOAL_Y);
+			// mram
+			mram->saveMap(map, (num_map%10));
+			mram_ret.at(0) = num_map++;
+			mram->writeData(mram_ret, 0x0001, 1);
+
 			motorcontrol->stay();
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			while(vc->isRunning());
@@ -354,7 +388,11 @@ int main(void){
 						vc->runPivotTurn(360, 183, 1000);
 						while(vc->isRunning());
 					}
-					mram->saveMap(map, num_map);
+					//mram
+					mram->saveMap(map, num_map%10);
+					mram_ret.at(0) = num_map++;
+					mram->writeData(mram_ret, 0x0001, 1);
+
 					vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
@@ -381,7 +419,15 @@ int main(void){
 					map.setWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
 					map.setReached(pos.getPositionX(), pos.getPositionY());
 					led->off(LedNumbers::LEFT3);
-					mram->saveMap(map, num_map);
+
+					//mram
+					mram->saveMap(map, num_map%10);
+					mram_ret.at(0) = num_map++;
+					mram->writeData(mram_ret, 0x0001, 1);
+					mram->saveMap(map, num_map%10);
+					mram_ret.at(0) = num_map++;
+					mram->writeData(mram_ret, 0x0001, 1);
+
 					led->on(LedNumbers::LEFT3);
 					adachi.setGoal(0, 0);
 				} else if(pos.getPositionX() == 0 && pos.getPositionY() == 0){
@@ -394,14 +440,30 @@ int main(void){
 			adachi.setMap(map);
 			adachi.setGoal(GOAL_X, GOAL_Y);
 			motor->disable();
-			mram->saveMap(map, num_map);
+
+			//mram
+			mram->saveMap(map, num_map%10);
+			mram_ret.at(0) = num_map++;
+			mram->writeData(mram_ret, 0x0001, 1);
+			mram->saveMap(map, num_map%10);
+			mram_ret.at(0) = num_map++;
+			mram->writeData(mram_ret, 0x0001, 1);
+
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 			
 			while(!Switch::isPushing(SwitchNumbers::RIGHT));
 			mode = 7;
 		} else {
 			float param_accel;
+
+			//mram
+			mram->readData(mram_ret, 0x0001, 1);
+			if(mram_ret.at(0) < 2)
+				num_map = 0;
+			else
+				num_map = mram_ret.at(0) % 10;
 			mram->loadMap(map, num_map);
+
 			if(submode == 0){ //最短遅い
 				param_accel = 2.0f;
 			} else { //最短早い
