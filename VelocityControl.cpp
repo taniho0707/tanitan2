@@ -6,7 +6,7 @@ using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
 	DIST_GAP_FROM_R(0.04),
-	DIST_GAP_FROM_L(0.04)
+	DIST_GAP_FROM_L(0.036)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -217,7 +217,7 @@ void VelocityControl::calcSlalom(int32_t t){
 	if(reg_slalom_pos == 1){
 		// 前オフセット
 		r = 0.0f;
-		if(x0 >= reg_d_before){
+		if(x0 >= reg_d_before || x0 >= (DIST_GAP_FROM_L - mc->getDistanceFromGap() + reg_d_before)){
 			reg_slalom_pos = 2;
 			time = Timer::getTime();
 		}
