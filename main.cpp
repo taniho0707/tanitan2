@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 11;
-constexpr uint16_t GOAL_Y = 11;
+constexpr uint16_t GOAL_X = 1;
+constexpr uint16_t GOAL_Y = 0;
 
 
 int main(void){
@@ -274,6 +274,8 @@ int main(void){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			motorcontrol->stay();
+			Timer::wait_ms(1000);
+			vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.45f, 2.0f);
 			while(true);
 		} else if(mode == 2){
 			if(submode == 0){

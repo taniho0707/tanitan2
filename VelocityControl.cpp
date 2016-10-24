@@ -66,15 +66,15 @@ void VelocityControl::runTrapAccel(
 	reg_distance = distance;
 
 	float x_ad = (2.0f*reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel-reg_end_vel*reg_end_vel)/(2*reg_accel);
-	if(x_ad > reg_distance){
-		x1 = (reg_distance + (reg_end_vel*reg_end_vel - reg_start_vel*reg_start_vel)/reg_accel)/2.0f;
+	if(x_ad > abs(reg_distance)){
+		x1 = (abs(reg_distance) + (reg_end_vel*reg_end_vel - reg_start_vel*reg_start_vel)/reg_accel)/2.0f;
 		x2 = 0.0f;
-		x3 = reg_distance - x1;
+		x3 = abs(reg_distance) - x1;
 		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
 	} else {
 		x1 = (reg_max_vel*reg_max_vel - reg_start_vel*reg_start_vel)/(2.0f * reg_accel);
 		x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
-		x2 = reg_distance - x1 - x3;
+		x2 = abs(reg_distance) - x1 - x3;
 	}
 }
 
@@ -104,12 +104,12 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		led->off(LedNumbers::LEFT3);
 	}
 
-	if(x0 < x1 && target_linvel < reg_max_vel){
+	if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
 		v = reg_start_vel + reg_accel*t0/1000.0f;
-	} else if(x0 >= (x1 + x2 + x3)){
+	} else if(abs(x0) >= abs(x1 + x2 + x3)){
 		v = reg_end_vel;
 		end_flag = true;
-	} else if(x0 >= x1+x2){
+	} else if(abs(x0) >= abs(x1+x2)){
 		if(reg_end_vel == 0.0f){
 			if(v > 0.01f) v -= reg_accel/1000.0f;
 			else v = 0.01f;
@@ -120,7 +120,7 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	} else {
 		v = reg_max_vel;
 	}
-	target_linvel = v;
+	target_linvel = (reg_distance>0?1:-1) * v;
 }
 
 
