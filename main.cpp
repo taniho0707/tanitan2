@@ -262,6 +262,7 @@ int main(void){
 		if(mode == 1){
 			motorcontrol->stay();
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+			motorcontrol->disableWallControl();
 			while(vc->isRunning());
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
@@ -276,6 +277,7 @@ int main(void){
 			motorcontrol->stay();
 			Timer::wait_ms(1000);
 			vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.45f, 2.0f);
+			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 2){
 			if(submode == 0){
@@ -362,6 +364,7 @@ int main(void){
 					vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::PIVOTTURN){
+					motorcontrol->disableWallControl();
 					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.035f, 2.0f);
 					while(vc->isRunning());
 					if(wall->isExistWall(SensorPosition::FLeft)){
@@ -384,11 +387,18 @@ int main(void){
 						led->flickStop(LedNumbers::FRONT);
 						led->on(LedNumbers::FRONT);
 						vc->runPivotTurn(360, 90, 1000);
+						while(vc->isRunning());
 						Timer::wait_ms(200);
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
 						while(vc->isRunning());
+						Timer::wait_ms(300);
 					} else {
-						vc->runPivotTurn(360, 183, 1000);
+						vc->runPivotTurn(360, 180, 1000);
 						while(vc->isRunning());
+						Timer::wait_ms(300);
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						while(vc->isRunning());
+						Timer::wait_ms(300);
 					}
 					//mram
 					mram->saveMap(map, num_map%10);
@@ -397,6 +407,7 @@ int main(void){
 
 					vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 					while(vc->isRunning());
+					motorcontrol->enableWallControl();
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
 					vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
 					while(vc->isRunning());
@@ -474,21 +485,25 @@ int main(void){
 			
 			padachi.setGoal(GOAL_X, GOAL_Y);
 			padachi.setMap(map);
-			path = padachi.getPath(PathType::SMALL);
+			path = padachi.getPath(PathType::BIG);
 			
 			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
-			// for(auto i=0; i<100; ++i){
-			// 	auto tmp = path.getMotion(i);
-			// 	if(tmp.type == RunType::TRAPACCEL)
-			// 		compc->printf("TRAPEZOID        :%2d\n", tmp.length);
-			// 	else if(tmp.type == RunType::PIVOTTURN)
-			// 		compc->printf("PIVOTTURN        :%2d\n", tmp.length);
-			// 	else if(tmp.type == RunType::SLALOM90SML_RIGHT)
-			// 		compc->printf("SLALOM90SML_RIGHT:%2d\n", tmp.length);
-			// 	else if(tmp.type == RunType::SLALOM90SML_LEFT)
-			// 		compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
-			// }
+			for(auto i=0; i<100; ++i){
+				auto tmp = path.getMotion(i);
+				if(tmp.type == RunType::TRAPACCEL)
+					compc->printf("TRAPEZOID        :%2d\n", tmp.length);
+				else if(tmp.type == RunType::PIVOTTURN)
+					compc->printf("PIVOTTURN        :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90SML_RIGHT)
+					compc->printf("SLALOM90SML_RIGHT:%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90SML_LEFT)
+					compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90_RIGHT)
+					compc->printf("SLALOM90_RIGHT:%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90_LEFT)
+					compc->printf("SLALOM90_LEFT :%2d\n", tmp.length);
+			}
 			
 			motorcontrol->stay();
 			

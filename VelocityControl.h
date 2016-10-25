@@ -29,6 +29,7 @@ private:
 	bool is_started;
 
 	bool enabled_wallgap;
+	bool is_left_gap;
 
 	enum slalomparams::RunType reg_type;
 

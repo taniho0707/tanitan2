@@ -6,7 +6,7 @@ using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
 	DIST_GAP_FROM_R(0.04),
-	DIST_GAP_FROM_L(0.036)
+	DIST_GAP_FROM_L(0.033)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -16,6 +16,7 @@ VelocityControl::VelocityControl() :
 	end_flag = true;
 	is_started = false;
 	enabled_wallgap = true;
+	is_left_gap = true;
 
 	target_linvel = 0.0f;
 	target_radvel = 0.0f;
