@@ -31,7 +31,7 @@ public:
 
 	void format();
 
-	Motion getMotion(uint16_t num);
+	Motion getMotion(int16_t num);
 	void putMotion(Motion motion);
 };
 

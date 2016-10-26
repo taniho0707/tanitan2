@@ -6,8 +6,10 @@
 
 
 const uint16_t Encoder::MEDIAN = 30000;
-const float Encoder::PULSE_L = 0.02188;
-const float Encoder::PULSE_R = 0.02188;
+const float Encoder::PULSE_L = 0.0218;
+const float Encoder::PULSE_R = 0.0218;
+// const float Encoder::PULSE_L = 0.02188;
+// const float Encoder::PULSE_R = 0.02188;
 // const float Encoder::PULSE_L = 0.021475781;
 // const float Encoder::PULSE_R = 0.021475781;
 
