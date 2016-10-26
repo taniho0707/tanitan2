@@ -75,6 +75,7 @@ public:
 	void setSingleWall(int8_t x, int8_t y, MazeAngle angle, bool wall);
 
 	Walldata getWalldata(int8_t x, int8_t y);
+	Walldata getKnownWalldata(int8_t x, int8_t y);
 
 
 	/**

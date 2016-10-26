@@ -39,7 +39,7 @@ void PathAdachi::renewFootmap(){
 			tmp.first = buf.first;
 			tmp.second = buf.second + 1;
 			que.push(tmp);
-			fm.setFootmap(buf.first, buf.second + 1, fm.getMinNextTo(buf.first, buf.second + 1, map.getWalldata(buf.first, buf.second + 1)) + 1);
+			fm.setFootmap(buf.first, buf.second + 1, fm.getMinNextTo(buf.first, buf.second + 1, map.getKnownWalldata(buf.first, buf.second + 1)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::EAST) == false)
 		   && (fm.getFootmap(buf.first + 1, buf.second, 0) == 1024)
@@ -48,7 +48,7 @@ void PathAdachi::renewFootmap(){
 			tmp.first = buf.first + 1;
 			tmp.second = buf.second;
 			que.push(tmp);
-			fm.setFootmap(buf.first + 1, buf.second, fm.getMinNextTo(buf.first + 1, buf.second, map.getWalldata(buf.first + 1, buf.second)) + 1);
+			fm.setFootmap(buf.first + 1, buf.second, fm.getMinNextTo(buf.first + 1, buf.second, map.getKnownWalldata(buf.first + 1, buf.second)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::SOUTH) == false)
 		   && (fm.getFootmap(buf.first, buf.second - 1, 0) == 1024)
@@ -57,7 +57,7 @@ void PathAdachi::renewFootmap(){
 			tmp.first = buf.first;
 			tmp.second = buf.second - 1;
 			que.push(tmp);
-			fm.setFootmap(buf.first, buf.second - 1, fm.getMinNextTo(buf.first, buf.second - 1, map.getWalldata(buf.first, buf.second - 1)) + 1);
+			fm.setFootmap(buf.first, buf.second - 1, fm.getMinNextTo(buf.first, buf.second - 1, map.getKnownWalldata(buf.first, buf.second - 1)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::WEST) == false)
 		   && (fm.getFootmap(buf.first - 1, buf.second, 0) == 1024)
@@ -66,7 +66,7 @@ void PathAdachi::renewFootmap(){
 			tmp.first = buf.first - 1;
 			tmp.second = buf.second;
 			que.push(tmp);
-			fm.setFootmap(buf.first - 1, buf.second, fm.getMinNextTo(buf.first - 1, buf.second, map.getWalldata(buf.first - 1, buf.second)) + 1);
+			fm.setFootmap(buf.first - 1, buf.second, fm.getMinNextTo(buf.first - 1, buf.second, map.getKnownWalldata(buf.first - 1, buf.second)) + 1);
 		}
 	}
 

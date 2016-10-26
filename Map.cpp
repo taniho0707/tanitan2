@@ -97,6 +97,15 @@ Walldata Map::getWalldata(int8_t x, int8_t y){
 	return wall;
 }
 
+Walldata Map::getKnownWalldata(int8_t x, int8_t y){
+	Walldata wall;
+	if(isExistWall(x, y, MazeAngle::NORTH) || hasWatched(x, y, MazeAngle::NORTH)==false) wall.addWall(MouseAngle::FRONT);
+	if(isExistWall(x, y, MazeAngle::SOUTH) || hasWatched(x, y, MazeAngle::SOUTH)==false) wall.addWall(MouseAngle::BACK);
+	if(isExistWall(x, y, MazeAngle::EAST) || hasWatched(x, y, MazeAngle::EAST)==false) wall.addWall(MouseAngle::RIGHT);
+	if(isExistWall(x, y, MazeAngle::WEST) || hasWatched(x, y, MazeAngle::WEST)==false) wall.addWall(MouseAngle::LEFT);
+	return wall;
+}
+
 
 bool Map::isExistWall(int8_t x, int8_t y, MazeAngle angle){
 	uint32_t ans = 0;
@@ -127,14 +136,14 @@ void Map::setReached(int8_t x, int8_t y){
 }
 
 bool Map::hasReached(int8_t x, int8_t y){
-	if(x < 0 || x > 31 || y < 0 || y > 31) return true;
+	if(x < 0 || x > 31 || y < 0 || y > 31) return false;
 	if(reached[y] & (0x80000000 >> x)) return true;
-	else if(
-			(reached[y] & (0x80000000 >> (x+1)))
-			&& (reached[y] & (0x80000000 >> ((x==0)?(x+1):(x-1))))
-			&& (reached[(y==31)?(y-1):(y+1)] & (0x80000000 >> x))
-			&& (reached[(y==0)?(y+1):(y-1)] & (0x80000000 >> x))
-			) return true;
+	// else if(
+	// 	(reached[y] & (0x80000000 >> (x+1)))
+	// 	|| (x==0 ? false : (reached[y] & (0x80000000 >> (x-1))))
+	// 	|| (y==31 ? false : (reached[y+1] & (0x80000000 >> x)))
+	// 	|| (y==0 ? false : (reached[y-1] & (0x80000000 >> x)))
+	// 	) return true;
 	else return false;
 }
 
