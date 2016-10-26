@@ -322,7 +322,21 @@ int main(void){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f+0.045f, 2.0f);
 			while(vc->isRunning());
 		} else if(mode == 5){
-			
+			motorcontrol->stay();
+			vc->disableWallgap();
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.09f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM90_RIGHT, 0.3f);
+			} else {
+				vc->runSlalom(RunType::SLALOM90_LEFT, 0.3f);
+			}
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
 		} else if(mode == 6){
 			if(submode == 0){ //探索新規(壁なし)
 				mram_ret.at(0) = 0;
@@ -380,7 +394,7 @@ int main(void){
 						vc->runPivotTurn(360, 90, 1000);
 						while(vc->isRunning());
 						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
-						MotorControl::getInstance()->disableWallControl();
+						motorcontrol->disableWallControl();
 						collection->collectionByFrontDuringStop();// front correction 1.5s
 						motorcontrol->stay();
 						Timer::wait_ms(200);
@@ -389,16 +403,27 @@ int main(void){
 						vc->runPivotTurn(360, 90, 1000);
 						while(vc->isRunning());
 						Timer::wait_ms(200);
+						vc->disableWallgap();
 						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						Timer::wait_ms(300);
+						motorcontrol->enableWallControl();
+						vc->enableWallgap();
 					} else {
 						vc->runPivotTurn(360, 180, 1000);
 						while(vc->isRunning());
 						Timer::wait_ms(300);
+
+						vc->disableWallgap();
+						motorcontrol->disableWallControl();
+						motorcontrol->resetRadIntegral();
 						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						Timer::wait_ms(300);
+						vc->enableWallgap();
+						motorcontrol->enableWallControl();
 					}
 					//mram
 					mram->saveMap(map, num_map%10);
@@ -509,10 +534,11 @@ int main(void){
 			
 			struct Motion motion;
 			int i=0;
+			vc->disableWallgap();
 			while(true){
 				motion = path.getMotion(i);
 				if(i == 0){
-					vc->runTrapAccel(0.0f, 3.0f, 0.3f, 0.045f*(motion.length-1), param_accel);
+					vc->runTrapAccel(0.0f, 3.0f, 0.3f, 0.045f*(motion.length), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
 						vc->runTrapAccel(0.3f, 3.0f, 0.0f, 0.045f*(motion.length-1), param_accel);
@@ -521,7 +547,9 @@ int main(void){
 					}
 					
 					if(motion.type == RunType::TRAPACCEL){
+						led->on(LedNumbers::FRONT);
 						vc->runTrapAccel(0.3f, 3.0f, 0.3f, 0.045f*motion.length, param_accel);
+						led->off(LedNumbers::FRONT);
 					} else {
 						vc->runSlalom(motion.type, 0.3f);
 					}

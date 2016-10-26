@@ -96,13 +96,15 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		led->on(LedNumbers::LEFT2);
 	}
 
-	auto kabekire = reg_distance - DIST_GAP_FROM_L;
-	if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.005)){
-		mc->disableWallControl();
-		led->on(LedNumbers::LEFT3);
-	} else {
-		mc->enableWallControl();
-		led->off(LedNumbers::LEFT3);
+	if(enabled_wallgap){
+		auto kabekire = reg_distance - DIST_GAP_FROM_L;
+		if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.005)){
+			mc->disableWallControl();
+			led->on(LedNumbers::LEFT3);
+		} else {
+			mc->enableWallControl();
+			led->off(LedNumbers::LEFT3);
+		}
 	}
 
 	if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
@@ -218,7 +220,7 @@ void VelocityControl::calcSlalom(int32_t t){
 	if(reg_slalom_pos == 1){
 		// 前オフセット
 		r = 0.0f;
-		if(x0 >= reg_d_before || x0 >= (DIST_GAP_FROM_L - mc->getDistanceFromGap() + reg_d_before)){
+		if(x0 >= reg_d_before || (enabled_wallgap ? x0 >= (DIST_GAP_FROM_L - mc->getDistanceFromGap() + reg_d_before) : false)){
 			reg_slalom_pos = 2;
 			time = Timer::getTime();
 		}

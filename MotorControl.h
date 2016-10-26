@@ -47,9 +47,12 @@ private:
 	float tar_lin_vel;
 	float tar_rad_vel;
 
+	int16_t integral_wall;
+	float integral_rad_gyro;
+
 	float dist_from_gap;
 
-	uint16_t enabled_wall_control;
+	float enabled_wall_control;
 
 	bool is_failsafe;
 
@@ -58,6 +61,9 @@ private:
 	void controlVel();
 
 public:
+	void resetWallIntegral();
+	void resetRadIntegral();
+
 	void setIntegralEncoder(float);
 	float getIntegralEncoder();
 

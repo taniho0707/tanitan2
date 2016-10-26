@@ -22,6 +22,7 @@ MotorControl::MotorControl() :
 	tar_lin_vel = 0.0;
 	enabled_wall_control = 0;
 	is_failsafe = false;
+	integral_rad_gyro = 0.0;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -36,6 +37,14 @@ void MotorControl::stay(){
 	motor->enable();
 	setVelocity(0.0);
 	setRadVelocity(0.0);
+}
+
+void MotorControl::resetWallIntegral(){
+	integral_wall = 0.0f;
+}
+
+void MotorControl::resetRadIntegral(){
+	integral_rad_gyro = 0.0;
 }
 
 void MotorControl::calcIntegral(){
@@ -76,9 +85,6 @@ void MotorControl::controlVel(){
 	static float integral_r = 0.0f;
 	static float integral_l = 0.0f;
 	static float integral_lin_encoder = 0.0;
-	static float integral_rad_gyro = 0.0;
-
-	static uint16_t integral_wall = 0;
 
 	static float d_rad_gyro = 0.0;
 
@@ -103,7 +109,8 @@ void MotorControl::controlVel(){
 	integral_wall += wall->getCorrection(10000) * enabled_wall_control;
 
 	// rotation成分の計算
-	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
+	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw());
+	// tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	// integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());
 	// if(wall->isExistWall(SensorPosition::Left) || wall->isExistWall(SensorPosition::Right)) integral_rad_gyro = 0.0f;
@@ -136,10 +143,10 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	// log->writeFloat(wall->getCorrection(10000));
-	// log->writeFloat(wall->getCorrection(10000)-lastwall);
-	log->writeFloat(getIntegralEncoder());
-	log->writeFloat(getDistanceFromGap());
+	log->writeFloat(enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000));
+	log->writeFloat(integral_wall);
+	// log->writeFloat(getIntegralEncoder());
+	// log->writeFloat(getDistanceFromGap());
 
 	lastwall = wall->getCorrection(10000);
 }
