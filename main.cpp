@@ -311,6 +311,7 @@ int main(void){
 			motorcontrol->stay();
 			vc->disableWallgap();
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f+0.09f, 2.0f);
+			motorcontrol->disableWallControl();
 			while(vc->isRunning());
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
@@ -318,8 +319,8 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
 			}
 			while(vc->isRunning());
-			motorcontrol->disableWallControl();
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f+0.045f, 2.0f);
+			motorcontrol->disableWallControl();
 			while(vc->isRunning());
 		} else if(mode == 5){
 			motorcontrol->stay();
