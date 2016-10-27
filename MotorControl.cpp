@@ -23,6 +23,7 @@ MotorControl::MotorControl() :
 	enabled_wall_control = 0;
 	is_failsafe = false;
 	integral_rad_gyro = 0.0;
+	is_left_gap = false;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -61,6 +62,10 @@ float MotorControl::getIntegralEncoder(){
 
 float MotorControl::getDistanceFromGap(){
 	return dist_from_gap;
+}
+
+bool MotorControl::isLeftGap(){
+	return is_left_gap;
 }
 
 void MotorControl::controlX(){
@@ -124,8 +129,13 @@ void MotorControl::controlVel(){
 
 	// 壁切れ用の計算
 	dist_from_gap += 0.001f * cur_lin_vel;
-	if(wall->hadGap(SensorPosition::Left) || wall->hadGap(SensorPosition::Right)){
+	if(wall->hadGap(SensorPosition::Left)){
 		dist_from_gap = 0.0f;
+		is_left_gap = true;
+	}
+	if(wall->hadGap(SensorPosition::Right)){
+		dist_from_gap = 0.0f;
+		is_left_gap = false;
 	}
 
 	// モーター出力
@@ -143,12 +153,15 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	log->writeFloat(enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000));
-	log->writeFloat(integral_wall);
-	// log->writeFloat(getIntegralEncoder());
-	// log->writeFloat(getDistanceFromGap());
+	// log->writeFloat(enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000));
+	// log->writeFloat(integral_wall);
+	log->writeFloat(getIntegralEncoder());
+	log->writeFloat(getDistanceFromGap());
 
 	lastwall = wall->getCorrection(10000);
+
+	if(enabled_wall_control) led->on(LedNumbers::LEFT3);
+	else led->off(LedNumbers::LEFT3);
 }
 
 

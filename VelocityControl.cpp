@@ -83,7 +83,8 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	int32_t t0 = t - time;
 	float x0 = mc->getIntegralEncoder();
 
-	led->off(LedNumbers::LEFT2);
+	led->off(LedNumbers::LEFT1);
+	led->off(LedNumbers::RIGHT);
 	if(
 		enabled_wallgap
 		&& mc->getDistanceFromGap() < 0.001f
@@ -91,25 +92,26 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		&& x0 > 0.01f
 		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
 			|| (reg_distance < 0.046f && reg_distance > 0.044f))
-		&& reg_type == RunType::TRAPACCEL
 		){
-		mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
-		led->on(LedNumbers::LEFT2);
+		mc->setIntegralEncoder(reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R));
+		if(mc->isLeftGap())
+			led->on(LedNumbers::LEFT1);
+		else
+			led->on(LedNumbers::RIGHT);
 	}
 
 	if(enabled_wallgap){
-		auto kabekire = reg_distance - (DIST_GAP_FROM_L);
+		auto kabekire = reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R);
 		if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.005)){
 			mc->disableWallControl();
-			led->on(LedNumbers::LEFT3);
 		} else {
 			mc->enableWallControl();
-			led->off(LedNumbers::LEFT3);
 		}
 	}
 
 	if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
-		v = reg_start_vel + reg_accel*t0/1000.0f;
+		v += reg_accel/1000.0f;
+		// v = reg_start_vel + reg_accel*t0/1000.0f;
 	} else if(abs(x0) >= abs(x1 + x2 + x3)){
 		v = reg_end_vel;
 		end_flag = true;
@@ -222,7 +224,7 @@ void VelocityControl::calcSlalom(int32_t t){
 		// 前オフセット
 		r = 0.0f;
 		if(x0 >= reg_d_before
-		   || (enabled_wallgap ? x0 >= (DIST_GAP_FROM_L - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) - mc->getDistanceFromGap() + reg_d_before) : false)
+		   || (enabled_wallgap ? x0 >= ((mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R) - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) - mc->getDistanceFromGap() + reg_d_before) : false)
 			){
 			reg_slalom_pos = 2;
 			time = Timer::getTime();

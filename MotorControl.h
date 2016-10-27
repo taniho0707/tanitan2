@@ -51,6 +51,7 @@ private:
 	float integral_rad_gyro;
 
 	float dist_from_gap;
+	bool is_left_gap;
 
 	float enabled_wall_control;
 
@@ -68,6 +69,7 @@ public:
 	float getIntegralEncoder();
 
 	float getDistanceFromGap();
+	bool isLeftGap();
 
 	void setVelocity(float);
 	void setRadVelocity(float);
