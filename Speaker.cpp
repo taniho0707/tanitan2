@@ -4,6 +4,7 @@
 
 #include "Speaker.h"
 
+int Speaker::sound_time = 0;
 
 void Speaker::init(){
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -52,38 +53,48 @@ void Speaker::init(){
 }
 
 void Speaker::playSound(int freq, int length, bool sync){
+	TIM_TimeBaseInitTypeDef TIM_InitStructure;
+	TIM_OCInitTypeDef TIM_OC_InitStructure;
+
+	TIM_ITConfig(TIM8, TIM_IT_Update, DISABLE);
+	TIM_ARRPreloadConfig(TIM8, DISABLE);
+	TIM_CtrlPWMOutputs(TIM8, DISABLE);
+
+	TIM_InitStructure.TIM_Period = static_cast<uint16_t>(5250000/freq)-1;
+	TIM_InitStructure.TIM_Prescaler = 32-1;
+	TIM_InitStructure.TIM_ClockDivision = 0;
+	TIM_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_InitStructure.TIM_RepetitionCounter = 0;
+	TIM_TimeBaseInit(TIM8, &TIM_InitStructure);
+
+	TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OC_InitStructure.TIM_Pulse = (TIM_InitStructure.TIM_Period/2)-1;
+	TIM_OC4Init(TIM8, &TIM_OC_InitStructure);
+	TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Disable);
+
+	TIM_TimeBaseInit(TIM8, &TIM_InitStructure);
+	TIM_ITConfig(TIM8, TIM_IT_Update, ENABLE);
+	TIM_ARRPreloadConfig(TIM8, ENABLE);
+	TIM_CtrlPWMOutputs(TIM8, ENABLE);
 	if(sync){
-		TIM_TimeBaseInitTypeDef TIM_InitStructure;
-		TIM_OCInitTypeDef TIM_OC_InitStructure;
-
-		TIM_ITConfig(TIM8, TIM_IT_Update, DISABLE);
-		TIM_ARRPreloadConfig(TIM8, DISABLE);
-		TIM_CtrlPWMOutputs(TIM8, DISABLE);
-
-		TIM_InitStructure.TIM_Period = static_cast<uint16_t>(5250000/freq)-1;
-		TIM_InitStructure.TIM_Prescaler = 32-1;
-		TIM_InitStructure.TIM_ClockDivision = 0;
-		TIM_InitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-		TIM_InitStructure.TIM_RepetitionCounter = 0;
-		TIM_TimeBaseInit(TIM8, &TIM_InitStructure);
-
-		TIM_OC_InitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-		TIM_OC_InitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-		TIM_OC_InitStructure.TIM_OutputState = TIM_OutputState_Enable;
-		TIM_OC_InitStructure.TIM_Pulse = (TIM_InitStructure.TIM_Period/2)-1;
-		TIM_OC4Init(TIM8, &TIM_OC_InitStructure);
-		TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Disable);
-
-		TIM_TimeBaseInit(TIM8, &TIM_InitStructure);
-		TIM_ITConfig(TIM8, TIM_IT_Update, ENABLE);
-		TIM_ARRPreloadConfig(TIM8, ENABLE);
-		TIM_CtrlPWMOutputs(TIM8, ENABLE);
-
 		TIM_Cmd(TIM8, ENABLE);
 		Timer::wait_ms(length);
 		TIM_Cmd(TIM8, DISABLE);
 	} else {
 		/// @todo 非同期で動作するように
+		TIM_Cmd(TIM8, ENABLE);
+		sound_time = length;
+	}
+}
+
+void Speaker::interrupt(){
+	if(sound_time == 1){
+		sound_time = 0;
+		TIM_Cmd(TIM8, DISABLE);
+	} else if(sound_time > 1){
+		-- sound_time;
 	}
 }
 

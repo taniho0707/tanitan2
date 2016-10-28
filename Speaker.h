@@ -32,11 +32,15 @@ private:
 	
 	Speaker();
 	~Speaker();
-	
+
+	static int sound_time;
+
 public:
 	static void init();
 
 	static void playSound(int freq, int length, bool sync);
 
 	static void playMusic(MusicNumber n);
+
+	static void interrupt();
 };

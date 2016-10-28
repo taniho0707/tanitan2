@@ -39,4 +39,5 @@ void Timer::interrupt(){
 	vc->interrupt();
 	motor->interrupt();
 	led->interrupt();
+	Speaker::interrupt();
 }
