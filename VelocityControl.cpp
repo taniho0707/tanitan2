@@ -227,11 +227,18 @@ void VelocityControl::calcSlalom(int32_t t){
 	if(reg_slalom_pos == 1){
 		// 前オフセット
 		r = 0.0f;
-		if(x0 >= reg_d_before
-		   || (enabled_wallgap ? x0 >= ((mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R) - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) - mc->getDistanceFromGap() + reg_d_before) : false)
-			){
-			reg_slalom_pos = 2;
-			time = Timer::getTime();
+		if(reg_type == RunType::SLALOM90SML_RIGHT || reg_type == RunType::SLALOM90SML_LEFT){
+			if(x0 >= reg_d_before
+			   || (enabled_wallgap ? x0 >= ((mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R) - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) - mc->getDistanceFromGap() + reg_d_before) : false)
+				){
+				reg_slalom_pos = 2;
+				time = Timer::getTime();
+			}
+		} else {
+			if(mc->getDistanceFromGap() > reg_d_before){
+				reg_slalom_pos = 2;
+				time = Timer::getTime();
+			}
 		}
 	} else if(reg_slalom_pos == 5){
 		// 後オフセット
