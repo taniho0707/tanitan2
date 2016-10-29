@@ -6,17 +6,17 @@ using namespace std;
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
 	VAL_REF_FLEFT(178),
-	VAL_REF_LEFT(68),
-	VAL_REF_RIGHT(72),
+	VAL_REF_LEFT(66),
+	VAL_REF_RIGHT(70),
 	VAL_REF_FRIGHT(328),
-	VAL_THR_FLEFT(4),
-	VAL_THR_LEFT(25),
-	VAL_THR_RIGHT(25),
-	VAL_THR_FRIGHT(10),
+	VAL_THR_FLEFT(7),
+	VAL_THR_LEFT(21),
+	VAL_THR_RIGHT(24),
+	VAL_THR_FRIGHT(15),
 	VAL_THR_CONTROL_LEFT(50),
 	VAL_THR_CONTROL_RIGHT(55),
-	VAL_THR_GAP_LEFT(40),
-	VAL_THR_GAP_RIGHT(40),
+	VAL_THR_GAP_LEFT(10),
+	VAL_THR_GAP_RIGHT(10),
 	THR_WALL_DISAPPEAR(5)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -328,22 +328,26 @@ Walldata WallSensor::getWall(){
 	return w;
 }
 
+void WallSensor::waitGap(SensorPosition sp){
+	is_waiting_gap[(sp==SensorPosition::Left ? 0 : 1)] = true;
+}
+
 void WallSensor::checkGap(){
 	if(!had_gap[0]){
 		if(is_waiting_gap[0]
-		   && isExistWall(SensorPosition::Left) == false){
+		   && current_value.at(static_cast<uint8_t>(SensorPosition::Left)) < VAL_THR_GAP_LEFT){
 			is_waiting_gap[0] = false;
 			had_gap[0] = true;
-		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_LEFT){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_LEFT+5){
 			is_waiting_gap[0] = true;
 		}
 	}
 	if(!had_gap[1]){
 		if(is_waiting_gap[1]
-		   && isExistWall(SensorPosition::Right) == false){
+		   && current_value.at(static_cast<uint8_t>(SensorPosition::Right)) < VAL_THR_GAP_RIGHT){
 			is_waiting_gap[1] = false;
 			had_gap[1] = true;
-		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_RIGHT){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_RIGHT+5){
 			is_waiting_gap[1] = true;
 		}
 	}

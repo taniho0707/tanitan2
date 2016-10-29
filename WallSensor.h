@@ -78,6 +78,7 @@ public:
 
 	Walldata getWall();
 
+	void waitGap(SensorPosition);
 	bool hadGap(SensorPosition);
 	void checkGap();
 
