@@ -59,11 +59,11 @@ void VelocityControl::runTrapAccel(
 		
 		reg_accel = accel;
 		reg_start_vel = start_vel;
-		reg_max_vel = max_vel;
 	}
 	is_started = false;
 	end_flag = false;
 	reg_type = RunType::TRAPACCEL;
+	reg_max_vel = max_vel;
 	reg_end_vel = end_vel;
 	reg_distance = distance;
 
@@ -211,8 +211,12 @@ bool VelocityControl::runSlalom(
 	r = 0.0f;
 	reg_slalom_pos = 1;
 
+
 	if(!is_started){
 		mc->setIntegralEncoder(0.0f);
+		// mc->resetDistanceFromGap();
+		// if(sens->isExistWall(SensorPosition::Left)) sens->waitGap(SensorPosition::Left);
+		// else if(sens->isExistWall(SensorPosition::Right)) sens->waitGap(SensorPosition::Right);
 	}
 	is_started = false;
 	return true;
@@ -246,6 +250,8 @@ void VelocityControl::calcSlalom(int32_t t){
 		if(x0 >= reg_d_after){
 			reg_slalom_pos = 0;
 			end_flag = true;
+
+			mc->resetDistanceFromGap();
 		}
 	} else if(t0 < t1){
 		// 加速
