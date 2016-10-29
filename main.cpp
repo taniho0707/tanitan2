@@ -517,7 +517,6 @@ int main(void){
 			}
 			adachi.setMap(map);
 			adachi.setGoal(GOAL_X, GOAL_Y);
-			motor->disable();
 
 			//mram
 			mram->saveMap(map, num_map%10);
@@ -527,10 +526,77 @@ int main(void){
 			mram_ret.at(0) = num_map++;
 			mram->writeData(mram_ret, 0x0001, 1);
 
+			// スタートでの逆転処理
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 90, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(200);
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 90, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(200);
+
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
+
+			float param_accel = 2.0f;
+			float param_vel = 0.5f;
+
+			padachi.setGoal(GOAL_X, GOAL_Y);
+			padachi.setMap(map);
+			path = padachi.getPath(PathType::BIG);
 			
-			while(!Switch::isPushing(SwitchNumbers::RIGHT));
-			mode = 101;
+			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+			
+			motorcontrol->stay();
+			
+			struct Motion motion;
+			int i=0;
+			vc->disableWallgap();
+			vc->startTrapAccel(0.0f, param_vel, 0.09f, param_accel);
+			while(true){
+				motion = path.getMotion(i);
+				if(i == 0){
+					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
+				} else {
+					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/), param_accel);
+						while(vc->isRunning());
+						break;
+					}
+					
+					if(motion.type == RunType::TRAPACCEL){
+						led->on(LedNumbers::FRONT);
+						if(path.getMotion(i+1).type == RunType::SLALOM90SML_RIGHT || path.getMotion(i+1).type == RunType::SLALOM90SML_LEFT)
+							vc->runTrapAccel(param_vel, 3.0f, 0.3f, 0.045f*motion.length, param_accel);
+						else
+							vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
+						led->off(LedNumbers::FRONT);
+					} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
+						vc->runSlalom(motion.type, 0.3f);
+					} else {
+						vc->runSlalom(motion.type, param_vel);
+					}
+				}
+				while(vc->isRunning());
+				++i;
+				vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
+			}
+			
+			led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
+			while(true);
+
 		} else {
 			float param_accel;
 			float param_vel = 0.5f;
