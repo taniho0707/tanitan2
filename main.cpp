@@ -126,7 +126,7 @@ int main(void){
 
 	int mode = 0, submode = 0;
 	const int16_t mode_min = -2;
-	const int16_t mode_max = 5;
+	const int16_t mode_max = 6;
 	while(true){
 		static uint16_t stable_time1 = 0, stable_time2 = 0;
 		static int16_t ax, ay, az, gx, gy, gz;
@@ -140,9 +140,9 @@ int main(void){
 		compc->printf("Gx:%6d, Gy:%6d, Gz:%6d, Ax:%6d, Ay:%6d, Az:%6d\n", gx, gy, gz, ax, ay, az);
 
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
-			mode = 6; break;
+			mode = 100; break;
 		} else if(Switch::isPushing(SwitchNumbers::LEFT)){
-			mode = 7; break;
+			mode = 101; break;
 		}
 
 		if(abs(gx) > 20000){
@@ -181,7 +181,7 @@ int main(void){
 	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight))
 		submode = 1;
 
-	if(mode > 0 && mode < 6){
+	if(mode > 0 && mode < 7){
 		Speaker::playMusic(MusicNumber::KANSAIDENKIHOANKYOUKAI);
 		Timer::wait_ms(1000);
 	} else {
@@ -355,6 +355,25 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
 		} else if(mode == 6){
+			motorcontrol->stay();
+			vc->disableWallgap();
+			vc->startTrapAccel(0.0f, 0.3f, 0.09f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.09f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM180_RIGHT, 0.3f);
+			} else {
+				vc->runSlalom(RunType::SLALOM180_LEFT, 0.3f);
+			}
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+		} else if(mode == 100){
 			if(submode == 0){ //探索新規(壁なし)
 				mram_ret.at(0) = 0;
 				mram->writeData(mram_ret, 0x0001, 1);
@@ -508,7 +527,7 @@ int main(void){
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 			
 			while(!Switch::isPushing(SwitchNumbers::RIGHT));
-			mode = 7;
+			mode = 101;
 		} else {
 			float param_accel;
 
@@ -546,6 +565,10 @@ int main(void){
 					compc->printf("SLALOM90_RIGHT:%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM90_LEFT)
 					compc->printf("SLALOM90_LEFT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM180_RIGHT)
+					compc->printf("SLALOM180_LEFT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM180_LEFT)
+					compc->printf("SLALOM180_LEFT :%2d\n", tmp.length);
 			}
 			
 			motorcontrol->stay();

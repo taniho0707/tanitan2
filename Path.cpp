@@ -48,6 +48,7 @@ void Path::putMotion(Motion motion){
 		if(motion.type == RunType::TRAPACCEL){
 			Motion it1 = getMotion(path.size() - 1);
 			Motion it2 = getMotion(path.size() - 2);
+			Motion it3 = getMotion(path.size() - 3);
 			Motion straight;
 			straight.type = RunType::TRAPACCEL;
 			straight.length = 2;
@@ -81,8 +82,38 @@ void Path::putMotion(Motion motion){
 					straight.type = RunType::TRAPACCEL;
 					straight.length = 1;
 					path.push_back(straight);
-				} else if(it2.type == RunType::SLALOM90SML_RIGHT || it2.type == RunType::SLALOM90SML_LEFT){
-					path.push_back(straight);
+				} else if((it2.type == RunType::SLALOM90SML_RIGHT || it2.type == RunType::SLALOM90SML_LEFT) && it3.type == RunType::TRAPACCEL){
+					if(it1.type == RunType::SLALOM90SML_RIGHT && it2.type == RunType::SLALOM90SML_RIGHT){
+						if(it3.length == 1){
+							path.pop_back();
+						} else {
+							path.at(path.size() - 3).length -= 1;
+						}
+						path.pop_back();
+						path.pop_back();
+						straight.type = RunType::SLALOM180_RIGHT;
+						straight.length = 1;
+						path.push_back(straight);
+						straight.type = RunType::TRAPACCEL;
+						straight.length = 1;
+						path.push_back(straight);
+					} else if(it1.type == RunType::SLALOM90SML_LEFT && it2.type == RunType::SLALOM90SML_LEFT){
+						if(it3.length == 1){
+							path.pop_back();
+						} else {
+							path.at(path.size() - 3).length -= 1;
+						}
+						path.pop_back();
+						path.pop_back();
+						straight.type = RunType::SLALOM180_LEFT;
+						straight.length = 1;
+						path.push_back(straight);
+						straight.type = RunType::TRAPACCEL;
+						straight.length = 1;
+						path.push_back(straight);
+					} else {
+						path.push_back(motion);
+					}
 				}
 			} else {
 				path.push_back(motion);
