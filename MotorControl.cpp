@@ -60,6 +60,10 @@ float MotorControl::getIntegralEncoder(){
 	return cur_lin_x;
 }
 
+void MotorControl::resetDistanceFromGap(){
+	dist_from_gap = -10.0f;
+}
+
 float MotorControl::getDistanceFromGap(){
 	return dist_from_gap;
 }

@@ -261,17 +261,23 @@ int main(void){
 
 		if(mode == 1){
 			motorcontrol->stay();
+			vc->startTrapAccel(0.0f, 0.3f, 0.045f, 2.0f);
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			motorcontrol->stay();
@@ -293,41 +299,50 @@ int main(void){
 			}
 		} else if(mode == 3){
 			motorcontrol->stay();
+			vc->startTrapAccel(0.0f, 0.3f, 0.045f, 2.0f);
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			vc->disableWallgap();
 			while(true){
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 				if(submode == 0){
 					vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
 				} else {
 					vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
 				}
 				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 				vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
 			}
 		} else if(mode == 4){
 			motorcontrol->stay();
-			vc->disableWallgap();
-			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f+0.09f, 2.0f);
-			motorcontrol->disableWallControl();
+			vc->startTrapAccel(0.0f, 0.3f, 0.045f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
 			} else {
 				vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
 			}
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.045f+0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f+0.045f, 2.0f);
 			motorcontrol->disableWallControl();
-			while(vc->isRunning());
+			while(true);
 		} else if(mode == 5){
 			motorcontrol->stay();
 			vc->disableWallgap();
+			vc->startTrapAccel(0.0f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.09f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM90_RIGHT, 0.3f);
 			} else {
@@ -335,6 +350,7 @@ int main(void){
 			}
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.09f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
@@ -364,6 +380,7 @@ int main(void){
 			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
 			while(vc->isRunning());
 			map.setReached(0, 0);
+			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 
 			while(true){
 				led->off(LedNumbers::FRONT);
@@ -379,8 +396,8 @@ int main(void){
 					vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::PIVOTTURN){
-					motorcontrol->disableWallControl();
 					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.035f, 2.0f);
+					motorcontrol->disableWallControl();
 					while(vc->isRunning());
 					if(wall->isExistWall(SensorPosition::FLeft)){
 						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
@@ -432,8 +449,8 @@ int main(void){
 					mram->writeData(mram_ret, 0x0001, 1);
 
 					vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+					motorcontrol->disableWallControl();
 					while(vc->isRunning());
-					motorcontrol->enableWallControl();
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
 					vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
 					while(vc->isRunning());

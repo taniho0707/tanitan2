@@ -68,6 +68,7 @@ public:
 	void setIntegralEncoder(float);
 	float getIntegralEncoder();
 
+	void resetDistanceFromGap();
 	float getDistanceFromGap();
 	bool isLeftGap();
 

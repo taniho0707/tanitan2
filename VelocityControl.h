@@ -4,6 +4,7 @@
 
 #include <cmath>
 
+#include "Speaker.h"
 #include "Motor.h"
 #include "MotorControl.h"
 #include "WallSensor.h"

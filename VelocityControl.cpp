@@ -5,8 +5,8 @@
 using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
-	DIST_GAP_FROM_R(0.04),
-	DIST_GAP_FROM_L(0.033)
+	DIST_GAP_FROM_R(0.042),
+	DIST_GAP_FROM_L(0.041)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -55,6 +55,7 @@ void VelocityControl::runTrapAccel(
 	if(!is_started){ //先に台形加速を初めていない場合のみ
 		time = Timer::getTime();
 		mc->setIntegralEncoder(0.0f);
+		mc->resetDistanceFromGap();
 		
 		reg_accel = accel;
 		reg_start_vel = start_vel;
@@ -87,17 +88,20 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	led->off(LedNumbers::RIGHT);
 	if(
 		enabled_wallgap
-		&& mc->getDistanceFromGap() < 0.001f
+		&& mc->getDistanceFromGap() < 0.001f && mc->getDistanceFromGap() > -0.001f
 		&& reg_max_vel < 0.31f
 		&& x0 > 0.01f
 		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
 			|| (reg_distance < 0.046f && reg_distance > 0.044f))
 		){
 		mc->setIntegralEncoder(reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R));
-		if(mc->isLeftGap())
+		if(mc->isLeftGap()){
 			led->on(LedNumbers::LEFT1);
-		else
+			Speaker::playSound(440, 50, false);
+		} else {
 			led->on(LedNumbers::RIGHT);
+			Speaker::playSound(880, 50, false);
+		}
 	}
 
 	if(enabled_wallgap){
