@@ -214,9 +214,6 @@ bool VelocityControl::runSlalom(
 
 	if(!is_started){
 		mc->setIntegralEncoder(0.0f);
-		// mc->resetDistanceFromGap();
-		// if(sens->isExistWall(SensorPosition::Left)) sens->waitGap(SensorPosition::Left);
-		// else if(sens->isExistWall(SensorPosition::Right)) sens->waitGap(SensorPosition::Right);
 	}
 	is_started = false;
 	return true;

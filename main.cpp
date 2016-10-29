@@ -566,13 +566,14 @@ int main(void){
 				else if(tmp.type == RunType::SLALOM90SML_LEFT)
 					compc->printf("SLALOM90SML_LEFT :%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM90_RIGHT)
-					compc->printf("SLALOM90_RIGHT:%2d\n", tmp.length);
+					compc->printf("SLALOM90_RIGHT   :%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM90_LEFT)
-					compc->printf("SLALOM90_LEFT :%2d\n", tmp.length);
+					compc->printf("SLALOM90_LEFT    :%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM180_RIGHT)
-					compc->printf("SLALOM180_LEFT :%2d\n", tmp.length);
+					compc->printf("SLALOM180_RIGHT  :%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM180_LEFT)
-					compc->printf("SLALOM180_LEFT :%2d\n", tmp.length);
+					compc->printf("SLALOM180_LEFT   :%2d\n", tmp.length);
+				else compc->printf("Unknown Type    :%2d\n", tmp.length);
 			}
 			
 			motorcontrol->stay();
@@ -584,10 +585,10 @@ int main(void){
 			while(true){
 				motion = path.getMotion(i);
 				if(i == 0){
-					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length), param_accel);
+					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length-1), param_accel);
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/), param_accel);
 						while(vc->isRunning());
 						break;
 					}

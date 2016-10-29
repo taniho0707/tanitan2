@@ -30,6 +30,8 @@ Motion Path::getMotion(int16_t num){
 
 void Path::putMotion(Motion motion){
 	/// @todo 圧縮各種に対応させる
+	if(motion.type == RunType::TRAPACCEL)
+		motion.length = 2;
 	if(pathtype == PathType::SMALL){
 		if(motion.type == RunType::TRAPACCEL){
 			Motion it = getMotion(path.size() - 1);
@@ -114,6 +116,8 @@ void Path::putMotion(Motion motion){
 					} else {
 						path.push_back(motion);
 					}
+				} else {
+					path.push_back(motion);
 				}
 			} else {
 				path.push_back(motion);
