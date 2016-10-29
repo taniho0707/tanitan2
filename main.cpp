@@ -337,7 +337,7 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 5){
-			float max_g_param = 0.7f;
+			float max_g_param = 0.5f;
 			motorcontrol->stay();
 			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
 			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
@@ -357,7 +357,7 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 6){
-			float max_g_param = 0.7f;
+			float max_g_param = 0.5f;
 			motorcontrol->stay();
 			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
 			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
