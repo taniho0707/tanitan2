@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 1;
-constexpr uint16_t GOAL_Y = 0;
+constexpr uint16_t GOAL_X = 7;
+constexpr uint16_t GOAL_Y = 8;
 
 
 int main(void){
@@ -551,11 +551,11 @@ int main(void){
 			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
 
 			float param_accel = 2.0f;
-			float param_vel = 0.5f;
+			float param_vel = 0.3f;
 
 			padachi.setGoal(GOAL_X, GOAL_Y);
 			padachi.setMap(map);
-			path = padachi.getPath(PathType::BIG);
+			path = padachi.getPath(PathType::SMALL);
 			
 			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
@@ -571,7 +571,7 @@ int main(void){
 					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/), param_accel);
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/+2), param_accel);
 						while(vc->isRunning());
 						break;
 					}
@@ -598,7 +598,7 @@ int main(void){
 			while(true);
 
 		} else {
-			float param_accel;
+			float param_accel = 3.0f;
 			float param_vel = 0.5f;
 
 			//mram
@@ -609,15 +609,14 @@ int main(void){
 				num_map = mram_ret.at(0) % 10;
 			mram->loadMap(map, num_map);
 
-			if(submode == 0){ //最短遅い
-				param_accel = 2.0f;
-			} else { //最短早い
-				param_accel = 4.0f;
-			}
-			
 			padachi.setGoal(GOAL_X, GOAL_Y);
 			padachi.setMap(map);
-			path = padachi.getPath(PathType::BIG);
+
+			if(submode == 0){ //最短遅い
+				path = padachi.getPath(PathType::SMALL);
+			} else { //最短早い
+				path = padachi.getPath(PathType::BIG);
+			}
 			
 			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 			
@@ -654,7 +653,7 @@ int main(void){
 					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/), param_accel);
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/+2), param_accel);
 						while(vc->isRunning());
 						break;
 					}
