@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 7;
-constexpr uint16_t GOAL_Y = 8;
+constexpr uint16_t GOAL_X = 11;
+constexpr uint16_t GOAL_Y = 11;
 
 
 int main(void){
