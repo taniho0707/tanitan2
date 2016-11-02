@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 11;
-constexpr uint16_t GOAL_Y = 11;
+constexpr uint16_t GOAL_X = 1;
+constexpr uint16_t GOAL_Y = 0;
 
 
 int main(void){
@@ -126,7 +126,7 @@ int main(void){
 
 	int mode = 0, submode = 0;
 	const int16_t mode_min = -2;
-	const int16_t mode_max = 6;
+	const int16_t mode_max = 11;
 	while(true){
 		static uint16_t stable_time1 = 0, stable_time2 = 0;
 		static int16_t ax, ay, az, gx, gy, gz;
@@ -164,7 +164,7 @@ int main(void){
 			Timer::wait_ms(300);
 		}
 
-		if(ay < -500 || ay > 50 || az < -17000 || az > -16000 || abs(gx) > 150 || abs(gy) > 150 || abs(gz) > 150){
+		if(ay < -500 || ay > 50 || az < -18000 || az > -15000 || abs(gx) > 150 || abs(gy) > 150 || abs(gz) > 150){
 			stable_time1 = 0;
 			led->off(LedNumbers::FRONT);
 		} else {
@@ -181,7 +181,7 @@ int main(void){
 	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight))
 		submode = 1;
 
-	if(mode > 0 && mode < 7){
+	if(mode > 0 && mode <= mode_max){
 		Speaker::playMusic(MusicNumber::KANSAIDENKIHOANKYOUKAI);
 		Timer::wait_ms(1000);
 	} else {
@@ -370,6 +370,97 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM180_RIGHT, max_g_param);
 			} else {
 				vc->runSlalom(RunType::SLALOM180_LEFT, max_g_param);
+			}
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.09f+0.045f, 3.0f);
+			motorcontrol->disableWallControl();
+			while(true);
+		} else if(mode == 7){
+			float max_g_param = 0.5f;
+			motorcontrol->stay();
+			vc->startTrapAccel(0.0f, max_g_param, 0.06364f*3, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.06364f*3, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM90OBL_RIGHT, max_g_param);
+			} else {
+				vc->runSlalom(RunType::SLALOM90OBL_LEFT, max_g_param);
+			}
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.6364f*3, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.6364f*3, 3.0f);
+			motorcontrol->disableWallControl();
+			while(true);
+		} else if(mode == 8){
+			float max_g_param = 0.5f;
+			motorcontrol->stay();
+			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM45IN_RIGHT, max_g_param);
+			} else {
+				vc->runSlalom(RunType::SLALOM45IN_LEFT, max_g_param);
+			}
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*2, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*2, 3.0f);
+			motorcontrol->disableWallControl();
+			while(true);
+		} else if(mode == 9){
+			float max_g_param = 0.5f;
+			motorcontrol->stay();
+			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM45OUT_RIGHT, max_g_param);
+			} else {
+				vc->runSlalom(RunType::SLALOM45OUT_LEFT, max_g_param);
+			}
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.09f+0.045f, 3.0f);
+			motorcontrol->disableWallControl();
+			while(true);
+		} else if(mode == 10){
+			float max_g_param = 0.5f;
+			motorcontrol->stay();
+			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM135IN_RIGHT, max_g_param);
+			} else {
+				vc->runSlalom(RunType::SLALOM135IN_LEFT, max_g_param);
+			}
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			motorcontrol->disableWallControl();
+			while(true);
+		} else if(mode == 11){
+			float max_g_param = 0.5f;
+			motorcontrol->stay();
+			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			while(vc->isRunning());
+			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			if(submode == 0){
+				vc->runSlalom(RunType::SLALOM135OUT_RIGHT, max_g_param);
+			} else {
+				vc->runSlalom(RunType::SLALOM135OUT_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
@@ -613,7 +704,7 @@ int main(void){
 			padachi.setMap(map);
 
 			if(submode == 0){ //最短遅い
-				path = padachi.getPath(PathType::SMALL);
+				path = padachi.getPath(PathType::DIAGO);
 			} else { //最短早い
 				path = padachi.getPath(PathType::BIG);
 			}
@@ -638,7 +729,29 @@ int main(void){
 					compc->printf("SLALOM180_RIGHT  :%2d\n", tmp.length);
 				else if(tmp.type == RunType::SLALOM180_LEFT)
 					compc->printf("SLALOM180_LEFT   :%2d\n", tmp.length);
-				else compc->printf("Unknown Type    :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM45IN_RIGHT)
+					compc->printf("SLALOM45IN_RIGHT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM45IN_LEFT)
+					compc->printf("SLALOM45IN_LEFT  :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM45OUT_RIGHT)
+					compc->printf("SLALOM45OUT_RIGHT:%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM45OUT_LEFT)
+					compc->printf("SLALOM45OUT_LEFT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM135IN_RIGHT)
+					compc->printf("SLALOM135IN_RIGHT:%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM135IN_LEFT)
+					compc->printf("SLALOM_LEFT135IN :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM135OUT_RIGHT)
+					compc->printf("SLALOM135OUT_RIGHT:%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM135OUT_LEFT)
+					compc->printf("SLALOM135OUT_LEFT :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90OBL_RIGHT)
+					compc->printf("SLALOM90OBL_RIGHT  :%2d\n", tmp.length);
+				else if(tmp.type == RunType::SLALOM90OBL_LEFT)
+					compc->printf("SLALOM90OBL_LEFT   :%2d\n", tmp.length);
+				else if(tmp.type == RunType::TRAPDIAGO)
+					compc->printf("TRAPDIAGO        :%2d\n", tmp.length);
+				else compc->printf("Unknown Type     :%2d\n", tmp.length);
 			}
 			
 			motorcontrol->stay();
@@ -665,6 +778,8 @@ int main(void){
 						else
 							vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
 						led->off(LedNumbers::FRONT);
+					} else if(motion.type == RunType::TRAPDIAGO){
+						vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.06364f*motion.length, param_accel);
 					} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
 						vc->runSlalom(motion.type, 0.3f);
 					} else {

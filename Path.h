@@ -10,6 +10,18 @@
 struct Motion{
 	slalomparams::RunType type;
 	uint16_t length;
+
+	bool isDiagoType(){
+		if(type == slalomparams::RunType::SLALOM45IN_RIGHT ||
+		   type == slalomparams::RunType::SLALOM45IN_LEFT ||
+		   type == slalomparams::RunType::SLALOM135IN_RIGHT ||
+		   type == slalomparams::RunType::SLALOM135IN_LEFT ||
+		   type == slalomparams::RunType::SLALOM90OBL_RIGHT ||
+		   type == slalomparams::RunType::SLALOM90OBL_LEFT ||
+		   type == slalomparams::RunType::TRAPDIAGO)
+			return true;
+		else return false;
+	}
 };
 
 enum class PathType : uint8_t {

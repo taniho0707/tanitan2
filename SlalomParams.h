@@ -23,6 +23,7 @@ namespace slalomparams{
 		SLALOM90OBL_LEFT,
 		TRAPACCEL,
 		PIVOTTURN,
+		TRAPDIAGO,
 	};
 
 	struct pack{

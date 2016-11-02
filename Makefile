@@ -26,7 +26,7 @@ ASFLAGS = -x assembler-with-cpp -c $(TARGET_ARCH) $(COMPILE_OPTS)
 LDFLAGS = -Wl,-lgcc,-lc,-lm,-lrdimon,--gc-sections,-Map=bin/main.map,-cref -T stm32_flash.ld $(INCLUDE_DIRS) -lm -lstdc++ -L $(TOOLDIR)/../arm-none-eabi/lib/thumb -L ../STM32F4xx_DSP_StdPeriph_Lib/Libraries -nostartfiles --specs=nano.specs --specs=rdimon.specs -u _printf_float $(TARGET_ARCH)
 
 .PHONY: all
-all: libstm32f4xx startup bin/main.bin
+all: libstm32f4xx startup bin/main.bin flash
 
 bin/main.bin: $(patsubst %.c,%.o,$(wildcard *.c)) $(patsubst %.cpp,%.o,$(wildcard *.cpp)) $(STARTUP_DIR)/startup_stm32f40xx.o ../STM32F4xx_DSP_StdPeriph_Lib/Libraries/libstm32f4xx.a
 	$(LD) $(LDFLAGS) $(TARGET_ARCH) $^ -o bin/main.elf

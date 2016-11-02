@@ -8,7 +8,7 @@ using namespace slalomparams;
 Map::Map(){
 	format();
 	column[0] |= 2147483648;
-	for(int i=16; i<32; ++i){
+	for(int i=0; i<16; ++i){
 		addSingleWall(15, i, MazeAngle::EAST);
 		addSingleWall(i, 15, MazeAngle::NORTH);
 	}
