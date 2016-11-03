@@ -6,6 +6,13 @@
 PathAdachi::PathAdachi(){
 	fm.resetFootmap();
 	map.format();
+	setStart(0, 1, MazeAngle::NORTH);
+}
+
+void PathAdachi::setStart(int8_t x, int8_t y, MazeAngle angle){
+	start_x = x;
+	start_y = y;
+	start_angle = angle;
 }
 
 void PathAdachi::setGoal(int8_t x, int8_t y){
@@ -126,12 +133,17 @@ slalomparams::RunType PathAdachi::getNextMotion(int8_t x, int8_t y, MazeAngle an
 }
 
 
+MazeAngle PathAdachi::getGoalAngle(){
+	return goal_angle;
+}
+
 Path PathAdachi::getPath(PathType pathtype){
 	Position pos;
 	Path p(pathtype);
 	Motion m;
 	slalomparams::RunType type;
 
+	pos.setPosition(start_x, start_y, start_angle);
 	m = (struct Motion){slalomparams::RunType::TRAPACCEL, 1};
 	p.putMotion(m);
 	renewFootmap();
@@ -145,6 +157,7 @@ Path PathAdachi::getPath(PathType pathtype){
 		p.putMotion(m);
 		pos.setNextPosition(type);
 		if(pos.getPositionX() == goal_x && pos.getPositionY() == goal_y){
+			goal_angle = pos.getAngle();
 			break;
 		}
 	}

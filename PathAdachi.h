@@ -20,6 +20,11 @@ private:
 	int8_t goal_x;
 	int8_t goal_y;
 
+	int8_t start_x, start_y;
+	MazeAngle start_angle;
+
+	MazeAngle goal_angle;
+
 	void renewFootmap();
 	slalomparams::RunType getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata);
 public:
@@ -28,8 +33,12 @@ public:
 
 	PathAdachi();
 
+	void setStart(int8_t x, int8_t y, MazeAngle angle);
+
 	void setGoal(int8_t x, int8_t y);
 	void setMap(Map&);
+
+	MazeAngle getGoalAngle();
 
 	Path getPath(PathType);
 };
