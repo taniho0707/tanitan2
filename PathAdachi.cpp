@@ -144,9 +144,13 @@ Path PathAdachi::getPath(PathType pathtype){
 		m = (struct Motion){type, 1};
 		p.putMotion(m);
 		pos.setNextPosition(type);
-		if(pos.getPositionX() == goal_x && pos.getPositionY() == goal_y) break;
+		if(pos.getPositionX() == goal_x && pos.getPositionY() == goal_y){
+			break;
+		}
 	}
-	m = (struct Motion){slalomparams::RunType::TRAPACCEL, 1};
+	// pos.setNextPosition(slalomparams::RunType::TRAPACCEL);
+	// p.putMotion((struct Motion){slalomparams::RunType::TRAPACCEL, 2});
+	m = (struct Motion){slalomparams::RunType::TRAPACCEL, 2};
 	p.putMotion(m);
 	m = (struct Motion){slalomparams::RunType::PIVOTTURN, 1};
 	p.putMotion(m);

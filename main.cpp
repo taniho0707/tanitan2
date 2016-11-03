@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 1;
-constexpr uint16_t GOAL_Y = 0;
+constexpr uint16_t GOAL_X = 2;
+constexpr uint16_t GOAL_Y = 1;
 
 
 int main(void){
@@ -766,7 +766,7 @@ int main(void){
 					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/+2), param_accel);
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length+1), param_accel);
 						while(vc->isRunning());
 						break;
 					}
@@ -791,8 +791,18 @@ int main(void){
 				vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
 			}
 			
-			led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
-			mode = 4;
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 180, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(1000);
+
+			mode = 101;
 			while(!Switch::isPushing(SwitchNumbers::RIGHT));
 		}
 	}
