@@ -17,6 +17,8 @@ WallSensor::WallSensor() :
 	VAL_THR_CONTROL_RIGHT(50),
 	VAL_THR_GAP_LEFT(10),
 	VAL_THR_GAP_RIGHT(10),
+	VAL_THR_GAP_DIAGO_LEFT(50),
+	VAL_THR_GAP_DIAGO_RIGHT(50),
 	THR_WALL_DISAPPEAR(5)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -363,6 +365,43 @@ bool WallSensor::hadGap(SensorPosition sp){
 	}
 }
 
+
+void WallSensor::waitGapDiago(SensorPosition sp){
+	is_waiting_gap_diago[(sp==SensorPosition::Left ? 0 : 1)] = true;
+}
+
+void WallSensor::checkGapDiago(){
+	if(!had_gap_diago[0]){
+		if(is_waiting_gap_diago[0]
+		   && current_value.at(static_cast<uint8_t>(SensorPosition::Left)) < VAL_THR_GAP_DIAGO_LEFT){
+			is_waiting_gap_diago[0] = false;
+			had_gap_diago[0] = true;
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_DIAGO_LEFT+5){
+			is_waiting_gap_diago[0] = true;
+		}
+	}
+	if(!had_gap_diago[1]){
+		if(is_waiting_gap_diago[1]
+		   && current_value.at(static_cast<uint8_t>(SensorPosition::Right)) < VAL_THR_GAP_DIAGO_RIGHT){
+			is_waiting_gap_diago[1] = false;
+			had_gap_diago[1] = true;
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_DIAGO_RIGHT+5){
+			is_waiting_gap_diago[1] = true;
+		}
+	}
+}
+
+bool WallSensor::hadGapDiago(SensorPosition sp){
+	uint8_t it = (sp==SensorPosition::Left ? 0 : 1);
+	if(had_gap_diago[it]){
+		had_gap_diago[it] = false;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
 int16_t WallSensor::getCorrection(uint16_t max){
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
@@ -437,6 +476,7 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 			case 3:
 				s->setAvgValue();
 				s->checkGap();
+				s->checkGapDiago();
 				break;
 			}
 			if(++c > 3) c = 0;

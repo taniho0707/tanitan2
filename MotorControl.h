@@ -52,6 +52,8 @@ private:
 
 	float dist_from_gap;
 	bool is_left_gap;
+	float dist_from_gap_diago;
+	bool is_left_gap_diago;
 
 	float enabled_wall_control;
 
@@ -71,6 +73,9 @@ public:
 	void resetDistanceFromGap();
 	float getDistanceFromGap();
 	bool isLeftGap();
+	void resetDistanceFromGapDiago();
+	float getDistanceFromGapDiago();
+	bool isLeftGapDiago();
 
 	void setVelocity(float);
 	void setRadVelocity(float);

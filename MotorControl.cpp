@@ -11,7 +11,7 @@ MotorControl::MotorControl() :
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
 	GAIN_RAD_D(0.0f),
-	GAIN_WALL_P(1.0f),
+	GAIN_WALL_P(5.0f),
 	GAIN_WALL_I(0.0f),
 	GAIN_WALL_D(0.0f),
 	TREAD(380.0f)
@@ -24,6 +24,7 @@ MotorControl::MotorControl() :
 	is_failsafe = false;
 	integral_rad_gyro = 0.0;
 	is_left_gap = false;
+	is_left_gap_diago = false;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -71,6 +72,20 @@ float MotorControl::getDistanceFromGap(){
 bool MotorControl::isLeftGap(){
 	return is_left_gap;
 }
+
+
+void MotorControl::resetDistanceFromGapDiago(){
+	dist_from_gap_diago = -10.0f;
+}
+
+float MotorControl::getDistanceFromGapDiago(){
+	return dist_from_gap_diago;
+}
+
+bool MotorControl::isLeftGapDiago(){
+	return is_left_gap_diago;
+}
+
 
 void MotorControl::controlX(){
 	
@@ -141,6 +156,15 @@ void MotorControl::controlVel(){
 		dist_from_gap = 0.0f;
 		is_left_gap = false;
 	}
+	dist_from_gap_diago += 0.001f * cur_lin_vel;
+	if(wall->hadGapDiago(SensorPosition::Left)){
+		dist_from_gap_diago = 0.0f;
+		is_left_gap_diago = true;
+	}
+	if(wall->hadGapDiago(SensorPosition::Right)){
+		dist_from_gap_diago = 0.0f;
+		is_left_gap_diago = false;
+	}
 
 	// モーター出力
 	tar_motor_r_power = static_cast<int16_t>(tar_motor_lin_power - tar_motor_rad_power);
@@ -150,17 +174,15 @@ void MotorControl::controlVel(){
 	motor->setDuty(MotorSide::RIGHT, tar_motor_r_power);
 
 	log->writeFloat(tar_lin_vel);
-	log->writeFloat(encoder->getVelocity(EncoderSide::LEFT));
-	log->writeFloat(encoder->getVelocity(EncoderSide::RIGHT));
+	log->writeFloat((encoder->getVelocity(EncoderSide::LEFT)+encoder->getVelocity(EncoderSide::RIGHT))/2);
 	log->writeFloat(cur_lin_x);
 	log->writeFloat(gyro->getGyroYaw());
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	// log->writeFloat(enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000));
-	// log->writeFloat(integral_wall);
 	log->writeFloat(getIntegralEncoder());
 	log->writeFloat(getDistanceFromGap());
+	log->writeFloat(getDistanceFromGapDiago());
 
 	lastwall = wall->getCorrection(10000);
 

@@ -44,6 +44,17 @@ void VelocityControl::startTrapAccel(
 	is_started = true;
 }
 
+void VelocityControl::runTrapDiago(
+	float start_vel,
+	float max_vel,
+	float end_vel,
+	float distance,
+	float accel
+	){
+	runTrapAccel(start_vel, max_vel, end_vel, distance, accel);
+	reg_type = RunType::TRAPDIAGO;
+}
+
 void VelocityControl::runTrapAccel(
 	float start_vel,
 	float max_vel,
@@ -56,6 +67,7 @@ void VelocityControl::runTrapAccel(
 		time = Timer::getTime();
 		mc->setIntegralEncoder(0.0f);
 		mc->resetDistanceFromGap();
+		mc->resetDistanceFromGapDiago();
 		
 		reg_accel = accel;
 		reg_start_vel = start_vel;
@@ -78,6 +90,11 @@ void VelocityControl::runTrapAccel(
 		x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
 		x2 = abs(reg_distance) - x1 - x3;
 	}
+}
+
+void VelocityControl::calcTrapDiago(int32_t t){
+	calcTrapAccel(t);
+	mc->disableWallControl();
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
@@ -106,7 +123,7 @@ void VelocityControl::calcTrapAccel(int32_t t){
 
 	if(enabled_wallgap){
 		auto kabekire = reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R);
-		if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.005)){
+		if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.015)){
 			mc->disableWallControl();
 		} else {
 			mc->enableWallControl();
@@ -235,6 +252,17 @@ void VelocityControl::calcSlalom(int32_t t){
 				reg_slalom_pos = 2;
 				time = Timer::getTime();
 			}
+		} else if(static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM45OUT_LEFT)
+				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM45OUT_RIGHT)
+				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM135OUT_LEFT)
+				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM135OUT_RIGHT)
+				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM90OBL_LEFT)
+				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM90OBL_RIGHT)
+			){
+			if(mc->getDistanceFromGapDiago() > reg_d_before && mc->getDistanceFromGapDiago() < reg_d_before + 0.02f){
+				reg_slalom_pos = 2;
+				time = Timer::getTime();
+			}
 		} else {
 			if(mc->getDistanceFromGap() > reg_d_before){
 				reg_slalom_pos = 2;
@@ -247,8 +275,6 @@ void VelocityControl::calcSlalom(int32_t t){
 		if(x0 >= reg_d_after){
 			reg_slalom_pos = 0;
 			end_flag = true;
-
-			mc->resetDistanceFromGap();
 		}
 	} else if(t0 < t1){
 		// 加速
@@ -264,6 +290,9 @@ void VelocityControl::calcSlalom(int32_t t){
 	} else {
 		mc->setIntegralEncoder(0.0f);
 		reg_slalom_pos = 5;
+		
+		mc->resetDistanceFromGap();
+		mc->resetDistanceFromGapDiago();
 	}
 	target_linvel = reg_min_vel;
 	target_radvel = r;
@@ -281,6 +310,7 @@ void VelocityControl::setRadVel(){
 void VelocityControl::interrupt(){
 	if(end_flag) return;
 	if(reg_type == RunType::TRAPACCEL) calcTrapAccel(Timer::getTime());
+	else if(reg_type == RunType::TRAPDIAGO) calcTrapDiago(Timer::getTime());
 	else if(reg_type == RunType::PIVOTTURN) calcPivotTurn(Timer::getTime());
 	else calcSlalom(Timer::getTime());
 	

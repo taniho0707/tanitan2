@@ -51,6 +51,7 @@ private:
 	float target_radvel;
 
 	void calcTrapAccel(int32_t t);
+	void calcTrapDiago(int32_t t);
 	void calcPivotTurn(int32_t t);
 	void calcSlalom(int32_t t);
 
@@ -79,6 +80,13 @@ public:
 		);
 
 	void runTrapAccel(
+		float start_vel,
+		float max_vel,
+		float end_vel,
+		float distance,
+		float accel
+		);
+	void runTrapDiago(
 		float start_vel,
 		float max_vel,
 		float end_vel,

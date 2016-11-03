@@ -453,8 +453,8 @@ int main(void){
 		} else if(mode == 11){
 			float max_g_param = 0.5f;
 			motorcontrol->stay();
-			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			vc->startTrapAccel(0.0f, max_g_param, 0.06364f*3, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, 0.0f, 0.06364f*3, 3.0f);
 			while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
@@ -779,7 +779,7 @@ int main(void){
 							vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
 						led->off(LedNumbers::FRONT);
 					} else if(motion.type == RunType::TRAPDIAGO){
-						vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.06364f*motion.length, param_accel);
+						vc->runTrapDiago(param_vel, 3.0f, param_vel, 0.06364f*motion.length, param_accel);
 					} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
 						vc->runSlalom(motion.type, 0.3f);
 					} else {

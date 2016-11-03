@@ -33,6 +33,8 @@ private:
 	const int16_t VAL_THR_CONTROL_RIGHT;
 	const uint16_t VAL_THR_GAP_LEFT;
 	const uint16_t VAL_THR_GAP_RIGHT;
+	const uint16_t VAL_THR_GAP_DIAGO_LEFT;
+	const uint16_t VAL_THR_GAP_DIAGO_RIGHT;
 
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
@@ -45,6 +47,8 @@ private:
 	// 壁切れ用
 	bool had_gap[2];
 	bool is_waiting_gap[2];
+	bool had_gap_diago[2];
+	bool is_waiting_gap_diago[2];
 
 	WallSensor();
 
@@ -81,6 +85,10 @@ public:
 	void waitGap(SensorPosition);
 	bool hadGap(SensorPosition);
 	void checkGap();
+
+	void waitGapDiago(SensorPosition);
+	bool hadGapDiago(SensorPosition);
+	void checkGapDiago();
 
 	int16_t getCorrection(uint16_t max);
 
