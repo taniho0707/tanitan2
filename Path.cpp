@@ -131,9 +131,7 @@ void Path::putMotion(Motion motion){
 		Motion it3 = getMotion(path.size() - 3);
 		Motion it4 = getMotion(path.size() - 4);
 		if(motion.type == RunType::TRAPACCEL){
-			Motion straight;
-			straight.type = RunType::TRAPACCEL;
-			straight.length = 2;
+			Motion straight = (struct Motion){RunType::TRAPACCEL, 2};
 			// F F -> F
 			if(it1.type == RunType::TRAPACCEL){
 				path.at(path.size() - 1).length += 2;
@@ -145,27 +143,19 @@ void Path::putMotion(Motion motion){
 						if(it2.length == 1){
 							path.pop_back();
 						} else {
-							// it2.length = it2.length - 1;
 							path.at(path.size() - 1).length -= 1;
 						}
-						straight.type = RunType::SLALOM90_RIGHT;
-						straight.length = 1;
-						path.push_back(straight);
+						path.push_back((struct Motion){RunType::SLALOM90_RIGHT, 1});
 					} else {
 						path.pop_back();
 						if(it2.length == 1){
 							path.pop_back();
 						} else {
-							// it2.length = it2.length - 1;
 							path.at(path.size() - 1).length -= 1;
 						}
-						straight.type = RunType::SLALOM90_LEFT;
-						straight.length = 1;
-						path.push_back(straight);
+						path.push_back((struct Motion){RunType::SLALOM90_LEFT, 1});
 					}
-					straight.type = RunType::TRAPACCEL;
-					straight.length = 1;
-					path.push_back(straight);
+					path.push_back((struct Motion){RunType::TRAPACCEL, 1});
 				} else if(it2.type == RunType::SLALOM90SML_RIGHT || it2.type == RunType::SLALOM90SML_LEFT){
 					if(it3.type == RunType::TRAPACCEL){
 						// F RL RL F -> F 180 F
@@ -177,12 +167,8 @@ void Path::putMotion(Motion motion){
 							}
 							path.pop_back();
 							path.pop_back();
-							straight.type = RunType::SLALOM180_RIGHT;
-							straight.length = 1;
-							path.push_back(straight);
-							straight.type = RunType::TRAPACCEL;
-							straight.length = 1;
-							path.push_back(straight);
+							path.push_back((struct Motion){RunType::SLALOM180_RIGHT, 1});
+							path.push_back((struct Motion){RunType::TRAPACCEL, 1});
 						} else if(it1.type == RunType::SLALOM90SML_LEFT && it2.type == RunType::SLALOM90SML_LEFT){
 							if(it3.length == 1){
 								path.pop_back();
@@ -191,12 +177,8 @@ void Path::putMotion(Motion motion){
 							}
 							path.pop_back();
 							path.pop_back();
-							straight.type = RunType::SLALOM180_LEFT;
-							straight.length = 1;
-							path.push_back(straight);
-							straight.type = RunType::TRAPACCEL;
-							straight.length = 1;
-							path.push_back(straight);
+							path.push_back((struct Motion){RunType::SLALOM180_LEFT, 1});
+							path.push_back((struct Motion){RunType::TRAPACCEL, 1});
 						} else {
 							// F RL LR F -> F 45in 45out F
 							path.push_back(motion);

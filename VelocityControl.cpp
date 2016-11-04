@@ -123,7 +123,8 @@ void VelocityControl::calcTrapAccel(int32_t t){
 
 	if(enabled_wallgap){
 		auto kabekire = reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R);
-		if(reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.015)){
+		if((reg_max_vel < 0.31f && x0 > (kabekire - 0.04) && x0 < (kabekire + 0.015))
+		   || (fmod(x0, 0.09f) > (kabekire - 0.04f) && fmod(x0, 0.09f) < (kabekire + 0.015f) && reg_type == RunType::TRAPACCEL)){
 			mc->disableWallControl();
 		} else {
 			mc->enableWallControl();
@@ -133,19 +134,19 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
 		v += reg_accel/1000.0f;
 		// v = reg_start_vel + reg_accel*t0/1000.0f;
-	} else if(abs(x0) >= abs(x1 + x2 + x3)){
-		v = reg_end_vel;
-		end_flag = true;
-	} else if(abs(x0) >= abs(x1+x2)){
+	} else if(abs(x0) < abs(x1 + x2)){
+		v = reg_max_vel;
+	} else if(abs(x0) < abs(x1 + x2 + x3)){
 		if(reg_end_vel == 0.0f){
-			if(v > 0.01f) v -= reg_accel/1000.0f;
-			else v = 0.01f;
+			if(v > 0.1f) v -= reg_accel/1000.0f;
+			else v = 0.1f;
 		} else {
 			if(v > reg_end_vel) v -= reg_accel/1000.0f;
 			else v = reg_end_vel;
 		}
 	} else {
-		v = reg_max_vel;
+		v = reg_end_vel;
+		end_flag = true;
 	}
 	target_linvel = (reg_distance>0?1:-1) * v;
 }

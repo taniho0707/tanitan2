@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 2;
-constexpr uint16_t GOAL_Y = 1;
+constexpr uint16_t GOAL_X = 0;
+constexpr uint16_t GOAL_Y = 4;
 
 
 int main(void){
@@ -764,7 +764,7 @@ int main(void){
 			while(true){
 				motion = path.getMotion(i);
 				if(i == 0){
-					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
+					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1) +0.02f, param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
 						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length+1), param_accel);
