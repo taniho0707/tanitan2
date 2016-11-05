@@ -5,8 +5,8 @@
 
 MotorCollection::MotorCollection() :
 	TIMEOUT(10000),
-	GAIN_LIN(0.0003f),
-	GAIN_RAD(1.0f)
+	GAIN_LIN(0.0002f),
+	GAIN_RAD(0.6f)
 {
 	
 }
@@ -17,6 +17,16 @@ bool MotorCollection::collectionByFrontDuringStop(){
 	int32_t dif_right = static_cast<int32_t>(wall->getDiffValue(SensorPosition::FRight));
 	float dif_lin = (dif_right + dif_left) / 2;
 	float dif_rad = dif_right - dif_left;
+	while(Timer::getTime() < start_time + TIMEOUT){
+		dif_left = wall->getDiffValue(SensorPosition::FLeft);
+		dif_right = wall->getDiffValue(SensorPosition::FRight);
+		dif_lin = (dif_right + dif_left) / 2;
+		dif_rad = dif_right - dif_left;
+		mc->setVelocity(-1.0f * GAIN_LIN * dif_lin);
+		mc->setRadVelocity(0.0f);
+		if(abs(GAIN_LIN * dif_lin) < 0.005f) break;
+		Timer::wait_ms(1);
+	}
 	while(Timer::getTime() < start_time + TIMEOUT){
 		dif_left = wall->getDiffValue(SensorPosition::FLeft);
 		dif_right = wall->getDiffValue(SensorPosition::FRight);
