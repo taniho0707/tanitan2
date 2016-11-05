@@ -86,7 +86,7 @@ array< map<float,pack_t>* , 16> slalomparams::getParams(){
 	
 	static map<float, pack_t> SLALOM90OBL_RIGHT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
-		{ 0.5, {0.010, 0.000, 16000,94.4,     30,    0.5,     0.5,     0.5,     0.0}},
+		{ 0.5, {0.015, 0.000, 16000,94.4,     30,    0.5,     0.5,     0.5,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90OBL_LEFT = {
