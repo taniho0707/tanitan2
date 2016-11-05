@@ -35,6 +35,7 @@ private:
 	const float GAIN_RAD_I;
 	const float GAIN_RAD_D;
 	const float GAIN_WALL_P;
+	const float GAIN_WALL_SHRT_P;
 	const float GAIN_WALL_I;
 	const float GAIN_WALL_D;
 
@@ -56,6 +57,7 @@ private:
 	bool is_left_gap_diago;
 
 	float enabled_wall_control;
+	bool is_shrt_wall_control;
 
 	bool is_failsafe;
 
@@ -82,6 +84,9 @@ public:
 
 	void enableWallControl();
 	void disableWallControl();
+
+	void setExprWallControl();
+	void setShrtWallControl();
 
 	void stay();
 

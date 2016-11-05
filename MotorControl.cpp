@@ -11,7 +11,8 @@ MotorControl::MotorControl() :
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
 	GAIN_RAD_D(0.0f),
-	GAIN_WALL_P(1.0f),
+	GAIN_WALL_P(5.0f),
+	GAIN_WALL_SHRT_P(1.0f),
 	GAIN_WALL_I(0.0f),
 	GAIN_WALL_D(0.0f),
 	TREAD(380.0f)
@@ -25,6 +26,7 @@ MotorControl::MotorControl() :
 	integral_rad_gyro = 0.0;
 	is_left_gap = false;
 	is_left_gap_diago = false;
+	is_shrt_wall_control = false;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -99,6 +101,13 @@ void MotorControl::disableWallControl(){
 	enabled_wall_control = 0;
 }
 
+void MotorControl::setExprWallControl(){
+	is_shrt_wall_control = false;
+}
+void MotorControl::setShrtWallControl(){
+	is_shrt_wall_control = true;
+}
+
 void MotorControl::controlVel(){
 	static float tar_motor_lin_power = 0;
 	static float tar_motor_rad_power = 0;
@@ -133,7 +142,7 @@ void MotorControl::controlVel(){
 	integral_wall += wall->getCorrection(10000) * enabled_wall_control;
 
 	// rotation成分の計算
-	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000)) - gyro->getGyroYaw());
+	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * (is_shrt_wall_control ? GAIN_WALL_SHRT_P : GAIN_WALL_P) * wall->getCorrection(10000)) - gyro->getGyroYaw());
 	// tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	// integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());

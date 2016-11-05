@@ -468,6 +468,7 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 100){
+			motorcontrol->setExprWallControl();
 			if(submode == 0){ //探索新規(壁なし)
 				mram_ret.at(0) = 0;
 				mram->writeData(mram_ret, 0x0001, 1);
@@ -495,6 +496,8 @@ int main(void){
 			map.setReached(0, 0);
 			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 
+			uint8_t tmp_slalom_count = 0;
+
 			while(true){
 				led->off(LedNumbers::FRONT);
 				walldata = wall->getWall();
@@ -509,6 +512,7 @@ int main(void){
 					vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::PIVOTTURN){
+					tmp_slalom_count = 0;
 					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.035f, 2.0f);
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
@@ -565,11 +569,57 @@ int main(void){
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
-					vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
-					while(vc->isRunning());
+					if(++ tmp_slalom_count > 5 && walldata.isExistWall(MouseAngle::FRONT)){
+						vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+						while(vc->isRunning());
+						
+						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+						motorcontrol->disableWallControl();
+						collection->collectionByFrontDuringStop();// front correction 1.5s
+						motorcontrol->stay();
+						Timer::wait_ms(200);
+						led->flickStop(LedNumbers::FRONT);
+						led->on(LedNumbers::FRONT);
+						vc->runPivotTurn(360, 90, 1000);
+						while(vc->isRunning());
+						Timer::wait_ms(200);
+						vc->disableWallgap();
+						motorcontrol->enableWallControl();
+						vc->enableWallgap();
+
+						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+						while(vc->isRunning());
+						tmp_slalom_count = 0;
+					} else {
+						vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
+						while(vc->isRunning());
+					}
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_LEFT){
-					vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
-					while(vc->isRunning());
+					if(++ tmp_slalom_count > 5 && walldata.isExistWall(MouseAngle::FRONT)){
+						vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+						while(vc->isRunning());
+						
+						led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+						motorcontrol->disableWallControl();
+						collection->collectionByFrontDuringStop();// front correction 1.5s
+						motorcontrol->stay();
+						Timer::wait_ms(200);
+						led->flickStop(LedNumbers::FRONT);
+						led->on(LedNumbers::FRONT);
+						vc->runPivotTurn(360, -90, 1000);
+						while(vc->isRunning());
+						Timer::wait_ms(200);
+						vc->disableWallgap();
+						motorcontrol->enableWallControl();
+						vc->enableWallgap();
+
+						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+						while(vc->isRunning());
+						tmp_slalom_count = 0;
+					} else {
+						vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
+						while(vc->isRunning());
+					}
 				} else {
 					vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 					while(vc->isRunning());
@@ -644,6 +694,7 @@ int main(void){
 			float param_accel = 2.0f;
 			float param_vel = 0.3f;
 
+			motorcontrol->setShrtWallControl();
 			padachi.setGoal(GOAL_X, GOAL_Y);
 			padachi.setMap(map);
 			path = padachi.getPath(PathType::SMALL);
@@ -711,6 +762,7 @@ int main(void){
 			}
 			
 			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+			motorcontrol->setShrtWallControl();
 			
 			for(auto i=0; i<100; ++i){
 				auto tmp = path.getMotion(i);
