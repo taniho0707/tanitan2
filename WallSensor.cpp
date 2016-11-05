@@ -5,14 +5,14 @@ using namespace std;
 
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
-	VAL_REF_FLEFT(140),
-	VAL_REF_LEFT(72),
+	VAL_REF_FLEFT(175),
+	VAL_REF_LEFT(73),
 	VAL_REF_RIGHT(73),
-	VAL_REF_FRIGHT(256),
-	VAL_THR_FLEFT(4),
-	VAL_THR_LEFT(35),
-	VAL_THR_RIGHT(35),
-	VAL_THR_FRIGHT(10),
+	VAL_REF_FRIGHT(290),
+	VAL_THR_FLEFT(8),
+	VAL_THR_LEFT(30),
+	VAL_THR_RIGHT(30),
+	VAL_THR_FRIGHT(15),
 	VAL_THR_CONTROL_LEFT(50),
 	VAL_THR_CONTROL_RIGHT(50),
 	VAL_THR_GAP_LEFT(10),
@@ -326,7 +326,7 @@ Walldata WallSensor::getWall(){
 	Walldata w;
 	if(isExistWall(SensorPosition::Left)) w.addWall(MouseAngle::LEFT);
 	if(isExistWall(SensorPosition::Right)) w.addWall(MouseAngle::RIGHT);
-	if(isExistWall(SensorPosition::FLeft)) w.addWall(MouseAngle::FRONT);
+	if(isExistWall(SensorPosition::FLeft) || isExistWall(SensorPosition::FRight)) w.addWall(MouseAngle::FRONT);
 	return w;
 }
 

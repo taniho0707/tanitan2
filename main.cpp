@@ -587,7 +587,14 @@ int main(void){
 						motorcontrol->enableWallControl();
 						vc->enableWallgap();
 
-						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+						vc->disableWallgap();
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						motorcontrol->disableWallControl();
+						while(vc->isRunning());
+						Timer::wait_ms(300);
+
+						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
+						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						tmp_slalom_count = 0;
 					} else {
@@ -613,7 +620,13 @@ int main(void){
 						motorcontrol->enableWallControl();
 						vc->enableWallgap();
 
-						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+						vc->disableWallgap();
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						motorcontrol->disableWallControl();
+						while(vc->isRunning());
+						Timer::wait_ms(300);
+						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
+						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						tmp_slalom_count = 0;
 					} else {
