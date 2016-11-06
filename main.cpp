@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 11;
-constexpr uint16_t GOAL_Y = 11;
+constexpr uint16_t GOAL_X = 2;
+constexpr uint16_t GOAL_Y = 3;
 
 
 int main(void){
@@ -727,7 +727,7 @@ int main(void){
 					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
 				} else {
 					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
-						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/+2), param_accel);
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/+1), param_accel);
 						while(vc->isRunning());
 						break;
 					}
@@ -750,9 +750,222 @@ int main(void){
 				vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
 			}
 			
-			led->flickSync(LedNumbers::FRONT, 5.0f, 1000);
-			while(true);
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 180, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(1000);
 
+			// かえり！！
+			pos.setPosition(GOAL_X, GOAL_Y, static_cast<MazeAngle>((static_cast<uint8_t>(padachi.getGoalAngle())+2)%4));
+			padachi.setGoal(0, 0);
+			padachi.setStart(pos.getPositionX(), pos.getPositionY(), pos.getAngle());
+			path = padachi.getPath(PathType::SMALL);
+			led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+			motorcontrol->stay();
+			
+			i=0;
+			vc->disableWallgap();
+			vc->startTrapAccel(0.0f, param_vel, 0.09f, param_accel);
+
+			while(true){
+				motion = path.getMotion(i);
+				if(i == 0){
+					vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
+				} else {
+					if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+						vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length/*-1*/-1), param_accel);
+						while(vc->isRunning());
+						break;
+					}
+					
+					if(motion.type == RunType::TRAPACCEL){
+						led->on(LedNumbers::FRONT);
+						if(path.getMotion(i+1).type == RunType::SLALOM90SML_RIGHT || path.getMotion(i+1).type == RunType::SLALOM90SML_LEFT)
+							vc->runTrapAccel(param_vel, 3.0f, 0.3f, 0.045f*motion.length, param_accel);
+						else
+							vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
+						led->off(LedNumbers::FRONT);
+					} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
+						vc->runSlalom(motion.type, 0.3f);
+					} else {
+						vc->runSlalom(motion.type, param_vel);
+					}
+				}
+				while(vc->isRunning());
+				++i;
+				vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
+			}
+
+			// 最短1回終了後の待機
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 90, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(200);
+			led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+			motorcontrol->disableWallControl();
+			collection->collectionByFrontDuringStop();// front correction 1.5s
+			motorcontrol->stay();
+			Timer::wait_ms(200);
+			led->flickStop(LedNumbers::FRONT);
+			led->on(LedNumbers::FRONT);
+			vc->runPivotTurn(360, 90, 1000);
+			while(vc->isRunning());
+			Timer::wait_ms(200);
+			vc->disableWallgap();
+			vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			Timer::wait_ms(300);
+
+			led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
+
+			while(true){
+				// いきし！！！！！
+				padachi.setGoal(GOAL_X, GOAL_Y);
+				padachi.setStart(0, 1, MazeAngle::NORTH);
+				padachi.setMap(map);
+
+				path = padachi.getPath(PathType::DIAGO);
+			
+				led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+				motorcontrol->setShrtWallControl();
+			
+				motorcontrol->stay();
+			
+				struct Motion motion;
+				int i=0;
+				vc->disableWallgap();
+				vc->startTrapAccel(0.0f, param_vel, 0.09f, param_accel);
+				while(true){
+					motion = path.getMotion(i);
+					if(i == 0){
+						vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1) +0.02f, param_accel);
+					} else {
+						if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+							vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length+1), param_accel);
+							while(vc->isRunning());
+							break;
+						}
+					
+						if(motion.type == RunType::TRAPACCEL){
+							led->on(LedNumbers::FRONT);
+							if(path.getMotion(i+1).type == RunType::SLALOM90SML_RIGHT || path.getMotion(i+1).type == RunType::SLALOM90SML_LEFT)
+								vc->runTrapAccel(param_vel, 3.0f, 0.3f, 0.045f*motion.length, param_accel);
+							else
+								vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
+							led->off(LedNumbers::FRONT);
+						} else if(motion.type == RunType::TRAPDIAGO){
+							vc->runTrapDiago(param_vel, 3.0f, param_vel, 0.06364f*motion.length, param_accel);
+						} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
+							vc->runSlalom(motion.type, 0.3f);
+						} else {
+							vc->runSlalom(motion.type, param_vel);
+						}
+					}
+					while(vc->isRunning());
+					++i;
+					vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
+				}
+
+				led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+				motorcontrol->disableWallControl();
+				collection->collectionByFrontDuringStop();// front correction 1.5s
+				motorcontrol->stay();
+				Timer::wait_ms(200);
+				led->flickStop(LedNumbers::FRONT);
+				led->on(LedNumbers::FRONT);
+				vc->runPivotTurn(360, 180, 1000);
+				while(vc->isRunning());
+				vc->disableWallgap();
+				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				Timer::wait_ms(1000);
+
+				mode = 101;
+
+				// かえり！！！！！
+				pos.setPosition(GOAL_X, GOAL_Y, static_cast<MazeAngle>((static_cast<uint8_t>(padachi.getGoalAngle())+2)%4));
+				padachi.setGoal(0, 0);
+				padachi.setStart(pos.getPositionX(), pos.getPositionY(), pos.getAngle());
+				path = padachi.getPath(PathType::DIAGO);
+				led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
+				motorcontrol->stay();
+			
+				i=0;
+				vc->disableWallgap();
+				vc->startTrapAccel(0.0f, param_vel, 0.09f, param_accel);
+				while(true){
+					motion = path.getMotion(i);
+					if(i == 0){
+						vc->runTrapAccel(0.0f, 3.0f, param_vel, 0.045f*(motion.length-1), param_accel);
+					} else {
+						if(path.getMotion(i+1).type == RunType::PIVOTTURN){
+							vc->runTrapAccel(param_vel, 3.0f, 0.0f, 0.045f*(motion.length-1), param_accel);
+							while(vc->isRunning());
+							break;
+						}
+					
+						if(motion.type == RunType::TRAPACCEL){
+							led->on(LedNumbers::FRONT);
+							if(path.getMotion(i+1).type == RunType::SLALOM90SML_RIGHT || path.getMotion(i+1).type == RunType::SLALOM90SML_LEFT)
+								vc->runTrapAccel(param_vel, 3.0f, 0.3f, 0.045f*motion.length, param_accel);
+							else
+								vc->runTrapAccel(param_vel, 3.0f, param_vel, 0.045f*motion.length, param_accel);
+							led->off(LedNumbers::FRONT);
+						} else if(motion.type == RunType::TRAPDIAGO){
+							vc->runTrapDiago(param_vel, 3.0f, param_vel, 0.06364f*motion.length, param_accel);
+						} else if(motion.type == RunType::SLALOM90SML_RIGHT || motion.type == RunType::SLALOM90SML_LEFT){
+							vc->runSlalom(motion.type, 0.3f);
+						} else {
+							vc->runSlalom(motion.type, param_vel);
+						}
+					}
+					while(vc->isRunning());
+					++i;
+					vc->startTrapAccel(param_vel, param_vel, 0.09f, param_accel);
+				}
+
+				led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+				motorcontrol->disableWallControl();
+				collection->collectionByFrontDuringStop();// front correction 1.5s
+				motorcontrol->stay();
+				Timer::wait_ms(200);
+				led->flickStop(LedNumbers::FRONT);
+				led->on(LedNumbers::FRONT);
+				vc->runPivotTurn(360, 90, 1000);
+				while(vc->isRunning());
+				Timer::wait_ms(200);
+				led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
+				motorcontrol->disableWallControl();
+				collection->collectionByFrontDuringStop();// front correction 1.5s
+				motorcontrol->stay();
+				Timer::wait_ms(200);
+				led->flickStop(LedNumbers::FRONT);
+				led->on(LedNumbers::FRONT);
+				vc->runPivotTurn(360, 90, 1000);
+				while(vc->isRunning());
+				Timer::wait_ms(200);
+				vc->disableWallgap();
+				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				Timer::wait_ms(300);
+
+				led->flickSync(LedNumbers::FRONT, 5.0f, 2000);
+			}
 		} else {
 			float param_accel = 3.0f;
 			float param_vel = 0.5f;
