@@ -53,6 +53,8 @@ void VelocityControl::runTrapDiago(
 	){
 	runTrapAccel(start_vel, max_vel, end_vel, distance, accel);
 	reg_type = RunType::TRAPDIAGO;
+	mc->resetDistanceFromGap();
+	mc->resetDistanceFromGapDiago();
 }
 
 void VelocityControl::runTrapAccel(
@@ -66,8 +68,8 @@ void VelocityControl::runTrapAccel(
 	if(!is_started){ //先に台形加速を初めていない場合のみ
 		time = Timer::getTime();
 		mc->setIntegralEncoder(0.0f);
-		mc->resetDistanceFromGap();
-		mc->resetDistanceFromGapDiago();
+		// mc->resetDistanceFromGap();
+		// mc->resetDistanceFromGapDiago();
 		
 		reg_accel = accel;
 		reg_start_vel = start_vel;
@@ -147,6 +149,8 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	} else {
 		v = reg_end_vel;
 		end_flag = true;
+		if(reg_type == RunType::TRAPDIAGO)
+			mc->resetDistanceFromGapDiago();
 	}
 	target_linvel = (reg_distance>0?1:-1) * v;
 }
@@ -248,7 +252,7 @@ void VelocityControl::calcSlalom(int32_t t){
 		r = 0.0f;
 		if(reg_type == RunType::SLALOM90SML_RIGHT || reg_type == RunType::SLALOM90SML_LEFT){
 			if(x0 >= reg_d_before
-			   || (enabled_wallgap ? x0 >= ((mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R) - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) - mc->getDistanceFromGap() + reg_d_before) : false)
+			   || (enabled_wallgap ? mc->getDistanceFromGap() >= ((mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R) - ((reg_type==RunType::SLALOM90SML_RIGHT || reg_type==RunType::SLALOM90SML_LEFT) ? 0.0f : 0.45f) + reg_d_before) : false)
 				){
 				reg_slalom_pos = 2;
 				time = Timer::getTime();

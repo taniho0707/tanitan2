@@ -4,7 +4,7 @@
 #include "main.h"
 
 constexpr uint16_t GOAL_X = 2;
-constexpr uint16_t GOAL_Y = 3;
+constexpr uint16_t GOAL_Y = 1;
 
 
 int main(void){
@@ -537,6 +537,7 @@ int main(void){
 						led->on(LedNumbers::FRONT);
 						vc->runPivotTurn(360, 90, 1000);
 						while(vc->isRunning());
+						motorcontrol->resetRadIntegral();
 						Timer::wait_ms(200);
 						vc->disableWallgap();
 						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
