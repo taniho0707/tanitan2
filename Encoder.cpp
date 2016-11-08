@@ -76,9 +76,9 @@ void Encoder::interrupt(){
 	last_r = PULSE_R * static_cast<int16_t>(TIM4->CNT - MEDIAN);
 	TIM3->CNT = MEDIAN;
 	TIM4->CNT = MEDIAN;
+	if(++ite_hist >= BUFSIZE) ite_hist = 0;
 	hist_l[ite_hist] = last_l;
 	hist_r[ite_hist] = last_r;
-	if(++ite_hist >= BUFSIZE) ite_hist = 0;
 	velocity_l = 0;
 	velocity_r = 0;
 	for (auto i : hist_l) velocity_l += i;

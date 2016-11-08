@@ -81,17 +81,23 @@ void VelocityControl::runTrapAccel(
 	reg_end_vel = end_vel;
 	reg_distance = distance;
 
-	float x_ad = (2.0f*reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel-reg_end_vel*reg_end_vel)/(2*reg_accel);
+	float pi = 3.141592659f;
+	float x_ad = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel/2.0f-reg_start_vel*reg_start_vel/2.0f)*pi/4.0f/reg_accel);
 	if(x_ad > abs(reg_distance)){
-		x1 = (abs(reg_distance) + (reg_end_vel*reg_end_vel - reg_start_vel*reg_start_vel)/reg_accel)/2.0f;
+		reg_max_vel = sqrt(4.0f*reg_accel*reg_distance/pi+(reg_start_vel*reg_start_vel+reg_end_vel*reg_end_vel)/2.0f);
+		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x2 = 0.0f;
-		x3 = abs(reg_distance) - x1;
+		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
+		// x3 = abs(reg_distance) - x1;
 		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
 	} else {
-		x1 = (reg_max_vel*reg_max_vel - reg_start_vel*reg_start_vel)/(2.0f * reg_accel);
-		x3 = (reg_max_vel*reg_max_vel - reg_end_vel*reg_end_vel)    /(2.0f * reg_accel);
+		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
+		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
 		x2 = abs(reg_distance) - x1 - x3;
 	}
+	t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
+	t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
+	t2 = 0;
 }
 
 void VelocityControl::calcTrapDiago(int32_t t){
@@ -133,17 +139,19 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		}
 	}
 
-	if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
-		v += reg_accel/1000.0f;
+	if(t0 < t1){
+	// if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
+		v += reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_start_vel)*t0/1000.0f)/1000.0f;
 		// v = reg_start_vel + reg_accel*t0/1000.0f;
 	} else if(abs(x0) < abs(x1 + x2)){
 		v = reg_max_vel;
 	} else if(abs(x0) < abs(x1 + x2 + x3)){
+		if(t2 == 0) t2 = t0;
 		if(reg_end_vel == 0.0f){
-			if(v > 0.1f) v -= reg_accel/1000.0f;
+			if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2)/1000.0f)/1000.0f;
 			else v = 0.1f;
 		} else {
-			if(v > reg_end_vel) v -= reg_accel/1000.0f;
+			if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2)/1000.0f)/1000.0f;
 			else v = reg_end_vel;
 		}
 	} else {

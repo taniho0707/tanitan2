@@ -110,7 +110,7 @@ int main(void){
 	if(wall->isExistWall(SensorPosition::FLeft) && wall->isExistWall(SensorPosition::FRight)){
 		*compc << "* Flash\n";
 		led->flickAsync(LedNumbers::LEFT3, 5.0f, 10000);
-		Speaker::playMusic(MusicNumber::OIRABOKODAZE1);
+		// Speaker::playMusic(MusicNumber::OIRABOKODAZE1);
 		float log_ret = 12.34f;
 		log->cleanFlash();
 		*compc << "\tErace Sector8-11 done.\n";
