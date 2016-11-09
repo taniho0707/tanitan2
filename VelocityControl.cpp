@@ -84,11 +84,10 @@ void VelocityControl::runTrapAccel(
 	float pi = 3.141592659f;
 	float x_ad = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel/2.0f-reg_start_vel*reg_start_vel/2.0f)*pi/4.0f/reg_accel);
 	if(x_ad > abs(reg_distance)){
-		reg_max_vel = sqrt(4.0f*reg_accel*reg_distance/pi+(reg_start_vel*reg_start_vel+reg_end_vel*reg_end_vel)/2.0f);
+		reg_max_vel = sqrt(2.0f*reg_accel*reg_distance/pi+(reg_start_vel*reg_start_vel+reg_end_vel*reg_end_vel)/2.0f);
 		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x2 = 0.0f;
 		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
-		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
 		t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
 		t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
 		t2 = 0;
@@ -119,7 +118,7 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		&& reg_max_vel < 0.31f
 		&& x0 > 0.01f
 		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
-			|| (reg_distance < 0.046f && reg_distance > 0.044f)
+			|| (reg_distance < 0.046f && reg_distance > 0.044f && reg_end_vel > 0.01f)
 			|| (reg_distance < 0.056f && reg_distance > 0.054f))
 		){
 		if(mc->isLeftGap()){
@@ -157,13 +156,14 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		v = reg_max_vel;
 	} else if(t0 < t1+t2+t3){
 	// } else if(abs(x0) < abs(x1 + x2 + x3)){
-		if(reg_end_vel == 0.0f){
-			if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
-			else v = 0.1f;
-		} else {
-			if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
-			else v = reg_end_vel;
-		}
+		// if(reg_end_vel == 0.0f){
+		// 	if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
+		// 	else v = 0.1f;
+		// } else {
+		// 	if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
+		// 	else v = reg_end_vel;
+		// }
+		v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
 	} else {
 		v = reg_end_vel;
 		end_flag = true;
