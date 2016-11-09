@@ -6,10 +6,10 @@
 
 MotorControl::MotorControl() : 
 	GAIN_LIN_P(900),
-	GAIN_LIN_I(8),
+	GAIN_LIN_I(15),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.4f),
-	GAIN_RAD_I(0.010f),
+	GAIN_RAD_I(0.02f),
 	GAIN_RAD_D(0.0f),
 	GAIN_WALL_P(3.0f),
 	GAIN_WALL_SHRT_P(1.0f),
@@ -23,7 +23,8 @@ MotorControl::MotorControl() :
 	tar_lin_vel = 0.0;
 	enabled_wall_control = 0;
 	is_failsafe = false;
-	integral_rad_gyro = 0.0;
+	integral_rad_gyro = 0.0f;
+	integral_lin_encoder = 0.0f;
 	is_left_gap = false;
 	is_left_gap_diago = false;
 	is_shrt_wall_control = false;
@@ -48,7 +49,10 @@ void MotorControl::resetWallIntegral(){
 }
 
 void MotorControl::resetRadIntegral(){
-	integral_rad_gyro = 0.0;
+	integral_rad_gyro = 0.0f;
+}
+void MotorControl::resetLinIntegral(){
+	integral_lin_encoder = 0.0f;
 }
 
 void MotorControl::calcIntegral(){
@@ -117,7 +121,6 @@ void MotorControl::controlVel(){
 	static float tar_rad_rev = 0;
 	static float integral_r = 0.0f;
 	static float integral_l = 0.0f;
-	static float integral_lin_encoder = 0.0;
 
 	static float d_rad_gyro = 0.0;
 
@@ -151,7 +154,7 @@ void MotorControl::controlVel(){
 	tar_motor_rad_power = GAIN_RAD_P * tar_rad_rev + GAIN_RAD_I * integral_rad_gyro;
 
 	// linear成分の計算
-	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2 + gyro->getAccelFront() * 0.0005);
+	tar_vel_rev = (tar_lin_vel) - ((encoder->getVelocity(EncoderSide::RIGHT)+encoder->getVelocity(EncoderSide::LEFT))/2/* + gyro->getAccelFront() * 0.0005*/);
 	integral_lin_encoder += tar_vel_rev;
 	tar_motor_lin_power = GAIN_LIN_P * tar_vel_rev + GAIN_LIN_I * integral_lin_encoder;
 

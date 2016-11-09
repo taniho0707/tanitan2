@@ -50,6 +50,7 @@ private:
 
 	int16_t integral_wall;
 	float integral_rad_gyro;
+	float integral_lin_encoder;
 
 	float dist_from_gap;
 	bool is_left_gap;
@@ -68,6 +69,7 @@ private:
 public:
 	void resetWallIntegral();
 	void resetRadIntegral();
+	void resetLinIntegral();
 
 	void setIntegralEncoder(float);
 	float getIntegralEncoder();

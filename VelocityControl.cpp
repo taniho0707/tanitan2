@@ -88,16 +88,18 @@ void VelocityControl::runTrapAccel(
 		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x2 = 0.0f;
 		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
-		// x3 = abs(reg_distance) - x1;
 		reg_max_vel = sqrt(reg_accel * abs(reg_distance));
+		t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
+		t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
+		t2 = 0;
 	} else {
 		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
 		x2 = abs(reg_distance) - x1 - x3;
+		t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
+		t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
+		t2 = static_cast<int32_t>(x2 / reg_max_vel * 1000.0f);
 	}
-	t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
-	t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
-	t2 = 0;
 }
 
 void VelocityControl::calcTrapDiago(int32_t t){
@@ -117,9 +119,16 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		&& reg_max_vel < 0.31f
 		&& x0 > 0.01f
 		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
-			|| (reg_distance < 0.046f && reg_distance > 0.044f))
+			|| (reg_distance < 0.046f && reg_distance > 0.044f)
+			|| (reg_distance < 0.056f && reg_distance > 0.054f))
 		){
-		mc->setIntegralEncoder(reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R));
+		if(mc->isLeftGap()){
+			mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
+			time = 1000.0f*(DIST_GAP_FROM_L-x3)/reg_max_vel + (t-t1-t2);
+		} else {
+			mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_R);
+			time = 1000.0f*(DIST_GAP_FROM_R-x3)/reg_max_vel + (t-t1-t2);
+		}
 		if(mc->isLeftGap()){
 			led->on(LedNumbers::LEFT1);
 			Speaker::playSound(440, 50, false);
@@ -143,15 +152,16 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	// if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
 		v += reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_start_vel)*t0/1000.0f)/1000.0f;
 		// v = reg_start_vel + reg_accel*t0/1000.0f;
-	} else if(abs(x0) < abs(x1 + x2)){
+	} else if(t0 < t1+t2){
+	// } else if(abs(x0) < abs(x1 + x2)){
 		v = reg_max_vel;
-	} else if(abs(x0) < abs(x1 + x2 + x3)){
-		if(t2 == 0) t2 = t0;
+	} else if(t0 < t1+t2+t3){
+	// } else if(abs(x0) < abs(x1 + x2 + x3)){
 		if(reg_end_vel == 0.0f){
-			if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2)/1000.0f)/1000.0f;
+			if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
 			else v = 0.1f;
 		} else {
-			if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2)/1000.0f)/1000.0f;
+			if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
 			else v = reg_end_vel;
 		}
 	} else {

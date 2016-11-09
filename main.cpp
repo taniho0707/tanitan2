@@ -260,31 +260,41 @@ int main(void){
 		uint8_t num_map = 0;
 
 		if(mode == 1){
-			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, 0.3f, 0.045f, 2.0f);
-			vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
-			motorcontrol->disableWallControl();
-			while(vc->isRunning());
-			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
-			while(vc->isRunning());
-			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
-			while(vc->isRunning());
-			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
-			while(vc->isRunning());
-			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-			vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
-			while(vc->isRunning());
-			vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
-			while(vc->isRunning());
-			motorcontrol->stay();
-			Timer::wait_ms(1000);
-			vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.45f, 2.0f);
-			motorcontrol->disableWallControl();
-			while(true);
+			if(submode == 0){
+				motorcontrol->stay();
+				vc->startTrapAccel(0.0f, 0.3f, 0.045f, 2.0f);
+				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.3f, 0.09f, 2.0f);
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+				while(vc->isRunning());
+				motorcontrol->stay();
+				Timer::wait_ms(1000);
+				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.45f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(true);
+			} else {
+				motorcontrol->stay();
+				vc->startTrapAccel(0.0f, 5.0f, 1.26f, 10.0f);
+				vc->runTrapAccel(0.0f, 5.0f, 0.0f, 1.26f, 10.0f);
+				while(vc->isRunning());
+				motorcontrol->stay();
+				Timer::wait_ms(1000);
+				while(true);
+			}
 		} else if(mode == 2){
 			if(submode == 0){
 				motorcontrol->stay();
@@ -538,6 +548,7 @@ int main(void){
 						vc->runPivotTurn(360, 90, 1000);
 						while(vc->isRunning());
 						motorcontrol->resetRadIntegral();
+						motorcontrol->resetLinIntegral();
 						Timer::wait_ms(200);
 						vc->disableWallgap();
 						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
@@ -554,6 +565,7 @@ int main(void){
 						vc->disableWallgap();
 						motorcontrol->disableWallControl();
 						motorcontrol->resetRadIntegral();
+						motorcontrol->resetLinIntegral();
 						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
 						motorcontrol->disableWallControl();
 						while(vc->isRunning());
