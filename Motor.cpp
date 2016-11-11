@@ -71,14 +71,14 @@ void Motor::setForward(MotorSide side){
 	if(side == MotorSide::LEFT)
 		GPIO_ResetBits(GPIOA, GPIO_Pin_2);
 	else
-		GPIO_ResetBits(GPIOC, GPIO_Pin_3);
+		GPIO_SetBits(GPIOC, GPIO_Pin_3);
 }
 
 void Motor::setBackward(MotorSide side){
 	if(side == MotorSide::LEFT)
 		GPIO_SetBits(GPIOA, GPIO_Pin_2);
 	else
-		GPIO_SetBits(GPIOC, GPIO_Pin_3);
+		GPIO_ResetBits(GPIOC, GPIO_Pin_3);
 }
 
 
