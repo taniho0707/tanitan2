@@ -84,7 +84,7 @@ void VelocityControl::runTrapAccel(
 	float pi = 3.141592659f;
 	float x_ad = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel/2.0f-reg_start_vel*reg_start_vel/2.0f)*pi/4.0f/reg_accel);
 	if(x_ad > abs(reg_distance)){
-		reg_max_vel = sqrt(2.0f*reg_accel*reg_distance/pi+(reg_start_vel*reg_start_vel+reg_end_vel*reg_end_vel)/2.0f);
+		reg_max_vel = sqrt(2.0f*reg_accel*abs(reg_distance)/pi+(reg_start_vel*reg_start_vel+reg_end_vel*reg_end_vel)/2.0f);
 		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x2 = 0.0f;
 		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
@@ -95,9 +95,9 @@ void VelocityControl::runTrapAccel(
 		x1 = ((reg_max_vel*reg_max_vel-reg_start_vel*reg_start_vel)*pi/4.0f/reg_accel);
 		x3 = ((reg_max_vel*reg_max_vel-reg_end_vel*reg_end_vel)*pi/4.0f/reg_accel);
 		x2 = abs(reg_distance) - x1 - x3;
-		t1 = static_cast<int32_t>(pi*(reg_max_vel-reg_start_vel)/2.0f/reg_accel*1000.0f);
-		t3 = static_cast<int32_t>(pi*(reg_max_vel-reg_end_vel)/2.0f/reg_accel*1000.0f);
-		t2 = static_cast<int32_t>(x2 / reg_max_vel * 1000.0f);
+		t1 = static_cast<int32_t>(pi*(abs(reg_max_vel)-abs(reg_start_vel))/2.0f/reg_accel*1000.0f);
+		t3 = static_cast<int32_t>(pi*(abs(reg_max_vel)-abs(reg_end_vel))/2.0f/reg_accel*1000.0f);
+		t2 = static_cast<int32_t>(x2 / abs(reg_max_vel) * 1000.0f);
 	}
 }
 

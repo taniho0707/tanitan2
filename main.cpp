@@ -285,6 +285,10 @@ int main(void){
 				Timer::wait_ms(1000);
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.45f, 2.0f);
 				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				Timer::wait_ms(1000);
+				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+				motorcontrol->disableWallControl();
 				while(true);
 			} else {
 				motorcontrol->stay();
