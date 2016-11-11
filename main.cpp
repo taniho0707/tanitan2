@@ -292,8 +292,10 @@ int main(void){
 				while(true);
 			} else {
 				motorcontrol->stay();
-				vc->startTrapAccel(0.0f, 5.0f, 1.26f, 10.0f);
-				vc->runTrapAccel(0.0f, 5.0f, 0.0f, 1.26f, 10.0f);
+				// vc->startTrapAccel(0.0f, 5.0f, 1.26f, 10.0f);
+				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
+				while(vc->isRunning());
+				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.055f, 2.0f);
 				while(vc->isRunning());
 				motorcontrol->stay();
 				Timer::wait_ms(1000);
@@ -582,7 +584,9 @@ int main(void){
 					mram_ret.at(0) = num_map++;
 					mram->writeData(mram_ret, 0x0001, 1);
 
-					vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+					motorcontrol->resetDistanceFromGap();
+					motorcontrol->resetDistanceFromGapDiago();
+					vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.055f, 2.0f);
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
