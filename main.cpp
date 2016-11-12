@@ -293,10 +293,10 @@ int main(void){
 			} else {
 				motorcontrol->stay();
 				// vc->startTrapAccel(0.0f, 5.0f, 1.26f, 10.0f);
-				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
+				vc->runTrapAccel(0.0f, 3.0f, 0.0f, 1.26f, 3.0f);
 				while(vc->isRunning());
-				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.055f, 2.0f);
-				while(vc->isRunning());
+				// vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.055f, 3.0f);
+				// while(vc->isRunning());
 				motorcontrol->stay();
 				Timer::wait_ms(1000);
 				while(true);
