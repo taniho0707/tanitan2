@@ -519,6 +519,7 @@ int main(void){
 				walldata = wall->getWall();
 				map.setWall(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);
 				map.setReached(pos.getPositionX(), pos.getPositionY());
+				adachi.setCurrent(pos.getPositionX(), pos.getPositionY());
 				adachi.setMap(map);
 				adachi.renewFootmap();
 				slalomparams::RunType runtype = adachi.getNextMotion(pos.getPositionX(), pos.getPositionY(), pos.getAngle(), walldata);

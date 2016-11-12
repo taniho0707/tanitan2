@@ -14,6 +14,12 @@ void MethodAdachi::setGoal(int8_t x, int8_t y){
 	goal_y = y;
 }
 
+void MethodAdachi::setCurrent(int8_t x, int8_t y){
+	cur_x = x;
+	cur_y = y;
+}
+
+
 void MethodAdachi::setMap(Map& m){
 	map.copyFrom(m);
 }
@@ -21,6 +27,8 @@ void MethodAdachi::setMap(Map& m){
 void MethodAdachi::renewFootmap(){
 	std::pair<int8_t, int8_t> buf;
 	std::pair<int8_t, int8_t> tmp;
+
+	bool is_end = false;
 
 	fm.resetFootmap();
 	tmp.first = goal_x;
@@ -38,7 +46,7 @@ void MethodAdachi::renewFootmap(){
 		{
 			tmp.first = buf.first;
 			tmp.second = buf.second + 1;
-			que.push(tmp);
+			if(!is_end) que.push(tmp);
 			fm.setFootmap(buf.first, buf.second + 1, fm.getMinNextTo(buf.first, buf.second + 1, map.getWalldata(buf.first, buf.second + 1)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::EAST) == false)
@@ -46,7 +54,7 @@ void MethodAdachi::renewFootmap(){
 		{
 			tmp.first = buf.first + 1;
 			tmp.second = buf.second;
-			que.push(tmp);
+			if(!is_end) que.push(tmp);
 			fm.setFootmap(buf.first + 1, buf.second, fm.getMinNextTo(buf.first + 1, buf.second, map.getWalldata(buf.first + 1, buf.second)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::SOUTH) == false)
@@ -54,7 +62,7 @@ void MethodAdachi::renewFootmap(){
 		{
 			tmp.first = buf.first;
 			tmp.second = buf.second - 1;
-			que.push(tmp);
+			if(!is_end) que.push(tmp);
 			fm.setFootmap(buf.first, buf.second - 1, fm.getMinNextTo(buf.first, buf.second - 1, map.getWalldata(buf.first, buf.second - 1)) + 1);
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::WEST) == false)
@@ -62,9 +70,11 @@ void MethodAdachi::renewFootmap(){
 		{
 			tmp.first = buf.first - 1;
 			tmp.second = buf.second;
-			que.push(tmp);
+			if(!is_end) que.push(tmp);
 			fm.setFootmap(buf.first - 1, buf.second, fm.getMinNextTo(buf.first - 1, buf.second, map.getWalldata(buf.first - 1, buf.second)) + 1);
 		}
+
+		if(buf.first == cur_x && buf.second == cur_y) is_end = true;
 	}
 }
 

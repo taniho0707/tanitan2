@@ -18,6 +18,9 @@ private:
 	int8_t goal_x;
 	int8_t goal_y;
 
+	int8_t cur_x;
+	int8_t cur_y;
+
 public:
 	Footmap fm;
 
@@ -26,6 +29,7 @@ public:
 	MethodAdachi();
 
 	void setGoal(int8_t x, int8_t y);
+	void setCurrent(int8_t, int8_t);
 
 	void setMap(Map&);
 
