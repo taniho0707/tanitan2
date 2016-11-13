@@ -139,8 +139,10 @@ void VelocityControl::calcTrapAccel(int32_t t){
 
 	if(enabled_wallgap){
 		auto kabekire = reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R);
-		if((reg_max_vel < 0.31f && x0 > (kabekire - 0.045) && x0 < (kabekire + 0.015))
+		if((reg_max_vel < 0.31f && x0 > (kabekire - 0.015) && x0 < (kabekire + 0.015))
 		   || (fmod(x0, 0.09f) > (kabekire - 0.045f) && fmod(x0, 0.09f) < (kabekire + 0.015f) && reg_type == RunType::TRAPACCEL)){
+			mc->setCombWallControl();
+		} else if(reg_max_vel < 0.31f && x0 > (kabekire - 0.045) && x0 < (kabekire - 0.015)){
 			mc->disableWallControl();
 		} else {
 			mc->enableWallControl();
@@ -288,7 +290,7 @@ void VelocityControl::calcSlalom(int32_t t){
 				time = Timer::getTime();
 			}
 		} else {
-			if(mc->getDistanceFromGap() > reg_d_before){
+			if(mc->getDistanceFromGap() > reg_d_before && mc->getDistanceFromGap() < reg_d_before + 0.02f){
 				reg_slalom_pos = 2;
 				time = Timer::getTime();
 			}

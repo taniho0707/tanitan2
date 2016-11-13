@@ -6,7 +6,7 @@
 
 MotorControl::MotorControl() : 
 	GAIN_LIN_P(900),
-	GAIN_LIN_I(8),
+	GAIN_LIN_I(4),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
@@ -21,13 +21,14 @@ MotorControl::MotorControl() :
 	cur_lin_vel = 0.0;
 	cur_lin_acc = 0.0;
 	tar_lin_vel = 0.0;
-	enabled_wall_control = 0;
+	enabled_wall_control = true;
+	is_shrt_wall_control = false;
+	is_comb_wall_control = false;
 	is_failsafe = false;
 	integral_rad_gyro = 0.0f;
 	integral_lin_encoder = 0.0f;
 	is_left_gap = false;
 	is_left_gap_diago = false;
-	is_shrt_wall_control = false;
 }
 
 void MotorControl::setVelocity(float vel){
@@ -99,10 +100,11 @@ void MotorControl::controlX(){
 
 
 void MotorControl::enableWallControl(){
-	enabled_wall_control = 1;
+	enabled_wall_control = true;
+	is_comb_wall_control = false;
 }
 void MotorControl::disableWallControl(){
-	enabled_wall_control = 0;
+	enabled_wall_control = false;
 }
 
 void MotorControl::setExprWallControl(){
@@ -110,6 +112,13 @@ void MotorControl::setExprWallControl(){
 }
 void MotorControl::setShrtWallControl(){
 	is_shrt_wall_control = true;
+}
+
+void MotorControl::setCombWallControl(){
+	is_comb_wall_control = true;
+}
+void MotorControl::resetCombWallControl(){
+	is_comb_wall_control = false;
 }
 
 void MotorControl::controlVel(){
@@ -125,6 +134,7 @@ void MotorControl::controlVel(){
 	static float d_rad_gyro = 0.0;
 
 	static int16_t lastwall = 0;
+	static int16_t current_wall_correction = 0;
 
 	if(integral_lin_encoder > 100 || integral_rad_gyro > 50000){
 		led->flickAsync(LedNumbers::FRONT, 4.0f, 0);
@@ -141,11 +151,21 @@ void MotorControl::controlVel(){
 		return;
 	}
 
-	// 壁積分値の計算
-	integral_wall += wall->getCorrection(10000) * enabled_wall_control;
+	if(enabled_wall_control){
+		if(is_comb_wall_control){
+			current_wall_correction = wall->getCorrectionComb(10000);
+		} else {
+			current_wall_correction = wall->getCorrection(10000);
+		}
+	} else {
+		current_wall_correction = 0;
+	}
+
+	// // 壁積分値の計算
+	// integral_wall += wall->getCorrection(10000) * enabled_wall_control;
 
 	// rotation成分の計算
-	tar_rad_rev = ((tar_rad_vel - enabled_wall_control * (is_shrt_wall_control ? GAIN_WALL_SHRT_P : GAIN_WALL_P) * wall->getCorrection(10000)) - gyro->getGyroYaw());
+	tar_rad_rev = ((tar_rad_vel - (is_shrt_wall_control ? GAIN_WALL_SHRT_P : GAIN_WALL_P) * current_wall_correction) - gyro->getGyroYaw());
 	// tar_rad_rev = ((tar_rad_vel - enabled_wall_control * GAIN_WALL_P * wall->getCorrection(10000) - enabled_wall_control * GAIN_WALL_D * (wall->getCorrection(10000)-lastwall)) - gyro->getGyroYaw());
 	// d_rad_gyro = (tar_rad_vel - gyro->getGyroYaw()) - tar_rad_rev;
 	// integral_rad_gyro += (tar_rad_vel - gyro->getGyroYaw());

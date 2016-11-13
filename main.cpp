@@ -3,8 +3,8 @@
  */
 #include "main.h"
 
-constexpr uint16_t GOAL_X = 2;
-constexpr uint16_t GOAL_Y = 1;
+constexpr uint16_t GOAL_X = 3;
+constexpr uint16_t GOAL_Y = 3;
 
 
 int main(void){
@@ -614,6 +614,8 @@ int main(void){
 						while(vc->isRunning());
 						Timer::wait_ms(300);
 
+						motorcontrol->resetDistanceFromGap();
+						motorcontrol->resetDistanceFromGapDiago();
 						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
 						vc->enableWallgap();
 						motorcontrol->disableWallControl();
@@ -647,6 +649,9 @@ int main(void){
 						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						Timer::wait_ms(300);
+
+						motorcontrol->resetDistanceFromGap();
+						motorcontrol->resetDistanceFromGapDiago();
 						vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.055f, 2.0f);
 						vc->enableWallgap();
 						motorcontrol->disableWallControl();

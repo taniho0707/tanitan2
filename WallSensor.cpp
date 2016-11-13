@@ -6,16 +6,16 @@ using namespace std;
 /// @todo add wait REDEN flag
 WallSensor::WallSensor() :
 	VAL_REF_FLEFT(163),
-	VAL_REF_LEFT(67),
-	VAL_REF_RIGHT(69),
+	VAL_REF_LEFT(73),
+	VAL_REF_RIGHT(74),
 	VAL_REF_FRIGHT(250),
 	VAL_THR_FLEFT(5),
 	VAL_THR_LEFT(40),
-	VAL_THR_RIGHT(40),
+	VAL_THR_RIGHT(45),
 	VAL_THR_FRIGHT(12),
 	VAL_THR_CONTROL_LEFT(50),
 	VAL_THR_CONTROL_RIGHT(50),
-	VAL_THR_GAP_LEFT(30),
+	VAL_THR_GAP_LEFT(10),
 	VAL_THR_GAP_RIGHT(30),
 	VAL_THR_GAP_DIAGO_LEFT(45),
 	VAL_THR_GAP_DIAGO_RIGHT(45),
@@ -340,7 +340,7 @@ void WallSensor::checkGap(){
 		   && current_value.at(static_cast<uint8_t>(SensorPosition::Left)) < VAL_THR_GAP_LEFT){
 			is_waiting_gap[0] = false;
 			had_gap[0] = true;
-		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_LEFT+5){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Left)) > VAL_THR_GAP_LEFT+3){
 			is_waiting_gap[0] = true;
 		}
 	}
@@ -349,7 +349,7 @@ void WallSensor::checkGap(){
 		   && current_value.at(static_cast<uint8_t>(SensorPosition::Right)) < VAL_THR_GAP_RIGHT){
 			is_waiting_gap[1] = false;
 			had_gap[1] = true;
-		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_RIGHT+5){
+		} else if(current_value.at(static_cast<uint8_t>(SensorPosition::Right)) > VAL_THR_GAP_RIGHT+3){
 			is_waiting_gap[1] = true;
 		}
 	}
@@ -420,6 +420,21 @@ int16_t WallSensor::getCorrection(uint16_t max){
 
 	int16_t retval = tmpR + tmpL;
 	if(is_singlewall) retval *= 2;
+	
+	if(retval > max) return max;
+	if(-1*retval < -1*max) return -max;
+	
+	return retval;
+}
+
+int16_t WallSensor::getCorrectionComb(uint16_t max){
+	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
+	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
+
+	if(tmpR < 0) tmpR = 0;
+	if(tmpL > 0) tmpL = 0;
+
+	int16_t retval = tmpR + tmpL;
 	
 	if(retval > max) return max;
 	if(-1*retval < -1*max) return -max;

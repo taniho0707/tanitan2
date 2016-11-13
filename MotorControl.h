@@ -57,8 +57,9 @@ private:
 	float dist_from_gap_diago;
 	bool is_left_gap_diago;
 
-	float enabled_wall_control;
+	bool enabled_wall_control;
 	bool is_shrt_wall_control;
+	bool is_comb_wall_control;
 
 	bool is_failsafe;
 
@@ -89,6 +90,9 @@ public:
 
 	void setExprWallControl();
 	void setShrtWallControl();
+
+	void setCombWallControl();
+	void resetCombWallControl();
 
 	void stay();
 
