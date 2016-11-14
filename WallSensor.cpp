@@ -15,8 +15,8 @@ WallSensor::WallSensor() :
 	VAL_THR_FRIGHT(12),
 	VAL_THR_CONTROL_LEFT(50),
 	VAL_THR_CONTROL_RIGHT(50),
-	VAL_THR_GAP_LEFT(40),
-	VAL_THR_GAP_RIGHT(40),
+	VAL_THR_GAP_LEFT(20),
+	VAL_THR_GAP_RIGHT(20),
 	VAL_THR_GAP_DIAGO_LEFT(45),
 	VAL_THR_GAP_DIAGO_RIGHT(45),
 	THR_WALL_DISAPPEAR(5)
@@ -420,9 +420,14 @@ int16_t WallSensor::getCorrection(uint16_t max){
 
 	int16_t retval = tmpR + tmpL;
 	if(is_singlewall) retval *= 2;
-	
-	if(retval > max) return max;
-	if(-1*retval < -1*max) return -max;
+
+	if(abs(retval) > max){
+		if(retval > 0){
+			return max;
+		} else {
+			return -1 * max;
+		}
+	}
 	
 	return retval;
 }

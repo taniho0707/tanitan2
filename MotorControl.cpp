@@ -212,9 +212,12 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	log->writeFloat(getIntegralEncoder());
-	log->writeFloat(getDistanceFromGap());
-	log->writeFloat(getDistanceFromGapDiago());
+	log->writeFloat(current_wall_correction);
+	log->writeFloat(tar_motor_l_power);
+	log->writeFloat(tar_motor_r_power);
+	// log->writeFloat(getIntegralEncoder());
+	// log->writeFloat(getDistanceFromGap());
+	// log->writeFloat(getDistanceFromGapDiago());
 
 	lastwall = wall->getCorrection(10000);
 

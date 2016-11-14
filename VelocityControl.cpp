@@ -5,8 +5,8 @@
 using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
-	DIST_GAP_FROM_R(0.040),
-	DIST_GAP_FROM_L(0.053)
+	DIST_GAP_FROM_R(0.035),
+	DIST_GAP_FROM_L(0.036)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -64,7 +64,7 @@ void VelocityControl::runTrapAccel(
 	float distance,
 	float accel
 	){
-	mc->enableWallControl();
+	// mc->enableWallControl();
 	if(!is_started){ //先に台形加速を初めていない場合のみ
 		time = Timer::getTime();
 		mc->setIntegralEncoder(0.0f);
@@ -150,21 +150,10 @@ void VelocityControl::calcTrapAccel(int32_t t){
 	}
 
 	if(t0 < t1){
-	// if(abs(x0) < abs(x1) && target_linvel < reg_max_vel){
 		v += reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_start_vel)*t0/1000.0f)/1000.0f;
-		// v = reg_start_vel + reg_accel*t0/1000.0f;
 	} else if(t0 < t1+t2){
-	// } else if(abs(x0) < abs(x1 + x2)){
 		v = reg_max_vel;
 	} else if(t0 < t1+t2+t3){
-	// } else if(abs(x0) < abs(x1 + x2 + x3)){
-		// if(reg_end_vel == 0.0f){
-		// 	if(v > 0.1f) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
-		// 	else v = 0.1f;
-		// } else {
-		// 	if(v > reg_end_vel) v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
-		// 	else v = reg_end_vel;
-		// }
 		v -= reg_accel*sin(2.0f*reg_accel/(reg_max_vel-reg_end_vel)*(t0-t2-t1)/1000.0f)/1000.0f;
 	} else {
 		v = reg_end_vel;
@@ -246,7 +235,7 @@ bool VelocityControl::runSlalom(
 	// tの算出
 	t1 = 1000.0f * sqrt(2.0f * (reg_distance-const_deg) / 2.0f / reg_accel);
 	t2 = 1000.0f * const_deg / (reg_accel * t1 / 1000.0f) + t1;
-	t3 = t1 + t2;
+	t3 = t1 + t2 - 1;
 
 	mc->disableWallControl();
 	v = in_vel;
