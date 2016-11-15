@@ -244,5 +244,17 @@ void Speaker::playMusic(MusicNumber n){
 		playSound(784, 200, true);
 		playSound(659, 800, true); 
 		break;
+	case MusicNumber::KIRBYKAGAMI_OP:
+		playSound(262, 100, true);
+		Timer::wait_ms(20);
+		playSound(262, 120, true);
+		Timer::wait_ms(120);
+		playSound(262, 120, true);
+		playSound(294, 120, true);
+		Timer::wait_ms(120);
+		playSound(330, 120, true);
+		Timer::wait_ms(120);
+		playSound(339, 150, true); 
+		break;
 	}
 }
