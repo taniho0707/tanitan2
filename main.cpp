@@ -6,6 +6,8 @@
 constexpr uint16_t GOAL_X = 3;
 constexpr uint16_t GOAL_Y = 3;
 
+constexpr uint16_t SLALOM_PIVOT_COUNT = 100;
+
 
 int main(void){
 	SystemInit();
@@ -539,6 +541,8 @@ int main(void){
 						collection->collectionByFrontDuringStop();// front correction 1.5s
 						motorcontrol->stay();
 						Timer::wait_ms(200);
+						motorcontrol->resetRadIntegral();
+						motorcontrol->resetLinIntegral();
 						led->flickStop(LedNumbers::FRONT);
 						led->on(LedNumbers::FRONT);
 					}
@@ -550,6 +554,8 @@ int main(void){
 						collection->collectionByFrontDuringStop();// front correction 1.5s
 						motorcontrol->stay();
 						Timer::wait_ms(200);
+						motorcontrol->resetRadIntegral();
+						motorcontrol->resetLinIntegral();
 						led->flickStop(LedNumbers::FRONT);
 						led->on(LedNumbers::FRONT);
 						vc->runPivotTurn(360, 90, 1000);
@@ -558,7 +564,7 @@ int main(void){
 						motorcontrol->resetLinIntegral();
 						Timer::wait_ms(200);
 						vc->disableWallgap();
-						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.015f, 2.0f);
 						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						Timer::wait_ms(300);
@@ -573,7 +579,7 @@ int main(void){
 						motorcontrol->disableWallControl();
 						motorcontrol->resetRadIntegral();
 						motorcontrol->resetLinIntegral();
-						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.01f, 2.0f);
+						vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.015f, 2.0f);
 						motorcontrol->disableWallControl();
 						while(vc->isRunning());
 						Timer::wait_ms(300);
@@ -591,7 +597,7 @@ int main(void){
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
-					if(++ tmp_slalom_count > 5 && walldata.isExistWall(MouseAngle::FRONT)){
+					if(++ tmp_slalom_count > SLALOM_PIVOT_COUNT && walldata.isExistWall(MouseAngle::FRONT)){
 						vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 						while(vc->isRunning());
 						
@@ -626,7 +632,7 @@ int main(void){
 						while(vc->isRunning());
 					}
 				} else if(runtype == slalomparams::RunType::SLALOM90SML_LEFT){
-					if(++ tmp_slalom_count > 5 && walldata.isExistWall(MouseAngle::FRONT)){
+					if(++ tmp_slalom_count > SLALOM_PIVOT_COUNT && walldata.isExistWall(MouseAngle::FRONT)){
 						vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 						while(vc->isRunning());
 						
