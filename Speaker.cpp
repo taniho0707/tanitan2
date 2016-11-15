@@ -239,5 +239,10 @@ void Speaker::playMusic(MusicNumber n){
 		playSound(554, 360, true); //kyou
 		playSound(554, 360, true); //kai
 		break;
+	case MusicNumber::HIRAPA:
+		playSound(440, 400, true);
+		playSound(784, 200, true);
+		playSound(659, 800, true); 
+		break;
 	}
 }

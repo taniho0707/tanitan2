@@ -25,6 +25,7 @@ enum class MusicNumber : uint16_t {
 	OIRABOKODAZE1,
 	KIRBY3_ORIG_DESELECT,
 	KANSAIDENKIHOANKYOUKAI,
+	HIRAPA,
 };
 
 class Speaker{
