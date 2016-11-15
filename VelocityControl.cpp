@@ -306,8 +306,8 @@ void VelocityControl::calcSlalom(int32_t t){
 		mc->setIntegralEncoder(0.0f);
 		reg_slalom_pos = 5;
 		
-		mc->resetDistanceFromGap();
-		mc->resetDistanceFromGapDiago();
+		// mc->resetDistanceFromGap();
+		// mc->resetDistanceFromGapDiago();
 	}
 	target_linvel = reg_min_vel;
 	target_radvel = r;

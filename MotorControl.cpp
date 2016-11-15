@@ -153,7 +153,7 @@ void MotorControl::controlVel(){
 
 	if(enabled_wall_control){
 		if(is_comb_wall_control){
-			current_wall_correction = wall->getCorrectionComb(50);
+			current_wall_correction = wall->getCorrectionComb(500);
 		} else {
 			current_wall_correction = wall->getCorrection(50);
 		}
