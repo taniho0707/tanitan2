@@ -365,7 +365,7 @@ bool runShrt(PathType type, bool do_inbound, float param_accel, float param_max_
 	while(true){
 		motion = path.getMotion(i);
 		if(i == 0){
-			vc->runTrapAccel(0.0f, param_max_straight, param_max_straight, 0.045f*(motion.length-1) +0.02f, param_accel);
+			vc->runTrapAccel(0.0f, param_max_straight, param_max_turn, 0.045f*(motion.length-1) +0.02f, param_accel);
 		} else {
 			if(path.getMotion(i+1).type == RunType::PIVOTTURN){
 				vc->runTrapAccel(param_max_turn, param_max_straight, 0.0f, 0.045f*(motion.length+1), param_accel);
@@ -935,14 +935,15 @@ int main(void){
 			float param_vel = 0.3f;
 
 			runShrt(PathType::SMALL, true, 2.0f, 3.0f, 1.0f, 0.3f);
-			runShrt(PathType::BIG,   true, 2.0f, 3.0f, 1.0f, 0.5f);
+			// runShrt(PathType::BIG,   true, 2.0f, 3.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 2.0f, 3.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 3.0f, 3.0f, 3.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 5.0f, 5.0f, 3.0f, 0.5f);
 		} else {
 			if(submode == 0){ //斜め
 				runShrt(PathType::DIAGO, true, 3.0f, 3.0f, 3.0f, 0.5f);
-			} else { //大回りのみ
-				runShrt(PathType::BIG, true, 3.0f, 3.0f, 3.0f, 0.5f);
+			} else { //小回りのみ
+				runShrt(PathType::SMALL, true, 2.0f, 3.0f, 1.0f, 0.3f);
 			}
 		}
 	}

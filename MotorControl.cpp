@@ -160,6 +160,9 @@ void MotorControl::controlVel(){
 	} else {
 		current_wall_correction = 0;
 	}
+	if(is_shrt_wall_control){
+		current_wall_correction = wall->getCorrectionComb(500);
+	}
 
 	// // 壁積分値の計算
 	// integral_wall += wall->getCorrection(10000) * enabled_wall_control;
@@ -212,12 +215,12 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	// log->writeFloat(current_wall_correction);
-	// log->writeFloat(tar_motor_l_power);
-	// log->writeFloat(tar_motor_r_power);
-	log->writeFloat(getIntegralEncoder());
-	log->writeFloat(getDistanceFromGap());
-	log->writeFloat(getDistanceFromGapDiago());
+	log->writeFloat(current_wall_correction);
+	log->writeFloat(tar_motor_l_power);
+	log->writeFloat(tar_motor_r_power);
+	// log->writeFloat(getIntegralEncoder());
+	// log->writeFloat(getDistanceFromGap());
+	// log->writeFloat(getDistanceFromGapDiago());
 
 	lastwall = wall->getCorrection(10000);
 

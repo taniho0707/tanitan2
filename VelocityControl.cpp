@@ -103,7 +103,7 @@ void VelocityControl::runTrapAccel(
 
 void VelocityControl::calcTrapDiago(int32_t t){
 	calcTrapAccel(t);
-	mc->disableWallControl();
+	// mc->disableWallControl();
 }
 
 void VelocityControl::calcTrapAccel(int32_t t){
