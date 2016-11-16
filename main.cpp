@@ -398,6 +398,10 @@ bool runShrt(PathType type, bool do_inbound, float param_accel, float param_max_
 	collection->collectionByFrontDuringStop();// front correction 1.5s
 	motorcontrol->stay();
 	Timer::wait_ms(200);
+	motorcontrol->resetDistanceFromGap();
+	motorcontrol->resetDistanceFromGapDiago();
+	motorcontrol->resetRadIntegral();
+	motorcontrol->resetLinIntegral();
 	led->flickStop(LedNumbers::FRONT);
 	led->on(LedNumbers::FRONT);
 	vc->runPivotTurn(360, 180, 1000);
@@ -937,8 +941,8 @@ int main(void){
 			runShrt(PathType::SMALL, true, 2.0f, 3.0f, 1.0f, 0.3f);
 			// runShrt(PathType::BIG,   true, 2.0f, 3.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 2.0f, 3.0f, 1.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 3.0f, 3.0f, 3.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 5.0f, 5.0f, 3.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 5.0f, 3.0f, 3.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
 		} else {
 			if(submode == 0){ //斜め
 				runShrt(PathType::DIAGO, true, 3.0f, 3.0f, 3.0f, 0.5f);
