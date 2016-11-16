@@ -5,8 +5,8 @@
 #include "MotorControl.h"
 
 MotorControl::MotorControl() : 
-	GAIN_LIN_P(900),
-	GAIN_LIN_I(4),
+	GAIN_LIN_P(600),
+	GAIN_LIN_I(2),
 	GAIN_LIN_D(0.0),
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
@@ -160,8 +160,8 @@ void MotorControl::controlVel(){
 	} else {
 		current_wall_correction = 0;
 	}
-	if(is_shrt_wall_control){
-		current_wall_correction = wall->getCorrectionComb(500);
+	if(tar_lin_vel < 0.025f){
+		current_wall_correction = 0;
 	}
 
 	// // 壁積分値の計算
@@ -215,12 +215,12 @@ void MotorControl::controlVel(){
 	log->writeFloat(tar_rad_vel);
 	log->writeFloat(wall->getValue(SensorPosition::Left));
 	log->writeFloat(wall->getValue(SensorPosition::Right));
-	log->writeFloat(current_wall_correction);
-	log->writeFloat(tar_motor_l_power);
-	log->writeFloat(tar_motor_r_power);
-	// log->writeFloat(getIntegralEncoder());
-	// log->writeFloat(getDistanceFromGap());
-	// log->writeFloat(getDistanceFromGapDiago());
+	// log->writeFloat(current_wall_correction);
+	// log->writeFloat(tar_motor_l_power);
+	// log->writeFloat(tar_motor_r_power);
+	log->writeFloat(getIntegralEncoder());
+	log->writeFloat(getDistanceFromGap());
+	log->writeFloat(getDistanceFromGapDiago());
 
 	lastwall = wall->getCorrection(10000);
 

@@ -139,13 +139,19 @@ void VelocityControl::calcTrapAccel(int32_t t){
 
 	if(enabled_wallgap){
 		auto kabekire = reg_distance - (mc->isLeftGap() ? DIST_GAP_FROM_L : DIST_GAP_FROM_R);
-		if((reg_max_vel < 0.31f && x0 > (kabekire - 0.015) && x0 < (kabekire + 0.015))
-		   || (fmod(x0, 0.09f) > (kabekire - 0.045f) && fmod(x0, 0.09f) < (kabekire + 0.015f) && reg_type == RunType::TRAPACCEL)){
-			mc->setCombWallControl();
-		} else if(reg_max_vel < 0.31f && x0 > (kabekire - 0.045) && x0 < (kabekire - 0.015)){
-			mc->disableWallControl();
-		} else {
+		if(reg_type == RunType::TRAPDIAGO){
 			mc->enableWallControl();
+			mc->setCombWallControl();
+		} else {
+			if((reg_max_vel < 0.31f && x0 > (kabekire - 0.015) && x0 < (kabekire + 0.015))
+			   || (fmod(x0, 0.09f) > fmod(kabekire - 0.045f, 0.09f) && fmod(x0, 0.09f) < fmod(kabekire + 0.015f, 0.09f) && reg_type == RunType::TRAPACCEL)){
+				mc->setCombWallControl();
+			} else if((reg_max_vel < 0.31f && x0 > (kabekire - 0.045) && x0 < (kabekire - 0.015))
+					  || (fmod(x0, 0.09f) > fmod(kabekire - 0.045f, 0.09f) && fmod(x0, 0.09f) < fmod(kabekire - 0.015, 0.09f))){
+				mc->disableWallControl();
+			} else {
+				mc->enableWallControl();
+			}
 		}
 	}
 
@@ -274,7 +280,7 @@ void VelocityControl::calcSlalom(int32_t t){
 				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM90OBL_LEFT)
 				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM90OBL_RIGHT)
 			){
-			if(mc->getDistanceFromGapDiago() > reg_d_before && mc->getDistanceFromGapDiago() < reg_d_before + 0.02f){
+			if(mc->getDistanceFromGapDiago() > reg_d_before && mc->getDistanceFromGapDiago() < reg_d_before + 0.01f){
 				reg_slalom_pos = 2;
 				time = Timer::getTime();
 			}

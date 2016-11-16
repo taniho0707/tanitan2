@@ -39,6 +39,7 @@ private:
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
 	bool is_working;
+	bool enabled;
 	array<uint16_t, 4> ref_straight_value;
 	array<uint16_t, 4> thr_straight_value;
 
@@ -59,6 +60,9 @@ public:
 	array<float, 4> last_value;
 
 	bool isWorking();
+
+	void enable();
+	void disable();
 
 	void start();
 	void stop();

@@ -10,8 +10,8 @@ WallSensor::WallSensor() :
 	VAL_REF_RIGHT(90),
 	VAL_REF_FRIGHT(232),
 	VAL_THR_FLEFT(5),
-	VAL_THR_LEFT(5),
-	VAL_THR_RIGHT(30),
+	VAL_THR_LEFT(15),
+	VAL_THR_RIGHT(40),
 	VAL_THR_FRIGHT(6),
 	VAL_THR_CONTROL_LEFT(50),
 	VAL_THR_CONTROL_RIGHT(50),
@@ -97,6 +97,8 @@ WallSensor::WallSensor() :
 	had_gap[1] = false;
 	is_waiting_gap[0] = false;
 	is_waiting_gap[1] = false;
+
+	enabled = true;
 }
 
 bool WallSensor::isWorking(){
@@ -403,6 +405,8 @@ bool WallSensor::hadGapDiago(SensorPosition sp){
 
 
 int16_t WallSensor::getCorrection(uint16_t max){
+	if(!enabled) return 0;
+
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
 	bool is_singlewall = false;
@@ -433,6 +437,8 @@ int16_t WallSensor::getCorrection(uint16_t max){
 }
 
 int16_t WallSensor::getCorrectionComb(uint16_t max){
+	if(!enabled) return 0;
+
 	int16_t tmpR = getValue(SensorPosition::Right) - VAL_REF_RIGHT;
 	int16_t tmpL = VAL_REF_LEFT - getValue(SensorPosition::Left);
 
@@ -441,8 +447,13 @@ int16_t WallSensor::getCorrectionComb(uint16_t max){
 
 	int16_t retval = tmpR + tmpL;
 	
-	if(retval > max) return max;
-	if(-1*retval < -1*max) return -max;
+	if(abs(retval) > max){
+		if(retval > 0){
+			return max;
+		} else {
+			return -1 * max;
+		}
+	}
 	
 	return retval;
 }
