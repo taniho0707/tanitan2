@@ -28,6 +28,7 @@ private:
 	int32_t time;
 	bool end_flag;
 	bool is_started;
+	bool has_done_slalom;
 
 	bool enabled_wallgap;
 	bool is_left_gap;
@@ -65,6 +66,7 @@ public:
 	void setRadVel();
 
 	bool isRunning();
+	bool hasDoneSlalom();
 
 	void enableWallgap();
 	void disableWallgap();

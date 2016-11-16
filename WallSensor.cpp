@@ -19,6 +19,10 @@ WallSensor::WallSensor() :
 	VAL_THR_GAP_RIGHT(20),
 	VAL_THR_GAP_DIAGO_LEFT(45),
 	VAL_THR_GAP_DIAGO_RIGHT(45),
+	VAL_THR_SLALOM_FLEFT(55),
+	VAL_THR_SLALOM_LEFT(150),
+	VAL_THR_SLALOM_RIGHT(150),
+	VAL_THR_SLALOM_FRIGHT(75),
 	THR_WALL_DISAPPEAR(5)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -322,6 +326,16 @@ bool WallSensor::isExistWall(SensorPosition pos){
 		if(current_value[static_cast<uint8_t>(SensorPosition::FLeft)] > thr_straight_value[static_cast<uint8_t>(SensorPosition::FLeft)]
 		   || current_value[static_cast<uint8_t>(SensorPosition::FRight)] > thr_straight_value[static_cast<uint8_t>(SensorPosition::FRight)]) return true;
 		else return false;
+}
+
+bool WallSensor::canSlalom(){
+	if(getValue(SensorPosition::FLeft) > VAL_THR_SLALOM_FLEFT || getValue(SensorPosition::FRight) > VAL_THR_SLALOM_FRIGHT){
+		return false;
+	} else if(isExistWall(SensorPosition::FLeft) && (getValue(SensorPosition::Left) > VAL_THR_SLALOM_LEFT || getValue(SensorPosition::Right) > VAL_THR_SLALOM_RIGHT)){
+		return false;
+	} else {
+		return true;
+	}
 }
 
 Walldata WallSensor::getWall(){

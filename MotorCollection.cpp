@@ -5,7 +5,7 @@
 
 MotorCollection::MotorCollection() :
 	TIMEOUT(10000),
-	GAIN_LIN(0.0002f),
+	GAIN_LIN(0.0004f),
 	GAIN_RAD(0.6f)
 {
 	
@@ -24,7 +24,7 @@ bool MotorCollection::collectionByFrontDuringStop(){
 		dif_rad = dif_right - dif_left;
 		mc->setVelocity(-1.0f * GAIN_LIN * dif_lin);
 		mc->setRadVelocity(0.0f);
-		if(abs(GAIN_LIN * dif_lin) < 0.005f) break;
+		if(abs(GAIN_LIN * dif_lin) < 0.02f) break;
 		Timer::wait_ms(1);
 	}
 	while(Timer::getTime() < start_time + TIMEOUT){
@@ -34,7 +34,7 @@ bool MotorCollection::collectionByFrontDuringStop(){
 		dif_rad = dif_right - dif_left;
 		mc->setVelocity(-1.0f * GAIN_LIN * dif_lin);
 		mc->setRadVelocity(GAIN_RAD * dif_rad);
-		if(abs(GAIN_LIN * dif_lin) < 0.005f && abs(GAIN_RAD * dif_rad) < 0.2f) break;
+		if(abs(GAIN_LIN * dif_lin) < 0.02f && abs(GAIN_RAD * dif_rad) < 0.5f) break;
 		Timer::wait_ms(1);
 	}
 	return false;

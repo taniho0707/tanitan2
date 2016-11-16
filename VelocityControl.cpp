@@ -14,6 +14,7 @@ VelocityControl::VelocityControl() :
 	
 	time = Timer::getTime();
 	end_flag = true;
+	has_done_slalom = true;
 	is_started = false;
 	enabled_wallgap = true;
 	is_left_gap = true;
@@ -25,6 +26,10 @@ VelocityControl::VelocityControl() :
 bool VelocityControl::isRunning(){
 	if(end_flag) return false;
 	else return true;
+}
+
+bool VelocityControl::hasDoneSlalom(){
+	return has_done_slalom;
 }
 
 void VelocityControl::enableWallgap(){
@@ -237,7 +242,8 @@ bool VelocityControl::runSlalom(
 	float acc_lin = params.acc_lin;
 	reg_type = type;
 	end_flag = false;
-
+	has_done_slalom = true;
+	
 	// tの算出
 	t1 = 1000.0f * sqrt(2.0f * (reg_distance-const_deg) / 2.0f / reg_accel);
 	t2 = 1000.0f * const_deg / (reg_accel * t1 / 1000.0f) + t1;
@@ -272,6 +278,10 @@ void VelocityControl::calcSlalom(int32_t t){
 				){
 				reg_slalom_pos = 2;
 				time = Timer::getTime();
+				if(!sens->canSlalom()){
+					end_flag = true;
+					has_done_slalom = false;
+				}
 			}
 		} else if(static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM45OUT_LEFT)
 				  || static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM45OUT_RIGHT)

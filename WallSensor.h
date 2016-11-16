@@ -35,6 +35,10 @@ private:
 	const uint16_t VAL_THR_GAP_RIGHT;
 	const uint16_t VAL_THR_GAP_DIAGO_LEFT;
 	const uint16_t VAL_THR_GAP_DIAGO_RIGHT;
+	const uint16_t VAL_THR_SLALOM_FLEFT;
+	const uint16_t VAL_THR_SLALOM_LEFT;
+	const uint16_t VAL_THR_SLALOM_RIGHT;
+	const uint16_t VAL_THR_SLALOM_FRIGHT;
 
 	RingBufferHistory< array<float, 4>, 10 > buf;
 
@@ -83,6 +87,8 @@ public:
 	int16_t getDiffValue(SensorPosition);
 	uint16_t getLastValue(SensorPosition);
 	bool isExistWall(SensorPosition);
+
+	bool canSlalom();
 
 	Walldata getWall();
 
