@@ -26,7 +26,7 @@ void frontcorrection(){
 	led->on(LedNumbers::FRONT);
 }
 
-bool runExpr(bool overwrite_mode){
+bool runExpr(bool overwrite_mode, bool find_shortest){
 	MotorControl* motorcontrol = MotorControl::getInstance();
 	Mram* mram = Mram::getInstance();
 	VelocityControl* vc = VelocityControl::getInstance();
@@ -98,27 +98,27 @@ bool runExpr(bool overwrite_mode){
 				while(vc->isRunning());
 				motorcontrol->resetRadIntegral();
 				motorcontrol->resetLinIntegral();
-				Timer::wait_ms(200);
-				vc->disableWallgap();
+				// Timer::wait_ms(200);
+//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				Timer::wait_ms(300);
+				// Timer::wait_ms(300);
 				motorcontrol->enableWallControl();
 				vc->enableWallgap();
 			} else {
 				vc->runPivotTurn(1000, 180, 3000);
 				while(vc->isRunning());
-				Timer::wait_ms(300);
+				// Timer::wait_ms(300);
 
-				vc->disableWallgap();
+//				vc->disableWallgap();
 				motorcontrol->disableWallControl();
 				motorcontrol->resetRadIntegral();
 				motorcontrol->resetLinIntegral();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				Timer::wait_ms(300);
+				// Timer::wait_ms(300);
 				vc->enableWallgap();
 				motorcontrol->enableWallControl();
 			}
@@ -153,9 +153,9 @@ bool runExpr(bool overwrite_mode){
 				}
 
 				Timer::wait_ms(200);
-				vc->disableWallgap();
+//				vc->disableWallgap();
 				motorcontrol->enableWallControl();
-				vc->disableWallgap();
+//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
@@ -188,9 +188,9 @@ bool runExpr(bool overwrite_mode){
 				}
 
 				Timer::wait_ms(200);
-				vc->disableWallgap();
+//				vc->disableWallgap();
 				motorcontrol->enableWallControl();
-				vc->disableWallgap();
+//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
@@ -211,8 +211,8 @@ bool runExpr(bool overwrite_mode){
 		pos.setNextPosition(runtype);
 		vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
 		
-		static bool is_first_goal = true;
-		if(pos.getPositionX() == GOAL_X && pos.getPositionY() == GOAL_Y && is_first_goal){
+		static bool is_first_goal = true; // = has_goal
+		if(pos.getPositionX() == GOAL_X && pos.getPositionY() == GOAL_Y){ // && is_first_goal){
 			is_first_goal = false;
 			led->on(LedNumbers::LEFT3);
 			walldata = wall->getWall();
@@ -230,6 +230,79 @@ bool runExpr(bool overwrite_mode){
 
 			led->on(LedNumbers::LEFT3);
 			adachi.setGoal(0, 0);
+// 		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1){
+// 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+// 			motorcontrol->disableWallControl();
+// 			while(vc->isRunning());
+// 			// if(wall->isExistWall(SensorPosition::FLeft)){
+// 			// 	frontcorrection();
+// 			// }
+
+// 			// if completed -> goto 0,0
+// 			PathAdachi padachi;
+// 			padachi.setGoal(GOAL_X, GOAL_Y);
+// 			padachi.setMap(map);
+// 			if(padachi.isShortestPath()){
+// 				if(pos.getAngle() == MazeAngle::WEST){
+// 					// turn left
+// 					vc->runPivotTurn(1000, -90, 3000);
+// 					while(vc->isRunning());
+// 				}
+// 				// go forward
+// 				vc->runTrapAccel(0.0f, 0.30f, 0.00f, 0.09f, 2.0f);
+// 				motorcontrol->disableWallControl();
+// 				while(vc->isRunning());
+// 				break;
+// 			} else {
+// 				// if not completed -> goto goal
+// 				pos.setNextPosition(RunType::PIVOTTURN);
+// 				if(walldata.isExistWall(MouseAngle::RIGHT)){
+// 					vc->runPivotTurn(1000, 90, 3000);
+// 					while(vc->isRunning());
+// 					frontcorrection();
+// 					vc->runPivotTurn(1000, 90, 3000);
+// 					while(vc->isRunning());
+// 					motorcontrol->resetRadIntegral();
+// 					motorcontrol->resetLinIntegral();
+// 					Timer::wait_ms(200);
+// //					vc->disableWallgap();
+// 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+// 					motorcontrol->disableWallControl();
+// 					while(vc->isRunning());
+// 					Timer::wait_ms(300);
+// 					motorcontrol->enableWallControl();
+// 					vc->enableWallgap();
+// 				} else {
+// 					vc->runPivotTurn(1000, 180, 3000);
+// 					while(vc->isRunning());
+// 					Timer::wait_ms(300);
+
+// //					vc->disableWallgap();
+// 					motorcontrol->disableWallControl();
+// 					motorcontrol->resetRadIntegral();
+// 					motorcontrol->resetLinIntegral();
+// 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+// 					motorcontrol->disableWallControl();
+// 					while(vc->isRunning());
+// 					Timer::wait_ms(300);
+// 					vc->enableWallgap();
+// 					motorcontrol->enableWallControl();
+// 				}
+// 				//mram
+// 				mram->saveMap(map, num_map%10);
+// 				mram_ret.at(0) = num_map++;
+// 				mram->writeData(mram_ret, 0x0001, 1);
+// 				mram->saveMap(map, num_map%10);
+// 				mram_ret.at(0) = num_map++;
+// 				mram->writeData(mram_ret, 0x0001, 1);
+// 				motorcontrol->resetDistanceFromGap();
+// 				motorcontrol->resetDistanceFromGapDiago();
+// 				vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 2.0f);
+// 				motorcontrol->disableWallControl();
+// 				while(vc->isRunning());
+// 				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+// 				adachi.setGoal(GOAL_X, GOAL_Y);
+// 			}
 		} else if(pos.getPositionX() == 0 && pos.getPositionY() == 0){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
@@ -395,7 +468,7 @@ bool runShrt(PathType type, bool do_inbound, float param_accel, float param_max_
 	motorcontrol->stay();
 	
 	i=0;
-	vc->disableWallgap();
+//	vc->disableWallgap();
 	vc->startTrapAccel(0.0f, param_max_turn, 0.09f, param_accel);
 
 	while(true){
@@ -912,9 +985,9 @@ int main(void){
 			while(true);
 		} else if(mode == 100){
 			if(submode == 0){ //探索新規(壁なし)
-				runExpr(false);
+				runExpr(false, true);
 			} else { //探索上書き(壁あり)
-				runExpr(true);
+				runExpr(true,  true);
 			}
 
 			float param_accel = 2.0f;

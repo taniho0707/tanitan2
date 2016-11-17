@@ -121,10 +121,11 @@ void VelocityControl::calcTrapAccel(int32_t t){
 		enabled_wallgap
 		&& mc->getDistanceFromGap() < 0.001f && mc->getDistanceFromGap() > -0.001f
 		&& reg_max_vel < 0.31f
-		&& x0 > 0.01f
+		&& x0 > 0.001f
 		&& ((reg_distance < 0.091f && reg_distance > 0.089f)
 			|| (reg_distance < 0.046f && reg_distance > 0.044f && reg_end_vel > 0.01f)
-			|| (reg_distance < 0.056f && reg_distance > 0.054f))
+			|| (reg_distance < 0.056f && reg_distance > 0.054f)
+			|| reg_distance < 0.091f)
 		){
 		if(mc->isLeftGap()){
 			mc->setIntegralEncoder(reg_distance - DIST_GAP_FROM_L);
@@ -314,6 +315,8 @@ void VelocityControl::calcSlalom(int32_t t){
 	} else if(t0 < t2){
 		// 等速
 		reg_slalom_pos = 3;
+		mc->resetDistanceFromGap();
+		mc->resetDistanceFromGapDiago();
 	} else if(t0 < t3){
 		// 減速
 		r -= is_positive * reg_accel * 0.001;
