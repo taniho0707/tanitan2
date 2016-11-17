@@ -16,7 +16,7 @@ WallSensor::WallSensor() :
 	VAL_THR_CONTROL_LEFT(30),
 	VAL_THR_CONTROL_RIGHT(40),
 	VAL_THR_GAP_LEFT(15),
-	VAL_THR_GAP_RIGHT(20),
+	VAL_THR_GAP_RIGHT(15),
 	VAL_THR_GAP_DIAGO_LEFT(45),
 	VAL_THR_GAP_DIAGO_RIGHT(45),
 	VAL_THR_SLALOM_FLEFT(55),
@@ -497,7 +497,7 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->onLed(SensorPosition::Left);
 				s->onLed(SensorPosition::Right);
 				s->onLed(SensorPosition::FRight);
-				for(int i=0; i<700; ++i);
+				for(int i=0; i<800; ++i);
 				s->setBrightValue(SensorPosition::FLeft);
 				s->setBrightValue(SensorPosition::Left);
 				s->setBrightValue(SensorPosition::Right);
@@ -506,7 +506,7 @@ void TIM1_BRK_TIM9_IRQHandler(void){
 				s->offLed(SensorPosition::Left);
 				s->offLed(SensorPosition::Right);
 				s->offLed(SensorPosition::FRight);
-				for(int i=0; i<700; ++i);
+				for(int i=0; i<800; ++i);
 				s->setDarkValue(SensorPosition::FLeft);
 				s->setDarkValue(SensorPosition::Left);
 				s->setDarkValue(SensorPosition::Right);
