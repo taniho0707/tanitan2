@@ -11,13 +11,14 @@ MotorCollection::MotorCollection() :
 	
 }
 
-bool MotorCollection::collectionByFrontDuringStop(){
+bool MotorCollection::collectionByFrontDuringStop(float lin_limit, float rad_limit){
 	auto start_time = Timer::getTime();
 	int32_t dif_left = static_cast<int32_t>(wall->getDiffValue(SensorPosition::FLeft));
 	int32_t dif_right = static_cast<int32_t>(wall->getDiffValue(SensorPosition::FRight));
 	float dif_lin = (dif_right + dif_left) / 2;
 	float dif_rad = dif_right - dif_left;
 	float tmp;
+	mc->setIntegralEncoder(0.0f);
 	while(Timer::getTime() < start_time + TIMEOUT){
 		dif_left = wall->getDiffValue(SensorPosition::FLeft);
 		dif_right = wall->getDiffValue(SensorPosition::FRight);
@@ -28,6 +29,7 @@ bool MotorCollection::collectionByFrontDuringStop(){
 		mc->setRadVelocity(0.0f);
 		if(abs(GAIN_LIN * dif_lin) < 0.02f) break;
 		Timer::wait_ms(1);
+		if(abs(mc->getIntegralEncoder()) > lin_limit) break;
 	}
 	while(Timer::getTime() < start_time + TIMEOUT){
 		dif_left = wall->getDiffValue(SensorPosition::FLeft);
@@ -39,6 +41,7 @@ bool MotorCollection::collectionByFrontDuringStop(){
 		mc->setRadVelocity(GAIN_RAD * dif_rad);
 		if(abs(GAIN_LIN * dif_lin) < 0.02f && abs(GAIN_RAD * dif_rad) < 0.5f) break;
 		Timer::wait_ms(1);
+		if(abs(mc->getIntegralEncoder()) > lin_limit) break;
 	}
 	return false;
 }

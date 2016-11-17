@@ -15,9 +15,8 @@ void frontcorrection(){
 	MotorCollection* collection = MotorCollection::getInstance();
 	led->flickAsync(LedNumbers::FRONT, 5.0f, 1500);
 	motorcontrol->disableWallControl();
-	collection->collectionByFrontDuringStop();// front correction 1.5s
+	collection->collectionByFrontDuringStop(0.02f);// front correction 1.5s
 	motorcontrol->stay();
-	// Timer::wait_ms(200);
 	motorcontrol->resetRadIntegral();
 	motorcontrol->resetLinIntegral();
 	led->flickStop(LedNumbers::FRONT);
@@ -127,7 +126,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			vc->runSlalom(RunType::SLALOM90SML_RIGHT, 0.3f);
 			while(vc->isRunning());
 			if(!vc->hasDoneSlalom()){
-				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.025f, 2.0f);
 				while(vc->isRunning());
 				
 				frontcorrection();
@@ -158,7 +157,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			vc->runSlalom(RunType::SLALOM90SML_LEFT, 0.3f);
 			while(vc->isRunning());
 			if(!vc->hasDoneSlalom()){
-				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.025f, 2.0f);
 				while(vc->isRunning());
 				
 				frontcorrection();

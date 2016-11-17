@@ -20,7 +20,7 @@ private:
 	explicit MotorCollection();
 public:
 
-	bool collectionByFrontDuringStop();
+	bool collectionByFrontDuringStop(float lin_limit);
 
 	static MotorCollection *getInstance();
 };
