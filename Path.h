@@ -22,6 +22,13 @@ struct Motion{
 			return true;
 		else return false;
 	}
+
+	inline bool operator==(const Motion& m) const {
+		return (type == m.type && length == m.length);
+	}
+	inline bool operator!=(const Motion& m) const {
+		return (type != m.type && length != m.length);
+	}
 };
 
 enum class PathType : uint8_t {
@@ -45,5 +52,12 @@ public:
 
 	Motion getMotion(int16_t num);
 	void putMotion(Motion motion);
+
+	inline bool operator==(const Path& p) const {
+		return path == p.path;
+	}
+	inline bool operator!=(const Path& p) const {
+		return path != p.path;
+	}
 };
 

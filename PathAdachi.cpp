@@ -7,6 +7,7 @@ PathAdachi::PathAdachi(){
 	fm.resetFootmap();
 	map.format();
 	setStart(0, 1, MazeAngle::NORTH);
+	is_shortest_path = false;
 }
 
 void PathAdachi::setStart(int8_t x, int8_t y, MazeAngle angle){
@@ -22,6 +23,15 @@ void PathAdachi::setGoal(int8_t x, int8_t y){
 
 void PathAdachi::setMap(Map& m){
 	map.copyFrom(m);
+}
+
+bool PathAdachi::isShortestPath(){
+	is_shortest_path = true;
+	Path sp = getPath(PathType::DIAGO);
+	is_shortest_path = false;
+	Path np = getPath(PathType::DIAGO);
+	if(sp == np && sp.getMotion(0).type != slalomparams::RunType::PIVOTTURN) return true;
+	else return false;
 }
 
 void PathAdachi::renewFootmap(){
@@ -41,7 +51,7 @@ void PathAdachi::renewFootmap(){
 
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::NORTH) == false)
 		   && (fm.getFootmap(buf.first, buf.second + 1, 0) == 1024)
-		   && (map.hasWatched(buf.first, buf.second, MazeAngle::NORTH)))
+		   && (is_shortest_path == false && map.hasWatched(buf.first, buf.second, MazeAngle::NORTH)))
 		{
 			tmp.first = buf.first;
 			tmp.second = buf.second + 1;
@@ -50,7 +60,7 @@ void PathAdachi::renewFootmap(){
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::EAST) == false)
 		   && (fm.getFootmap(buf.first + 1, buf.second, 0) == 1024)
-		   && (map.hasWatched(buf.first, buf.second, MazeAngle::EAST)))
+		   && (is_shortest_path == false && map.hasWatched(buf.first, buf.second, MazeAngle::EAST)))
 		{
 			tmp.first = buf.first + 1;
 			tmp.second = buf.second;
@@ -59,7 +69,7 @@ void PathAdachi::renewFootmap(){
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::SOUTH) == false)
 		   && (fm.getFootmap(buf.first, buf.second - 1, 0) == 1024)
-		   && (map.hasWatched(buf.first, buf.second, MazeAngle::SOUTH)))
+		   && (is_shortest_path == false && map.hasWatched(buf.first, buf.second, MazeAngle::SOUTH)))
 		{
 			tmp.first = buf.first;
 			tmp.second = buf.second - 1;
@@ -68,7 +78,7 @@ void PathAdachi::renewFootmap(){
 		}
 		if((map.isExistWall(buf.first, buf.second, MazeAngle::WEST) == false)
 		   && (fm.getFootmap(buf.first - 1, buf.second, 0) == 1024)
-		   && (map.hasWatched(buf.first, buf.second, MazeAngle::WEST)))
+		   && (is_shortest_path == false && map.hasWatched(buf.first, buf.second, MazeAngle::WEST)))
 		{
 			tmp.first = buf.first - 1;
 			tmp.second = buf.second;
@@ -103,10 +113,12 @@ void PathAdachi::renewFootmap(){
 
 slalomparams::RunType PathAdachi::getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata){
 	Walldata wd = walldata;
-	if(!map.hasWatched(x, y, MazeAngle::NORTH)) wd.addWall(MouseAngle::FRONT);
-	if(!map.hasWatched(x, y, MazeAngle::EAST)) wd.addWall(MouseAngle::RIGHT);
-	if(!map.hasWatched(x, y, MazeAngle::SOUTH)) wd.addWall(MouseAngle::BACK);
-	if(!map.hasWatched(x, y, MazeAngle::WEST)) wd.addWall(MouseAngle::LEFT);
+	if(!is_shortest_path){
+		if(!map.hasWatched(x, y, MazeAngle::NORTH)) wd.addWall(MouseAngle::FRONT);
+		if(!map.hasWatched(x, y, MazeAngle::EAST)) wd.addWall(MouseAngle::RIGHT);
+		if(!map.hasWatched(x, y, MazeAngle::SOUTH)) wd.addWall(MouseAngle::BACK);
+		if(!map.hasWatched(x, y, MazeAngle::WEST)) wd.addWall(MouseAngle::LEFT);
+	}
 	uint16_t min = fm.getMinNextTo(x, y, wd);
 	min = fm.getFootmap(x, y, 1024) - 1;
 	if(angle == MazeAngle::NORTH){
@@ -148,6 +160,11 @@ Path PathAdachi::getPath(PathType pathtype){
 	p.putMotion(m);
 	renewFootmap();
 
+	if(fm.getFootmap(start_x, start_y, 1024) == 1024){
+		p.putMotion((struct Motion){slalomparams::RunType::PIVOTTURN, 1});
+		return p;
+	}
+
 	static ComPc* compc = ComPc::getInstance();
 
 	while(true){
@@ -161,8 +178,6 @@ Path PathAdachi::getPath(PathType pathtype){
 			break;
 		}
 	}
-	// pos.setNextPosition(slalomparams::RunType::TRAPACCEL);
-	// p.putMotion((struct Motion){slalomparams::RunType::TRAPACCEL, 2});
 	m = (struct Motion){slalomparams::RunType::TRAPACCEL, 2};
 	p.putMotion(m);
 	m = (struct Motion){slalomparams::RunType::PIVOTTURN, 1};

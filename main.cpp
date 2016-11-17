@@ -230,79 +230,79 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 
 			led->on(LedNumbers::LEFT3);
 			adachi.setGoal(0, 0);
-// 		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1){
-// 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
-// 			motorcontrol->disableWallControl();
-// 			while(vc->isRunning());
-// 			// if(wall->isExistWall(SensorPosition::FLeft)){
-// 			// 	frontcorrection();
-// 			// }
+		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1){
+			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+			motorcontrol->disableWallControl();
+			while(vc->isRunning());
+			// if(wall->isExistWall(SensorPosition::FLeft)){
+			// 	frontcorrection();
+			// }
 
-// 			// if completed -> goto 0,0
-// 			PathAdachi padachi;
-// 			padachi.setGoal(GOAL_X, GOAL_Y);
-// 			padachi.setMap(map);
-// 			if(padachi.isShortestPath()){
-// 				if(pos.getAngle() == MazeAngle::WEST){
-// 					// turn left
-// 					vc->runPivotTurn(1000, -90, 3000);
-// 					while(vc->isRunning());
-// 				}
-// 				// go forward
-// 				vc->runTrapAccel(0.0f, 0.30f, 0.00f, 0.09f, 2.0f);
-// 				motorcontrol->disableWallControl();
-// 				while(vc->isRunning());
-// 				break;
-// 			} else {
-// 				// if not completed -> goto goal
-// 				pos.setNextPosition(RunType::PIVOTTURN);
-// 				if(walldata.isExistWall(MouseAngle::RIGHT)){
-// 					vc->runPivotTurn(1000, 90, 3000);
-// 					while(vc->isRunning());
-// 					frontcorrection();
-// 					vc->runPivotTurn(1000, 90, 3000);
-// 					while(vc->isRunning());
-// 					motorcontrol->resetRadIntegral();
-// 					motorcontrol->resetLinIntegral();
-// 					Timer::wait_ms(200);
-// //					vc->disableWallgap();
-// 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
-// 					motorcontrol->disableWallControl();
-// 					while(vc->isRunning());
-// 					Timer::wait_ms(300);
-// 					motorcontrol->enableWallControl();
-// 					vc->enableWallgap();
-// 				} else {
-// 					vc->runPivotTurn(1000, 180, 3000);
-// 					while(vc->isRunning());
-// 					Timer::wait_ms(300);
+			// if completed -> goto 0,0
+			PathAdachi padachi;
+			padachi.setGoal(GOAL_X, GOAL_Y);
+			padachi.setMap(map);
+			if(padachi.isShortestPath()){
+				if(pos.getAngle() == MazeAngle::WEST){
+					// turn left
+					vc->runPivotTurn(1000, -90, 3000);
+					while(vc->isRunning());
+				}
+				// go forward
+				vc->runTrapAccel(0.0f, 0.30f, 0.00f, 0.09f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				break;
+			} else {
+				// if not completed -> goto goal
+				pos.setNextPosition(RunType::PIVOTTURN);
+				if(walldata.isExistWall(MouseAngle::RIGHT)){
+					vc->runPivotTurn(1000, 90, 3000);
+					while(vc->isRunning());
+					frontcorrection();
+					vc->runPivotTurn(1000, 90, 3000);
+					while(vc->isRunning());
+					motorcontrol->resetRadIntegral();
+					motorcontrol->resetLinIntegral();
+					Timer::wait_ms(200);
+//					vc->disableWallgap();
+					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+					motorcontrol->disableWallControl();
+					while(vc->isRunning());
+					Timer::wait_ms(300);
+					motorcontrol->enableWallControl();
+					vc->enableWallgap();
+				} else {
+					vc->runPivotTurn(1000, 180, 3000);
+					while(vc->isRunning());
+					Timer::wait_ms(300);
 
-// //					vc->disableWallgap();
-// 					motorcontrol->disableWallControl();
-// 					motorcontrol->resetRadIntegral();
-// 					motorcontrol->resetLinIntegral();
-// 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
-// 					motorcontrol->disableWallControl();
-// 					while(vc->isRunning());
-// 					Timer::wait_ms(300);
-// 					vc->enableWallgap();
-// 					motorcontrol->enableWallControl();
-// 				}
-// 				//mram
-// 				mram->saveMap(map, num_map%10);
-// 				mram_ret.at(0) = num_map++;
-// 				mram->writeData(mram_ret, 0x0001, 1);
-// 				mram->saveMap(map, num_map%10);
-// 				mram_ret.at(0) = num_map++;
-// 				mram->writeData(mram_ret, 0x0001, 1);
-// 				motorcontrol->resetDistanceFromGap();
-// 				motorcontrol->resetDistanceFromGapDiago();
-// 				vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 2.0f);
-// 				motorcontrol->disableWallControl();
-// 				while(vc->isRunning());
-// 				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
-// 				adachi.setGoal(GOAL_X, GOAL_Y);
-// 			}
+//					vc->disableWallgap();
+					motorcontrol->disableWallControl();
+					motorcontrol->resetRadIntegral();
+					motorcontrol->resetLinIntegral();
+					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
+					motorcontrol->disableWallControl();
+					while(vc->isRunning());
+					Timer::wait_ms(300);
+					vc->enableWallgap();
+					motorcontrol->enableWallControl();
+				}
+				//mram
+				mram->saveMap(map, num_map%10);
+				mram_ret.at(0) = num_map++;
+				mram->writeData(mram_ret, 0x0001, 1);
+				mram->saveMap(map, num_map%10);
+				mram_ret.at(0) = num_map++;
+				mram->writeData(mram_ret, 0x0001, 1);
+				motorcontrol->resetDistanceFromGap();
+				motorcontrol->resetDistanceFromGapDiago();
+				vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 2.0f);
+				motorcontrol->disableWallControl();
+				while(vc->isRunning());
+				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+				adachi.setGoal(GOAL_X, GOAL_Y);
+			}
 		} else if(pos.getPositionX() == 0 && pos.getPositionY() == 0){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			while(vc->isRunning());
@@ -366,6 +366,14 @@ bool runShrt(PathType type, bool do_inbound, float param_accel, float param_max_
 	padachi.setMap(map);
 
 	Path path = padachi.getPath(type);
+	if(path.getMotion(0).type == RunType::PIVOTTURN){
+		led->flickAsync(LedNumbers::FRONT, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT1, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT2, 4.0f, 0);
+		led->flickAsync(LedNumbers::LEFT3, 4.0f, 0);
+		led->flickAsync(LedNumbers::RIGHT, 4.0f, 0);
+		while(true);
+	}
 	
 	led->flickSync(LedNumbers::FRONT, 3.0f, 1000);
 	motorcontrol->setShrtWallControl();

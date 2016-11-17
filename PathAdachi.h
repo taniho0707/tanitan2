@@ -25,8 +25,11 @@ private:
 
 	MazeAngle goal_angle;
 
+	bool is_shortest_path;
+
 	void renewFootmap();
 	slalomparams::RunType getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata);
+
 public:
 	Footmap fm;
 	Map map;
@@ -39,6 +42,8 @@ public:
 	void setMap(Map&);
 
 	MazeAngle getGoalAngle();
+
+	bool isShortestPath();
 
 	Path getPath(PathType);
 };
