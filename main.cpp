@@ -640,9 +640,9 @@ int main(void){
 		compc->printf("Gx:%6d, Gy:%6d, Gz:%6d, Ax:%6d, Ay:%6d, Az:%6d\n", gx, gy, gz, ax, ay, az);
 
 		if(Switch::isPushing(SwitchNumbers::RIGHT)){
-			mode = 100; break;
+			mode += 100; break;
 		} else if(Switch::isPushing(SwitchNumbers::LEFT)){
-			mode = 101; break;
+			mode += 200; break;
 		}
 
 		if(abs(gx) > 20000){
@@ -671,6 +671,24 @@ int main(void){
 			led->on(LedNumbers::FRONT);
 		}
 		if(az < 0 || wall->isExistWall(SensorPosition::FRight)==false || wall->isExistWall(SensorPosition::FLeft)==false) stable_time2 = 0;
+
+		if(mode % 100 == 0){
+			led->off(LedNumbers::LEFT1);
+			led->off(LedNumbers::LEFT2);
+			led->off(LedNumbers::LEFT3);
+		} else if(mode % 100 == 1){
+			led->on(LedNumbers::LEFT1);
+			led->off(LedNumbers::LEFT2);
+			led->off(LedNumbers::LEFT3);
+		} else if(mode % 100 == 2){
+			led->off(LedNumbers::LEFT1);
+			led->on(LedNumbers::LEFT2);
+			led->off(LedNumbers::LEFT3);
+		} else if(mode % 100 == 3){
+			led->off(LedNumbers::LEFT1);
+			led->off(LedNumbers::LEFT2);
+			led->on(LedNumbers::LEFT3);
+		}
 
 		if(stable_time1++ > 100 || stable_time2++ > 150){
 			/// @todo モード自動選択ルーチンはここにいれる
@@ -839,14 +857,14 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 5){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f + 0.09f, 3.0f);
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
-			while(vc->isRunning());
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			// vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			// while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM90_RIGHT, max_g_param);
@@ -854,19 +872,19 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM90_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
 			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.09f+0.045f, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 6){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f + 0.09f, 3.0f);
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
-			while(vc->isRunning());
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			// vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			// while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM180_RIGHT, max_g_param);
@@ -874,15 +892,15 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM180_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
 			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.09f+0.045f, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 7){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.06364f*3, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.06364f*3, 3.0f);
+			vc->startTrapAccel(0.0f, max_g_param, 0.06364f*2, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.06364f*2, 3.0f);
 			while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
@@ -891,19 +909,19 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM90OBL_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.6364f*3, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.6364f*3, 3.0f);
+			vc->startTrapAccel(max_g_param, max_g_param, 0.6364f*2, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.6364f*2, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 8){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f + 0.09f, 3.0f);
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
-			while(vc->isRunning());
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			// vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			// while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM45IN_RIGHT, max_g_param);
@@ -911,15 +929,15 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM45IN_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*2, 3.0f);
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*2, 3.0f);
 			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*2, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 9){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.06364f*2, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.06364f*2, 3.0f);
 			while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
@@ -933,14 +951,14 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 10){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.045f, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, max_g_param, 0.045f + 0.09f, 3.0f);
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
-			while(vc->isRunning());
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
+			// vc->runTrapAccel(max_g_param, max_g_param, max_g_param, 0.09f, 3.0f);
+			// while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
 				vc->runSlalom(RunType::SLALOM135IN_RIGHT, max_g_param);
@@ -948,15 +966,15 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM135IN_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*3, 3.0f);
-			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			vc->startTrapAccel(max_g_param, max_g_param, 0.06364f*2, 3.0f);
+			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.06364f*2, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode == 11){
-			float max_g_param = 0.5f;
+			float max_g_param = 0.7f;
 			motorcontrol->stay();
-			vc->startTrapAccel(0.0f, max_g_param, 0.06364f*3, 3.0f);
-			vc->runTrapAccel(0.0f, max_g_param, 0.0f, 0.06364f*3, 3.0f);
+			// vc->startTrapAccel(0.0f, max_g_param, 0.06364f*2, 3.0f);
+			vc->runTrapAccel(0.0f, max_g_param, 0.0f, 0.06364f*2, 3.0f);
 			while(vc->isRunning());
 			vc->startTrapAccel(max_g_param, max_g_param, 0.09f, 3.0f);
 			if(submode == 0){
@@ -965,30 +983,62 @@ int main(void){
 				vc->runSlalom(RunType::SLALOM135OUT_LEFT, max_g_param);
 			}
 			while(vc->isRunning());
-			vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
+			// vc->startTrapAccel(max_g_param, max_g_param, 0.045f+0.09f, 3.0f);
 			vc->runTrapAccel(max_g_param, max_g_param, 0.0f, 0.09f+0.045f, 3.0f);
 			motorcontrol->disableWallControl();
 			while(true);
-		} else if(mode == 100){
-			if(submode == 0){ //探索新規(壁なし)
-				runExpr(false, true);
-			} else { //探索上書き(壁あり)
-				runExpr(true,  true);
+		} else if(mode >= 100 && mode < 200){
+			if(mode == 100){
+				if(submode == 0){ //探索新規(壁なし)
+					runExpr(false, true);
+				} else { //探索上書き(壁あり)
+					runExpr(true,  true);
+				}
+			} else {
+				if(submode == 0){ //探索新規(壁なし)
+					runExpr(false, false);
+				} else { //探索上書き(壁あり)
+					runExpr(true,  false);
+				}
 			}
 
 			float param_accel = 2.0f;
 			float param_vel = 0.3f;
 
-			runShrt(PathType::SMALL, true, 2.0f, 3.0f, 1.0f, 0.3f);
+			// runShrt(PathType::SMALL, true, 2.0f, 3.0f, 1.0f, 0.3f);
 			// runShrt(PathType::BIG,   true, 2.0f, 3.0f, 1.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 2.0f, 3.0f, 1.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 5.0f, 3.0f, 3.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 2.0f, 1.0f, 1.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 4.0f, 3.0f, 3.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 6.0f, 5.0f, 5.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
-		} else {
+		} else { // mode = 200~299
+			float ac, vl, vd;
+			if(mode == 200){
+				ac = 2.0f;
+				vl = 1.0f;
+				vd = 1.0f;
+			} else if(mode == 201){
+				ac = 2.0f;
+				vl = 3.0f;
+				vd = 3.0f;
+			} else if(mode == 202){
+				ac = 4.0f;
+				vl = 3.0f;
+				vd = 3.0f;
+			} else if(mode == 203){
+				ac = 6.0f;
+				vl = 5.0f;
+				vd = 5.0f;
+			} else {
+				ac = 8.0f;
+				vl = 5.0f;
+				vd = 5.0f;
+			}
+
 			if(submode == 0){ //斜め
-				runShrt(PathType::DIAGO, true, 3.0f, 1.0f, 1.0f, 0.5f);
+				runShrt(PathType::DIAGO, true, ac, vl, vd, 0.5f);
 			} else { //小回りのみ -> 斜めパラメータ向上
-				runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
+				runShrt(PathType::DIAGO, true, ac, vl, vd, 0.7f);
 			}
 		}
 	}
