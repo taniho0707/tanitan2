@@ -19,7 +19,7 @@ void frontcorrection(){
 	motorcontrol->disableWallControl();
 	collection->collectionByFrontDuringStop();// front correction 1.5s
 	motorcontrol->stay();
-	Timer::wait_ms(200);
+	// Timer::wait_ms(200);
 	motorcontrol->resetRadIntegral();
 	motorcontrol->resetLinIntegral();
 	led->flickStop(LedNumbers::FRONT);
@@ -152,14 +152,14 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					while(vc->isRunning());
 				}
 
-				Timer::wait_ms(200);
+				// Timer::wait_ms(200);
 //				vc->disableWallgap();
 				motorcontrol->enableWallControl();
 //				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				Timer::wait_ms(300);
+				// Timer::wait_ms(300);
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
 				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
@@ -187,14 +187,14 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					while(vc->isRunning());
 				}
 
-				Timer::wait_ms(200);
+				// Timer::wait_ms(200);
 //				vc->disableWallgap();
 				motorcontrol->enableWallControl();
 //				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				Timer::wait_ms(300);
+				// Timer::wait_ms(300);
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
 				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
@@ -426,6 +426,8 @@ bool runShrt(PathType type, bool do_inbound, float param_accel, float param_max_
 	struct Motion motion;
 	int i=0;
 	// vc->disableWallgap();
+	motorcontrol->resetDistanceFromGap();
+	motorcontrol->resetDistanceFromGapDiago();
 	vc->startTrapAccel(0.0f, param_max_turn, 0.09f, param_accel);
 
 	while(true){
@@ -801,7 +803,7 @@ int main(void){
 			} else {
 				motorcontrol->stay();
 				// vc->startTrapAccel(0.0f, 5.0f, 1.26f, 10.0f);
-				vc->runTrapAccel(0.0f, 3.0f, 0.0f, 1.26f, 3.0f);
+				vc->runTrapAccel(0.0f, 2.0f, 0.0f, 0.9f, 6.0f);
 				while(vc->isRunning());
 				// vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.055f, 3.0f);
 				// while(vc->isRunning());
@@ -1008,7 +1010,7 @@ int main(void){
 			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
 		} else {
 			if(submode == 0){ //斜め
-				runShrt(PathType::DIAGO, true, 3.0f, 3.0f, 3.0f, 0.5f);
+				runShrt(PathType::DIAGO, true, 3.0f, 1.0f, 1.0f, 0.5f);
 			} else { //小回りのみ -> 斜めパラメータ向上
 				runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
 			}
