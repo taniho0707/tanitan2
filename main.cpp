@@ -5,10 +5,8 @@
 
 using namespace slalomparams;
 
-constexpr uint16_t GOAL_X = 6;
-constexpr uint16_t GOAL_Y = 6;
-
-constexpr uint16_t SLALOM_PIVOT_COUNT = 100;
+constexpr uint16_t GOAL_X = 3;
+constexpr uint16_t GOAL_Y = 3;
 
 
 void frontcorrection(){
@@ -98,27 +96,20 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				while(vc->isRunning());
 				motorcontrol->resetRadIntegral();
 				motorcontrol->resetLinIntegral();
-				// Timer::wait_ms(200);
-//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				// Timer::wait_ms(300);
 				motorcontrol->enableWallControl();
 				vc->enableWallgap();
 			} else {
 				vc->runPivotTurn(1000, 180, 3000);
 				while(vc->isRunning());
-				// Timer::wait_ms(300);
-
-//				vc->disableWallgap();
 				motorcontrol->disableWallControl();
 				motorcontrol->resetRadIntegral();
 				motorcontrol->resetLinIntegral();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				// Timer::wait_ms(300);
 				vc->enableWallgap();
 				motorcontrol->enableWallControl();
 			}
@@ -152,14 +143,10 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					while(vc->isRunning());
 				}
 
-				// Timer::wait_ms(200);
-//				vc->disableWallgap();
 				motorcontrol->enableWallControl();
-//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				// Timer::wait_ms(300);
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
 				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
@@ -186,15 +173,10 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					vc->runPivotTurn(1000, -90, 3000);
 					while(vc->isRunning());
 				}
-
-				// Timer::wait_ms(200);
-//				vc->disableWallgap();
 				motorcontrol->enableWallControl();
-//				vc->disableWallgap();
 				vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
-				// Timer::wait_ms(300);
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
 				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
@@ -234,9 +216,6 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
-			// if(wall->isExistWall(SensorPosition::FLeft)){
-			// 	frontcorrection();
-			// }
 
 			// if completed -> goto 0,0
 			PathAdachi padachi;
@@ -265,7 +244,6 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					motorcontrol->resetRadIntegral();
 					motorcontrol->resetLinIntegral();
 					Timer::wait_ms(200);
-//					vc->disableWallgap();
 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
@@ -277,7 +255,6 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					while(vc->isRunning());
 					Timer::wait_ms(300);
 
-//					vc->disableWallgap();
 					motorcontrol->disableWallControl();
 					motorcontrol->resetRadIntegral();
 					motorcontrol->resetLinIntegral();
