@@ -212,6 +212,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			led->on(LedNumbers::LEFT3);
 			adachi.setGoal(0, 0);
 		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1){
+			walldata = wall->getWall();
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
