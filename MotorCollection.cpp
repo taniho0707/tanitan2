@@ -11,7 +11,7 @@ MotorCollection::MotorCollection() :
 	
 }
 
-bool MotorCollection::collectionByFrontDuringStop(float lin_limit, float rad_limit){
+bool MotorCollection::collectionByFrontDuringStop(float lin_limit){
 	auto start_time = Timer::getTime();
 	int32_t dif_left = static_cast<int32_t>(wall->getDiffValue(SensorPosition::FLeft));
 	int32_t dif_right = static_cast<int32_t>(wall->getDiffValue(SensorPosition::FRight));
