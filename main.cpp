@@ -84,7 +84,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.035f, 2.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
-			if(wall->isExistWall(SensorPosition::FLeft)){
+			if(walldata.isExistWall(MouseAngle::FRONT)){
 				frontcorrection();
 			}
 			if(walldata.isExistWall(MouseAngle::RIGHT)){
@@ -131,7 +131,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				
 				frontcorrection();
 				
-				if(wall->isExistWall(SensorPosition::Left)){
+				if(walldata.isExistWall(MouseAngle::LEFT)){
 					vc->runPivotTurn(1000, -90, 3000);
 					while(vc->isRunning());
 					frontcorrection();
@@ -162,7 +162,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				
 				frontcorrection();
 				
-				if(wall->isExistWall(SensorPosition::Right)){
+				if(walldata.isExistWall(MouseAngle::RIGHT)){
 					vc->runPivotTurn(1000, 90, 3000);
 					while(vc->isRunning());
 					frontcorrection();
@@ -1011,7 +1011,7 @@ int main(void){
 			runShrt(PathType::DIAGO, true, 2.0f, 1.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 4.0f, 3.0f, 3.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 6.0f, 5.0f, 5.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.7f);
 		} else { // mode = 200~299
 			float ac, vl, vd;
 			if(mode == 200){
