@@ -5,7 +5,7 @@
 
 MotorCollection::MotorCollection() :
 	TIMEOUT(10000),
-	GAIN_LIN(0.0005f),
+	GAIN_LIN(0.0007f),
 	GAIN_RAD(0.6f)
 {
 	

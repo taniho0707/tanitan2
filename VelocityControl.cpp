@@ -5,8 +5,8 @@
 using namespace slalomparams;
 
 VelocityControl::VelocityControl() :
-	DIST_GAP_FROM_R(0.032),
-	DIST_GAP_FROM_L(0.042)
+	DIST_GAP_FROM_R(0.035),
+	DIST_GAP_FROM_L(0.035)
 {
 	// mc = MotorControl::getInstance();
 	// sens = WallSensor::getInstance();
@@ -282,6 +282,7 @@ void VelocityControl::calcSlalom(int32_t t){
 				if(!sens->canSlalom()){
 					end_flag = true;
 					has_done_slalom = false;
+					Speaker::playSound(1200, 1000, false);
 				}
 			}
 		} else if(static_cast<uint8_t>(reg_type) == static_cast<uint8_t>(RunType::SLALOM45OUT_LEFT)

@@ -20,14 +20,14 @@ array< map<float,pack_t>* , 16> slalomparams::getParams(){
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		{ 0.3, {0.025,0.032,   3000,93.4,     30,    0.3,     0.3,     0.3,     0.0}},
 		{ 0.5, {0.015,0.000,   8000,93.4,     30,    0.5,     0.5,     0.5,     0.0}},
-		{ 0.7, {0.000,0.022,  12000,93.4,     30,    0.7,     0.7,     0.7,     0.0}},
+		{ 0.7, {0.000,0.022,  13000,93.4,     30,    0.7,     0.7,     0.7,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM90_LEFT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		{ 0.3, {0.032,0.022,   3000,93.4,     30,    0.3,     0.3,     0.3,     0.0}},
 		{ 0.5, {0.021,0.000,   8000,93.4,     30,    0.5,     0.5,     0.5,     0.0}},
-		{ 0.7, {0.000,0.022,  12000,93.4,     30,    0.7,     0.7,     0.7,     0.0}},
+		{ 0.7, {0.000,0.022,  13000,93.4,     30,    0.7,     0.7,     0.7,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM180_RIGHT = {
@@ -59,13 +59,13 @@ array< map<float,pack_t>* , 16> slalomparams::getParams(){
 	static map<float, pack_t> SLALOM45OUT_RIGHT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		{ 0.5, {0.020,0.000,   8000,46.5,     15,    0.5,     0.5,     0.5,     0.0}},
-		{ 0.7, {0.025,0.000,  17000,47.0,     20,    0.7,     0.7,     0.7,     0.0}},
+		{ 0.7, {0.015,0.000,  17000,47.0,     20,    0.7,     0.7,     0.7,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM45OUT_LEFT = {
 	//  { vel, {d_bef, d_aft, a_rad, deg, cnsdeg, in_vel, out_vel, min_vel, acc_lin}},
 		{ 0.5, {0.020,0.000,   8000,46.5,     15,    0.5,     0.5,     0.5,     0.0}},
-		{ 0.7, {0.020,0.000,  17000,47.0,     20,    0.7,     0.7,     0.7,     0.0}},
+		{ 0.7, {0.010,0.000,  17000,47.0,     20,    0.7,     0.7,     0.7,     0.0}},
 	};
 	
 	static map<float, pack_t> SLALOM135IN_RIGHT = {

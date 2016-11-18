@@ -5,8 +5,8 @@
 
 using namespace slalomparams;
 
-constexpr uint16_t GOAL_X = 3;
-constexpr uint16_t GOAL_Y = 3;
+constexpr uint16_t GOAL_X = 7;
+constexpr uint16_t GOAL_Y = 7;
 
 
 void frontcorrection(){

@@ -11,7 +11,7 @@ MotorControl::MotorControl() :
 	GAIN_RAD_P(0.4f),
 	GAIN_RAD_I(0.02f),
 	GAIN_RAD_D(0.0f),
-	GAIN_WALL_P(1.0f),
+	GAIN_WALL_P(0.7f),
 	GAIN_WALL_SHRT_P(0.4f),
 	GAIN_WALL_I(0.0f),
 	GAIN_WALL_D(0.0f),
