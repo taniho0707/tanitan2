@@ -23,7 +23,7 @@ void frontcorrection(){
 	led->on(LedNumbers::FRONT);
 }
 
-bool runExpr(bool overwrite_mode, bool find_shortest){
+bool runExpr(bool overwrite_mode, bool find_shortest, bool oneway_mode){
 	MotorControl* motorcontrol = MotorControl::getInstance();
 	Mram* mram = Mram::getInstance();
 	VelocityControl* vc = VelocityControl::getInstance();
@@ -210,6 +210,13 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 			mram->writeData(mram_ret, 0x0001, 1);
 
 			led->on(LedNumbers::LEFT3);
+			if(oneway_mode){
+				vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
+				while(vc->isRunning());
+				motorcontrol->disableWallControl();
+				led->flickSync(LedNumbers::FRONT, 10, 10000);
+				while(true);
+			}
 			adachi.setGoal(0, 0);
 		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1 && find_shortest){
 			walldata = wall->getWall();
@@ -997,17 +1004,23 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode >= 100 && mode < 200){
-			if(mode == 101){
+			if(mode == 101){ //最短導出
 				if(submode == 0){ //探索新規(壁なし)
-					runExpr(false, true);
+					runExpr(false, true, false);
 				} else { //探索上書き(壁あり)
-					runExpr(true,  true);
+					runExpr(true,  true, false);
 				}
-			} else {
+			} else if(mode == 100){ //往復のみ
 				if(submode == 0){ //探索新規(壁なし)
-					runExpr(false, false);
+					runExpr(false, false, false);
 				} else { //探索上書き(壁あり)
-					runExpr(true,  false);
+					runExpr(true,  false, false);
+				}
+			} else if(mode == 102) { //片道
+				if(submode == 0){ //探索新規(壁なし)
+					runExpr(false, false, true);
+				} else { //探索上書き(壁あり)
+					runExpr(true,  false, true);
 				}
 			}
 
