@@ -87,28 +87,28 @@ void PathAdachi::renewFootmap(){
 		}
 	}
 
-	static ComPc* compc = ComPc::getInstance();
-	for(int i=0; i<32; ++i) compc->printf("+-----");
-	compc->printf("+\n");
-	for(int j=0; j<32; ++j){
-		for(int i=0; i<32; ++i){
-			if(map.isExistWall(i, 31-j, MazeAngle::WEST)) compc->printf("|");
-			else
-				if(map.hasWatched(i, 31-j, MazeAngle::WEST)) compc->printf(" ");
-				else compc->printf("x");
-			if(map.hasReached(i, 31-j)) compc->printf("*");
-			else compc->printf(" ");
-			compc->printf("%4d", fm.getFootmap(i, 31-j, 1024));
-		}
-		compc->printf("|\n");
-		for(int i=0; i<32; ++i){
-			if(map.isExistWall(i, 31-j, MazeAngle::SOUTH)) compc->printf("+-----");
-			else
-				if(map.hasWatched(i, 31-j, MazeAngle::SOUTH)) compc->printf("+     ");
-				else compc->printf("+ x x ");
-		}
-		compc->printf("+\n");
-	}
+	// static ComPc* compc = ComPc::getInstance();
+	// for(int i=0; i<32; ++i) compc->printf("+-----");
+	// compc->printf("+\n");
+	// for(int j=0; j<32; ++j){
+	// 	for(int i=0; i<32; ++i){
+	// 		if(map.isExistWall(i, 31-j, MazeAngle::WEST)) compc->printf("|");
+	// 		else
+	// 			if(map.hasWatched(i, 31-j, MazeAngle::WEST)) compc->printf(" ");
+	// 			else compc->printf("x");
+	// 		if(map.hasReached(i, 31-j)) compc->printf("*");
+	// 		else compc->printf(" ");
+	// 		compc->printf("%4d", fm.getFootmap(i, 31-j, 1024));
+	// 	}
+	// 	compc->printf("|\n");
+	// 	for(int i=0; i<32; ++i){
+	// 		if(map.isExistWall(i, 31-j, MazeAngle::SOUTH)) compc->printf("+-----");
+	// 		else
+	// 			if(map.hasWatched(i, 31-j, MazeAngle::SOUTH)) compc->printf("+     ");
+	// 			else compc->printf("+ x x ");
+	// 	}
+	// 	compc->printf("+\n");
+	// }
 }
 
 slalomparams::RunType PathAdachi::getNextMotion(int8_t x, int8_t y, MazeAngle angle, Walldata walldata){

@@ -58,10 +58,10 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 	mram->writeData(mram_ret, 0x0001, 1);
 
 	motorcontrol->stay();
-	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 2.0f);
+	vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.045f, 4.0f);
 	while(vc->isRunning());
 	map.setReached(0, 0);
-	vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
+	vc->startTrapAccel(0.3f, 0.3f, 0.09f, 4.0f);
 
 	uint8_t tmp_slalom_count = 0;
 
@@ -119,7 +119,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 
 			motorcontrol->resetDistanceFromGap();
 			motorcontrol->resetDistanceFromGapDiago();
-			vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 2.0f);
+			vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 4.0f);
 			motorcontrol->disableWallControl();
 			while(vc->isRunning());
 		} else if(runtype == slalomparams::RunType::SLALOM90SML_RIGHT){
@@ -148,7 +148,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				while(vc->isRunning());
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
-				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
+				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 4.0f);
 				vc->enableWallgap();
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
@@ -178,7 +178,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				while(vc->isRunning());
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
-				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 2.0f);
+				vc->runTrapAccel(0.0f, 0.3f, 0.3f, 0.065f, 4.0f);
 				vc->enableWallgap();
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
@@ -211,7 +211,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 
 			led->on(LedNumbers::LEFT3);
 			adachi.setGoal(0, 0);
-		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1){
+		} else if(is_first_goal == false && pos.getPositionX() == 0 && pos.getPositionY() == 1 && find_shortest){
 			walldata = wall->getWall();
 			vc->runTrapAccel(0.3f, 0.3f, 0.0f, 0.045f, 2.0f);
 			motorcontrol->disableWallControl();
@@ -247,7 +247,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
-					Timer::wait_ms(300);
+					Timer::wait_ms(5000);
 					motorcontrol->enableWallControl();
 					vc->enableWallgap();
 				} else {
@@ -261,7 +261,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 					vc->runTrapAccel(0.0f, 0.3f, 0.0f, -0.02f, 2.0f);
 					motorcontrol->disableWallControl();
 					while(vc->isRunning());
-					Timer::wait_ms(300);
+					Timer::wait_ms(5000);
 					vc->enableWallgap();
 					motorcontrol->enableWallControl();
 				}
@@ -274,7 +274,7 @@ bool runExpr(bool overwrite_mode, bool find_shortest){
 				mram->writeData(mram_ret, 0x0001, 1);
 				motorcontrol->resetDistanceFromGap();
 				motorcontrol->resetDistanceFromGapDiago();
-				vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 2.0f);
+				vc->runTrapAccel(0.0f, 0.30f, 0.30f, 0.065f, 4.0f);
 				motorcontrol->disableWallControl();
 				while(vc->isRunning());
 				vc->startTrapAccel(0.3f, 0.3f, 0.09f, 2.0f);
@@ -689,6 +689,14 @@ int main(void){
 			led->off(LedNumbers::LEFT1);
 			led->off(LedNumbers::LEFT2);
 			led->on(LedNumbers::LEFT3);
+		} else if(mode % 100 == 4){
+			led->on(LedNumbers::LEFT1);
+			led->on(LedNumbers::LEFT2);
+			led->on(LedNumbers::LEFT3);
+		} else {
+			led->off(LedNumbers::LEFT1);
+			led->off(LedNumbers::LEFT2);
+			led->off(LedNumbers::LEFT3);
 		}
 
 		if(stable_time1++ > 100 || stable_time2++ > 150){
@@ -989,7 +997,7 @@ int main(void){
 			motorcontrol->disableWallControl();
 			while(true);
 		} else if(mode >= 100 && mode < 200){
-			if(mode == 100){
+			if(mode == 101){
 				if(submode == 0){ //探索新規(壁なし)
 					runExpr(false, true);
 				} else { //探索上書き(壁あり)
@@ -1010,7 +1018,7 @@ int main(void){
 			// runShrt(PathType::BIG,   true, 2.0f, 3.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 2.0f, 1.0f, 1.0f, 0.5f);
 			runShrt(PathType::DIAGO, true, 4.0f, 3.0f, 3.0f, 0.5f);
-			runShrt(PathType::DIAGO, true, 6.0f, 5.0f, 5.0f, 0.5f);
+			runShrt(PathType::DIAGO, true, 6.0f, 5.0f, 5.0f, 0.7f);
 			runShrt(PathType::DIAGO, true, 8.0f, 5.0f, 5.0f, 0.7f);
 		} else { // mode = 200~299
 			float ac, vl, vd;
@@ -1030,8 +1038,12 @@ int main(void){
 				ac = 6.0f;
 				vl = 5.0f;
 				vd = 5.0f;
-			} else {
+			} else if(mode == 204){
 				ac = 8.0f;
+				vl = 5.0f;
+				vd = 5.0f;
+			} else {
+				ac = 10.0f;
 				vl = 5.0f;
 				vd = 5.0f;
 			}
